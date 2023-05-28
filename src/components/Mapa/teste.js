@@ -42,7 +42,10 @@ export default function Teste() {
       </Marker>
     )
   }
-  useEffect(() => { setIsMounted(true) }, [])
+  useEffect(() => {
+    setIsMounted(true)
+    document.querySelector("#__next > main > div > div > div > div.leaflet-control-container > div.leaflet-bottom.leaflet-right > div > a > svg").remove()
+  }, [])
   const [center, setCenter] = useState([position[0], position[1]])
   useEffect(() => { setCenter([position[0], position[1]]) }, [position])
   const zoom = modoVisao === MODO_VISAO.openstreetmap ? 13 : 9
