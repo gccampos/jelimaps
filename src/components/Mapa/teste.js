@@ -1,9 +1,9 @@
-import { MapContainer, TileLayer, Marker, Popup, useMapEvents, ImageOverlay } from 'react-leaflet'
-import { LatLngBounds, LatLng } from 'leaflet'
-import { useEffect, useState } from 'react'
+import { MapContainer, TileLayer, Marker, Popup, useMapEvents, ImageOverlay, useMap } from 'react-leaflet'
+import { useEffect, useMemo, useState } from 'react'
 import React from 'react'
 import CustomControlLeaftlet from '@/components/CustomControlLeaftlet/CustomControlLeaftlet'
-import { Dropdown } from 'react-bootstrap';
+import { Dropdown } from 'react-bootstrap'
+import dynamic from 'next/dynamic'
 
 const MODO_VISAO = {
   openstreetmap: 'OpenStreetMap',
@@ -11,18 +11,28 @@ const MODO_VISAO = {
   //paintball: 'Paintball',
 }
 
+function isControlLeafLet(node) {
+  return node.className.includes('leaflet-control') ?
+    node.className.includes('leaflet-control') : node.className.includes('leaflet-container') ?
+      !node.className.includes('leaflet-container') : node.parentElement ?
+        isControlLeafLet(node.parentElement) : false
+}
+
 export default function Teste() {
+  const [isMounted, setIsMounted] = React.useState(false);
   const [map, setMap] = useState(null)
-  const [modoVisao, setModoVisao] = useState(MODO_VISAO.rpg)
-  const position = modoVisao === MODO_VISAO.openstreetmap ? [-22.884735317908625, -43.25314700603486] : [0.5, 0.75]
+  const [modoVisao, setModoVisao] = useState(MODO_VISAO.openstreetmap)
+  const position = useMemo(() => modoVisao === MODO_VISAO.openstreetmap ? [-22.884735317908625, -43.25314700603486] : [0.5, 0.75], [modoVisao])
 
 
   function LocationMarker() {
     const [position, setPosition] = useState(null)
     useMapEvents({
       click(e) {
-        setPosition(e.latlng)
-        console.log(e.latlng)
+        if (isControlLeafLet(e.originalEvent.target))
+          console.log(map)
+        else
+          setPosition(e.latlng)
       },
     })
 
@@ -32,15 +42,18 @@ export default function Teste() {
       </Marker>
     )
   }
-
-  useEffect(() => { if (map != null) map.setView(center, zoom) }, [modoVisao])
-
-  const bounds = new LatLngBounds([0, 0], [1, 1.5])
-
-  const center = new LatLng(position[0], position[1])
+  useEffect(() => { setIsMounted(true) }, [])
+  const [center, setCenter] = useState([position[0], position[1]])
+  useEffect(() => { setCenter([position[0], position[1]]) }, [position])
   const zoom = modoVisao === MODO_VISAO.openstreetmap ? 13 : 9
-  return (
-    <MapContainer center={center} zoom={zoom} ref={setMap} >
+  useEffect(() => { if (map != null) map.setView(center, zoom) }, [modoVisao, map, center, zoom])
+
+  const bounds = [[0, 0], [1, 1.5]]
+
+  return (isMounted &&
+    <MapContainer
+      // @ts-ignore
+      center={center} zoom={zoom} ref={setMap} >
       {
         modoVisao === MODO_VISAO.openstreetmap &&
         <TileLayer
@@ -51,6 +64,7 @@ export default function Teste() {
       {
         modoVisao === MODO_VISAO.rpg &&
         <ImageOverlay
+          // @ts-ignore
           bounds={bounds}
           url='/new-map.jpg'
         />
@@ -69,7 +83,9 @@ export default function Teste() {
       </CustomControlLeaftlet>
       {
         modoVisao === MODO_VISAO.openstreetmap &&
-        <Marker position={center}>
+        <Marker
+          // @ts-ignore
+          position={center}>
           <Popup>
             A pretty CSS3 popup. <br /> Easily customizable.
           </Popup>
