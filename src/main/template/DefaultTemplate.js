@@ -44,7 +44,7 @@ const DefaultTemplate = ({ children: Element }) => {
 
 		{Element}
 		{/* Footer */}
-		<Box sx={{ bgcolor: 'background.paper', p: 6 }} component="footer">
+		<Box sx={{ bgcolor: 'lightgray', p: 2 }} component="footer">
 			<Typography variant="h6" align="center" gutterBottom>
 				JeliMaps
 			</Typography>

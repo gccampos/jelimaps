@@ -14,7 +14,11 @@ const { default: DefaultTemplate } = require("@/main/template/DefaultTemplate");
 const { default: React } = require("react");
 
 const About = () => {
-  const cards = [1, 2];
+  const equipe = [
+    { nome: "Guilherme Campos", descricao: "Estudante de Sistemas de Informação, com interesse em desenvolvimento web e dados abertos", git: "http://github.com/gccampos", email: "mailto:gcordeiro@id.uff.br" },
+    { nome: "Danilo Siqueira", descricao: "Estudante de Sistemas de Informação, com interesse em desenvolvimento frontend e segurança da informação", git: "http://github.com/siqueirad", email: "mailto:danilo_siqueira@id.uff.br" },
+    { nome: "Troy Kohwalter", descricao: "Doutor em Computação pela UFF e professor adjunto da mesma. Seus interesses são Engenharia de Software e Entretenimento Digital", git: "", email: "mailto:troy@ic.uff.br" }
+  ];
   return (
     <DefaultTemplate>
       <main>
@@ -25,17 +29,18 @@ const About = () => {
             pb: 6,
           }}
         >
-          <Container maxWidth="sm">
-            <Typography variant="h3" align="center" color="text.primary" >
+          <Container maxWidth="md">
+            <Typography variant="h3" align="center" color="text.primary">
               Os Jelis
             </Typography>
             <Typography align="center">
-              Griô ou griote na forma feminina, e também chamados jali ou jeli, é o
-              indivíduo que na África Ocidental tem por vocação preservar e
+              Griô ou griote na forma feminina, e também chamados jali ou jeli,
+              é o indivíduo que na África Ocidental tem por vocação preservar e
               transmitir as histórias, conhecimentos, canções e mitos do seu
               povo. Existem griôs músicos e griôs contadores de histórias.
               Ensinam a arte, o conhecimento de plantas, tradições, histórias e
-              aconselhavam membros das famílias reais.
+              aconselhavam membros das famílias reais. (Fonte:{" "}
+              {<a href="https://pt.wikipedia.org/wiki/Gri%C3%B4">Wikipedia</a>})
             </Typography>
             <br></br>
             <Typography
@@ -57,8 +62,9 @@ const About = () => {
             <Typography variant="h3" align="center" color="text.primary">
               Quem Somos?
             </Typography>
-            <Grid container spacing={2}>
-                <Grid item xs={14} sm={8} md={6}>
+              <Grid container spacing={4}>
+              {equipe.map((membro) => (
+                <Grid item key={membro} xs={12} sm={6} md={4}>
                   <Card
                     sx={{
                       height: "100%",
@@ -76,51 +82,26 @@ const About = () => {
                     />
                     <CardContent sx={{ flexGrow: 1 }}>
                       <Typography gutterBottom variant="h5" component="h2">
-                        Danilo Siqueira
+                        {membro.nome}
                       </Typography>
                       <Typography>
-                        Estudante de Sistemas de Informação, com interesse em
-                        desenvolvimento front end.
+                        {membro.descricao}
                       </Typography>
                     </CardContent>
                     <CardActions>
-                      <Button size="small" href="http://github.com/siqueirad">Github</Button>
-                      <Button size="small" href="mailto:danilo_siqueira@id.uff.br">Contato</Button>
+                      <Button size="small" href={membro.git}>
+                        Github
+                      </Button>
+                      <Button
+                        size="small"
+                        href={membro.email}
+                      >
+                        Contato
+                      </Button>
                     </CardActions>
                   </Card>
-                </Grid>
-                <Grid item xs={14} sm={8} md={6}>
-                  <Card
-                    sx={{
-                      height: "100%",
-                      display: "flex",
-                      flexDirection: "column",
-                    }}
-                  >
-                    <CardMedia
-                      component="div"
-                      sx={{
-                        // 16:9
-                        pt: "56.25%",
-                      }}
-                      image="https://source.unsplash.com/random?wallpapers"
-                    />
-                    <CardContent sx={{ flexGrow: 1 }}>
-                      <Typography gutterBottom variant="h5" component="h2">
-                        Guilherme Campos
-                      </Typography>
-                      <Typography>
-                        Estudante de Sistemas de Informação, com interesse em
-                        .
-                      </Typography>
-                    </CardContent>
-                    <CardActions>
-                      <Button size="small" href="http://github.com/gccampos">Github</Button>
-                      <Button size="small" href="mailto:gcordeiro@id.uff.br">Contato</Button>
-                    </CardActions>
-                  </Card>
-                </Grid>
-              
+                </Grid>    
+                ))}        
             </Grid>
           </Container>
         </Box>
