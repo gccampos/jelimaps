@@ -29,9 +29,7 @@ export default function Teste() {
     const [position, setPosition] = useState(null)
     useMapEvents({
       click(e) {
-        if (isControlLeafLet(e.originalEvent.target))
-          console.log(map)
-        else
+        if (!isControlLeafLet(e.originalEvent.target))
           setPosition(e.latlng)
       },
     })
@@ -44,12 +42,14 @@ export default function Teste() {
   }
   useEffect(() => {
     setIsMounted(true)
-    document.querySelector("#__next > main > div > div > div > div.leaflet-control-container > div.leaflet-bottom.leaflet-right > div > a > svg").remove()
   }, [])
-  const [center, setCenter] = useState([position[0], position[1]])
-  useEffect(() => { setCenter([position[0], position[1]]) }, [position])
+
+  const center = useMemo(() => [position[0], position[1]], [position])
   const zoom = modoVisao === MODO_VISAO.openstreetmap ? 13 : 9
-  useEffect(() => { if (map != null) map.setView(center, zoom) }, [modoVisao, map, center, zoom])
+  useEffect(() => {
+    console.log(center)
+    if (map != null) map.setView(center, zoom)
+  }, [modoVisao, map, center, zoom])
 
   const bounds = [[0, 0], [1, 1.5]]
 
