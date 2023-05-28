@@ -15,9 +15,9 @@ const { default: React } = require("react");
 
 const About = () => {
   const equipe = [
-    { nome: "Guilherme Campos", descricao: "Estudante de Sistemas de Informação, com interesse em desenvolvimento web e dados abertos", git: "http://github.com/gccampos", email: "mailto:gcordeiro@id.uff.br" },
-    { nome: "Danilo Siqueira", descricao: "Estudante de Sistemas de Informação, com interesse em desenvolvimento frontend e segurança da informação", git: "http://github.com/siqueirad", email: "mailto:danilo_siqueira@id.uff.br" },
-    { nome: "Troy Kohwalter", descricao: "Doutor em Computação pela UFF e professor adjunto da mesma. Seus interesses são Engenharia de Software e Entretenimento Digital", git: "", email: "mailto:troy@ic.uff.br" }
+    { nome: "Guilherme Campos",foto:"https://source.unsplash.com/random?wallpapers" ,descricao: "Estudante de Sistemas de Informação, com interesse em desenvolvimento web e dados abertos", git: "http://github.com/gccampos", email: "mailto:gcordeiro@id.uff.br" },
+    { nome: "Danilo Siqueira",foto:"https://source.unsplash.com/random?wallpapers" ,descricao: "Estudante de Sistemas de Informação, com interesse em desenvolvimento frontend e segurança da informação", git: "http://github.com/siqueirad", email: "mailto:danilo_siqueira@id.uff.br" },
+    { nome: "Troy Kohwalter",foto:"https://source.unsplash.com/random?wallpapers" ,descricao: "Doutor em Computação pela UFF e professor adjunto da mesma. Seus interesses são Engenharia de Software e Entretenimento Digital", git: "", email: "mailto:troy@ic.uff.br" }
   ];
   return (
     <DefaultTemplate>
@@ -59,12 +59,13 @@ const About = () => {
               parcial para conclusão do curso de Sistemas de Informação da
               Universidade Federal Fluminense.
             </Typography>
+            <br></br>
             <Typography variant="h3" align="center" color="text.primary">
               Quem Somos?
             </Typography>
               <Grid container spacing={4}>
               {equipe.map((membro) => (
-                <Grid item key={membro} xs={12} sm={6} md={4}>
+                <Grid item key={membro.nome} xs={12} sm={6} md={4}>
                   <Card
                     sx={{
                       height: "100%",
@@ -72,13 +73,13 @@ const About = () => {
                       flexDirection: "column",
                     }}
                   >
-                    <CardMedia
+                    <CardMedia  
                       component="div"
                       sx={{
                         // 16:9
                         pt: "56.25%",
                       }}
-                      image="https://source.unsplash.com/random?wallpapers"
+                      image={membro.foto}
                     />
                     <CardContent sx={{ flexGrow: 1 }}>
                       <Typography gutterBottom variant="h5" component="h2">
