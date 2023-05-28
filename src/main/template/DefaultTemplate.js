@@ -1,7 +1,7 @@
 import React from "react"
 import AppBar from '@mui/material/AppBar';
 import Button from '@mui/material/Button';
-import PublicIcon from '@mui/icons-material/Public';
+import { Favorite, LocationOn, Public, Restore } from '@mui/icons-material';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
@@ -12,10 +12,10 @@ import Stack from '@mui/material/Stack';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
-import Container from '@mui/material/Container';
 import Link from '@mui/material/Link';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { List, ListItem, ListItemText } from "@mui/material";
+import { BottomNavigation, BottomNavigationAction, List, ListItem, ListItemText } from "@mui/material";
+import ResponsiveAppBar from "../partial/ResponsiveAppBar";
 
 function Copyright() {
 	return (
@@ -37,16 +37,11 @@ const defaultTheme = createTheme();
 
 const DefaultTemplate = ({ children: Element }) => {
 
+	const [value, setValue] = React.useState(0);
 	return (<ThemeProvider theme={defaultTheme}>
 		<CssBaseline />
-		<AppBar position="relative">
-			<Toolbar>
-				<PublicIcon sx={{ mr: 2 }} />
-				<Typography variant="h6" color="inherit" noWrap>
-					JeliMaps
-				</Typography>
-			</Toolbar>
-		</AppBar>
+		<ResponsiveAppBar />
+
 		{Element}
 		{/* Footer */}
 		<Box sx={{ bgcolor: 'background.paper', p: 6 }} component="footer">
