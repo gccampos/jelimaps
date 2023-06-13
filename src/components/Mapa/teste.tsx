@@ -11,13 +11,20 @@ import { LatLngBounds, LatLng } from "leaflet";
 import { useEffect, useMemo, useState } from "react";
 import React from "react";
 import CustomControlLeaftlet from "@/components/CustomControlLeaftlet/CustomControlLeaftlet";
-import { Dropdown } from "react-bootstrap";
+import { Button, Dropdown } from "react-bootstrap";
 import dynamic from "next/dynamic";
+import Dialog from "@mui/material/Dialog";
+import {
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  IconButton,
+  Typography,
+} from "@mui/material";
 
 const MODO_VISAO = {
   openstreetmap: "OpenStreetMap",
-  rpg: "RPG",
-  //paintball: 'Paintball',
+  mapaProprio: "Mapa Próprio",
 };
 
 function isControlLeafLet(node) {
@@ -41,6 +48,57 @@ export default function Teste() {
         : [0.5, 0.75],
     [modoVisao]
   );
+
+  interface DialogTitleProps {
+    id: string;
+    children?: React.ReactNode;
+  }
+
+  function DialogTitle(props: DialogTitleProps) {
+    const { children, ...other } = props;
+
+    return <DialogTitle {...other}>{children};</DialogTitle>;
+  }
+
+  function ModoVisaoDialog() {
+    const [open, setOpen] = React.useState(true);
+
+    const handleClickOpen = () => {
+      setOpen(true);
+    };
+    const handleOpenStreetMap = () => {
+      setModoVisao(MODO_VISAO.openstreetmap);
+      setOpen(false);
+    };
+    const handleMapaProprio = () => {
+      setModoVisao(MODO_VISAO.mapaProprio);
+      setOpen(false);
+    };
+
+    return (
+      <div>
+        <Dialog aria-labelledby="customized-dialog-title" open={open}>
+          <DialogTitle id="customized-dialog-title">
+            Por favor, selecione o modo de visualização
+          </DialogTitle>
+          <DialogContent dividers>
+            <Typography gutterBottom>
+              OpenStreetMaps: Nesse modo, você utilizará os mapas da base do
+              OpenStreetMaps.
+            </Typography>
+            <Typography gutterBottom>
+              Mapa Próprio: Nesse modo, você terá que subir uma imagem para
+              utilizar como mapa.
+            </Typography>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleOpenStreetMap}>OpenStreetMap</Button>
+            <Button onClick={handleMapaProprio}>Mapa Próprio</Button>
+          </DialogActions>
+        </Dialog>
+      </div>
+    );
+  }
 
   function LocationMarker() {
     const [position, setPosition] = useState(null);
@@ -74,47 +132,28 @@ export default function Teste() {
 
   return (
     isMounted && (
-      <MapContainer center={center} zoom={zoom} ref={setMap} maxZoom={18}>
-        {modoVisao === MODO_VISAO.openstreetmap && (
-          <TileLayer
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          />
-        )}
-        {modoVisao === MODO_VISAO.rpg && (
-          <ImageOverlay bounds={bounds} url="/new-map.jpg" />
-        )}
-        <CustomControlLeaftlet position={"topright"}>
-          <Dropdown>
-            <Dropdown.Toggle variant="success" id="dropdown-basic">
-              Alterne entre modos de visão
-            </Dropdown.Toggle>
-
-            <Dropdown.Menu>
-              <Dropdown.Item
-                href="#"
-                onClick={() => setModoVisao(MODO_VISAO.openstreetmap)}
-              >
-                {MODO_VISAO.openstreetmap}
-              </Dropdown.Item>
-              <Dropdown.Item
-                href="#"
-                onClick={() => setModoVisao(MODO_VISAO.rpg)}
-              >
-                {MODO_VISAO.rpg}
-              </Dropdown.Item>
-            </Dropdown.Menu>
-          </Dropdown>
-        </CustomControlLeaftlet>
-        {modoVisao === MODO_VISAO.openstreetmap && (
-          <Marker position={center}>
-            <Popup>
-              A pretty CSS3 popup. <br /> Easily customizable.
-            </Popup>
-          </Marker>
-        )}
-        <LocationMarker />
-      </MapContainer>
+      <>
+        <MapContainer center={center} zoom={zoom} ref={setMap} maxZoom={18}>
+          {modoVisao === MODO_VISAO.openstreetmap && (
+            <TileLayer
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            />
+          )}
+          {modoVisao === MODO_VISAO.mapaProprio && (
+            <ImageOverlay bounds={bounds} url="/new-map.jpg" />
+          )}
+          {modoVisao === MODO_VISAO.openstreetmap && (
+            <Marker position={center}>
+              <Popup>
+                A pretty CSS3 popup. <br /> Easily customizable.
+              </Popup>
+            </Marker>
+          )}
+          <LocationMarker />
+        </MapContainer>
+        <ModoVisaoDialog/>
+      </>  
     )
   );
 }
