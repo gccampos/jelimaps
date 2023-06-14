@@ -1,5 +1,6 @@
 import { createContext, useContext, useReducer } from "react";
 import React from "react";
+import { mapaReducer } from "./MapaDispatchEvents";
 
 const MapaContext = createContext(null);
 export function useMapaContext() {
@@ -21,36 +22,6 @@ export function MapaProvider({ children }) {
       </MapaDispatchContext.Provider>
     </MapaContext.Provider>
   );
-}
-
-function mapaReducer(tasks, action) {
-  switch (action.type) {
-    case "added": {
-      return [
-        ...tasks,
-        {
-          id: action.id,
-          text: action.text,
-          done: false,
-        },
-      ];
-    }
-    case "changed": {
-      return tasks.map((t) => {
-        if (t.id === action.task.id) {
-          return action.task;
-        } else {
-          return t;
-        }
-      });
-    }
-    case "deleted": {
-      return tasks.filter((t) => t.id !== action.id);
-    }
-    default: {
-      throw Error("Unknown action: " + action.type);
-    }
-  }
 }
 
 const initialMapaContexto = {
