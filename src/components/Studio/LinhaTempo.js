@@ -1,5 +1,5 @@
 import React from "react";
-import { Grid } from "@mui/material";
+import { Grid, Typography } from "@mui/material";
 import {
   useMapaContext,
   useMapaDispatch,
@@ -11,7 +11,8 @@ export default function LinhaTempo() {
 
   return (
     <Grid item xs={12}>
-      Linha do tempo
+      <Typography>Linha do Tempo</Typography>
+      <img width={"100%"} src="/timeline.png" />
     </Grid>
   );
 }

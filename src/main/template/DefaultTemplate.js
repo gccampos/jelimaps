@@ -50,21 +50,23 @@ const DefaultTemplate = ({ children: Element }) => {
 
       {Element}
       {/* Footer */}
-      <Box sx={{ bgcolor: "lightgray", p: 2 }} component="footer">
-        <Typography variant="h6" align="center" gutterBottom>
-          JeliMaps
-        </Typography>
-        <Typography
-          variant="subtitle1"
-          align="center"
-          color="text.secondary"
-          component="p"
-        >
-          Uma
-        </Typography>
-        <Copyright />
-      </Box>
-      {/* End footer */}
+      <div className="footer">
+        <Box sx={{ bgcolor: "lightgray", p: 2 }} component="footer">
+          <Typography variant="h6" align="center" gutterBottom>
+            JeliMaps
+          </Typography>
+          <Typography
+            variant="subtitle1"
+            align="center"
+            color="text.secondary"
+            component="p"
+          >
+            Uma
+          </Typography>
+          <Copyright />
+        </Box>
+        {/* End footer */}
+      </div>
     </ThemeProvider>
   );
 };
