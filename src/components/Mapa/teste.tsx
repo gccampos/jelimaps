@@ -6,6 +6,8 @@ import {
   useMapEvents,
   ImageOverlay,
   useMap,
+  Polyline,
+  Polygon,
 } from "react-leaflet";
 import { LatLngBounds, LatLng } from "leaflet";
 import { useEffect, useMemo, useState } from "react";
@@ -17,6 +19,7 @@ import {
   useMapaDispatch,
 } from "@/components/Mapa/context/MapaContext";
 import { Grid } from "@mui/material";
+import { elementos } from "@/main/constants/elementos";
 
 export const MODO_VISAO = {
   openstreetmap: "OpenStreetMap",
@@ -24,12 +27,15 @@ export const MODO_VISAO = {
 };
 
 function isControlLeafLet(node) {
-  return node.className.includes("leaflet-control")
+  console.log(node);
+  return node.tagName !== "path"
     ? node.className.includes("leaflet-control")
-    : node.className.includes("leaflet-container")
-    ? !node.className.includes("leaflet-container")
-    : node.parentElement
-    ? isControlLeafLet(node.parentElement)
+      ? node.className.includes("leaflet-control")
+      : node.className.includes("leaflet-container")
+      ? !node.className.includes("leaflet-container")
+      : node.parentElement
+      ? isControlLeafLet(node.parentElement)
+      : false
     : false;
 }
 
@@ -48,14 +54,16 @@ export default function Teste() {
 
   function LocationMarker() {
     useMapEvents(
-      mapaContext?.elemento?.nome === "pin"
+      mapaContext?.elemento &&
+        mapaContext?.elemento.nome &&
+        mapaContext?.elemento.nome !== elementos.Hand.nome
         ? {
             click(e) {
               console.log(e.latlng);
               if (!isControlLeafLet(e.originalEvent.target))
                 dispatch({
-                  type: "elementos",
-                  arg: mapaContext.elemento.nome,
+                  type: "addMarker",
+                  elemento: mapaContext.elemento.nome,
                   posicao: e.latlng,
                 });
             },
@@ -83,6 +91,19 @@ export default function Teste() {
     if (map != null) map.setView(center, zoom);
   }, [mapaContext.modoVisao, map, center, zoom]);
 
+  // useEffect(() => {
+  //   console.log("lista de markers", mapaContext.conteudo?.marker);
+  //   console.log(mapaContext.conteudo?.marker?.length);
+  //   if (
+  //     mapaContext.conteudo &&
+  //     mapaContext.conteudo.marker &&
+  //     mapaContext.conteudo.marker.length > 0
+  //   )
+  //     mapaContext.conteudo.marker.map((x, i) => {
+  //       console.log("AAAA", x);
+  //     });
+  // }, [mapaContext.conteudo?.marker]);
+
   const bounds = new LatLngBounds([0, 0], [1, 1.5]);
 
   return (
@@ -99,13 +120,73 @@ export default function Teste() {
             {mapaContext.modoVisao === MODO_VISAO.mapaProprio && (
               <ImageOverlay bounds={bounds} url="/new-map.jpg" />
             )}
-            {mapaContext.modoVisao === MODO_VISAO.openstreetmap && (
-              <Marker position={center}>
-                <Popup>
-                  A pretty CSS3 popup. <br /> Easily customizable.
-                </Popup>
-              </Marker>
-            )}
+            {mapaContext.conteudo &&
+              mapaContext.conteudo.Marker &&
+              mapaContext.conteudo.Marker.length > 0 &&
+              mapaContext.conteudo.Marker.map((x, i) => {
+                return x?.position ? (
+                  <Marker
+                    {...x}
+                    key={`marker#${i}`}
+                    eventHandlers={{
+                      click: () =>
+                        mapaContext.elemento?.nome !== elementos.Marker.nome &&
+                        x.dataRef === mapaContext.elemento?.nome
+                          ? dispatch({
+                              type: `add${x.dataRef}`,
+                              elemento: mapaContext.elemento.nome,
+                            })
+                          : null,
+                    }}
+                  >
+                    {/* <Popup>
+                      A pretty CSS3 popup. <br /> Easily customizable.
+                    </Popup> */}
+                  </Marker>
+                ) : null;
+              })}
+            {mapaContext.conteudo &&
+              mapaContext.conteudo.Polyline &&
+              mapaContext.conteudo.Polyline.length > 0 &&
+              mapaContext.conteudo.Polyline.map((x, i) => {
+                return x?.positions ? (
+                  <Polyline
+                    {...x}
+                    key={`polyline#${i}`}
+                    // eventHandlers={{
+                    //   click: () =>
+                    //     mapaContext.elemento?.nome !== elementos.Marker.nome &&
+                    //     x.dataRef === mapaContext.elemento?.nome
+                    //       ? dispatch({
+                    //           type: `add${x.dataRef}`,
+                    //           elemento: mapaContext.elemento.nome,
+                    //         })
+                    //       : null,
+                    // }}
+                  ></Polyline>
+                ) : null;
+              })}
+            {mapaContext.conteudo &&
+              mapaContext.conteudo.Polygon &&
+              mapaContext.conteudo.Polygon.length > 0 &&
+              mapaContext.conteudo.Polygon.map((x, i) => {
+                return x?.positions ? (
+                  <Polygon
+                    {...x}
+                    key={`polygon#${i}`}
+                    // eventHandlers={{
+                    //   click: () =>
+                    //     mapaContext.elemento?.nome !== elementos.Marker.nome &&
+                    //     x.dataRef === mapaContext.elemento?.nome
+                    //       ? dispatch({
+                    //           type: `add${x.dataRef}`,
+                    //           elemento: mapaContext.elemento.nome,
+                    //         })
+                    //       : null,
+                    // }}
+                  ></Polygon>
+                ) : null;
+              })}
             <LocationMarker />
           </MapContainer>
         </div>
