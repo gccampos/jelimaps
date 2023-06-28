@@ -1,13 +1,19 @@
 import { createContext, useContext, useReducer } from "react";
 import React from "react";
 import { mapaReducer } from "./MapaDispatchEvents";
+import MapaFunctionHelpers from "./MapaFunctionsHelpers";
 
-const MapaContext = createContext(null);
+const initialMapaContexto = {
+  elemento: null,
+  conteudo: null,
+  modoVisao: "",
+};
+const MapaContext = createContext(initialMapaContexto);
 export function useMapaContext() {
   return useContext(MapaContext);
 }
 
-const MapaDispatchContext = createContext(null);
+const MapaDispatchContext = createContext(({ ...initialMapaContexto }) => {});
 export function useMapaDispatch() {
   return useContext(MapaDispatchContext);
 }
@@ -23,7 +29,3 @@ export function MapaProvider({ children }) {
     </MapaContext.Provider>
   );
 }
-
-const initialMapaContexto = {
-  center: 0,
-};

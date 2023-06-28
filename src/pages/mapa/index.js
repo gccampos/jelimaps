@@ -21,7 +21,7 @@ const ModoVisaoDialog = dynamic(
   () => import("@/components/Mapa/ModoVisaoDialog/ModoVisaoDialog"),
   { ssr: false }
 );
-const Elementos = dynamic(() => import("@/components/Studio/Elementos"), {
+const Studio = dynamic(() => import("@/components/Studio"), {
   ssr: false,
 });
 const Propriedades = dynamic(() => import("@/components/Studio/Propriedades"), {
@@ -43,12 +43,7 @@ export default function Mapa() {
       <main style={{ height: "100%" }}>
         <MapaProvider>
           <ModoVisaoDialog />
-          <Grid container spacing={2} sx={{}}>
-            <Elementos />
-            <Map />
-            <Propriedades />
-            <LinhaTempo />
-          </Grid>
+          <Studio />
         </MapaProvider>
       </main>
     </DefaultTemplate>
