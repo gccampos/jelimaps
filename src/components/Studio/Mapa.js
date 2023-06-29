@@ -24,7 +24,7 @@ import {
 import { Grid } from "@mui/material";
 import { elementos } from "@/main/constants/elementos";
 import Elementos from "./Elementos";
-import { AddMarker } from "@/components/Mapa/AddMarker";
+import AddMarker from "@/components/Mapa/AddMarker";
 
 export const MODO_VISAO = {
   openstreetmap: "OpenStreetMap",
@@ -57,19 +57,6 @@ export default function Mapa() {
     console.log(center);
     if (map != null) map.setView(center, zoom);
   }, [mapaContext.modoVisao, map, center, zoom]);
-
-  // useEffect(() => {
-  //   console.log("lista de markers", mapaContext.conteudo?.marker);
-  //   console.log(mapaContext.conteudo?.marker?.length);
-  //   if (
-  //     mapaContext.conteudo &&
-  //     mapaContext.conteudo.marker &&
-  //     mapaContext.conteudo.marker.length > 0
-  //   )
-  //     mapaContext.conteudo.marker.map((x, i) => {
-  //       console.log("AAAA", x);
-  //     });
-  // }, [mapaContext.conteudo?.marker]);
 
   const bounds = new LatLngBounds([0, 0], [1, 1.5]);
 
@@ -107,6 +94,7 @@ export default function Mapa() {
                           ? dispatch({
                               type: `add${x.dataRef}`,
                               elemento: mapaContext.elementoAdd.nome,
+                              posicao: x.position,
                             })
                           : cliqueElementoNoMapa(x),
                     }}

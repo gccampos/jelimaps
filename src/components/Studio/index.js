@@ -7,7 +7,7 @@ import Mapa from "./Mapa";
 
 const Studio = () => {
   return (
-    <Grid container spacing={2} sx={{}}>
+    <Grid container spacing={2} sx={{}} id="studioMapa">
       <Mapa />
       <Propriedades />
       <LinhaTempo />

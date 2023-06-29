@@ -35,11 +35,7 @@ function AddMarker() {
       : {}
   );
 
-  return mapaContext?.elementoAdd?.posicao != null ? (
-    <Marker position={mapaContext.elementoAdd.posicao}>
-      <Popup>You are here</Popup>
-    </Marker>
-  ) : null;
+  return null;
 }
 
 export default AddMarker;

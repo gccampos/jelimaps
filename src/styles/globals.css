@@ -26,18 +26,22 @@ body {
     rgb(var(--background-start-rgb));
 }
 
-.footer{
+.footer {
   .layout {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
   }
-  
+
   .layout main {
     flex-grow: 1;
   }
 }
 
-.leaflet-speeddial{
+.leaflet-speeddial {
   border: none !important;
+}
+
+#studioMapa .MuiSpeedDialAction-staticTooltipLabel {
+  width: max-content;
 }

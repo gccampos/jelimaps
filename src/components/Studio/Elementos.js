@@ -1,19 +1,10 @@
 import React, { useEffect } from "react";
-import {
-  Grid,
-  IconButton,
-  SpeedDial,
-  SpeedDialAction,
-  SpeedDialIcon,
-} from "@mui/material";
+import { SpeedDial, SpeedDialAction, SpeedDialIcon } from "@mui/material";
 import {
   useMapaContext,
   useMapaDispatch,
 } from "@/components/Mapa/context/MapaContext";
 import { elementos } from "@/main/constants/elementos";
-import { PinDrop, Polyline } from "@mui/icons-material";
-import CustomControlLeaflet from "@/components/CustomControlLeaflet/CustomControlLeaflet";
-import IceSkatingIcon from "@mui/icons-material/IceSkating";
 
 export default function Elementos() {
   const mapaContext = useMapaContext();
@@ -39,7 +30,9 @@ export default function Elementos() {
           <SpeedDialAction
             key={i}
             icon={x.icon}
-            aria-label={x.label}
+            tooltipTitle={x.label}
+            tooltipOpen
+            sx={{ width: "max-content" }}
             onClick={() => handleClick(x)}
           />
         ))}
