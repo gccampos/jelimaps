@@ -35,17 +35,6 @@ const addElementoCirculo = (oldMapaContext, position, dataRef) => {
   };
 };
 
-const retornarCirculosPuros = (oldMapaContext) => {
-  return oldMapaContext.conteudo?.Circle &&
-    oldMapaContext.conteudo?.Circle.length
-    ? [
-        ...oldMapaContext.conteudo.Circle.filter(
-          (x) => x.dataRef === elementos.Circle.nome
-        ),
-      ]
-    : [];
-};
-
 const retornarMarkersPuros = (oldMapaContext) => {
   return oldMapaContext.conteudo?.Marker &&
     oldMapaContext.conteudo?.Marker.length
@@ -99,7 +88,6 @@ const addElementoFromMarkers = (oldMapaContext, nomeElemento) => {
         elementos.Polygon.nome,
         newElemento
       ),
-      Circle: retornarCirculosPuros(oldMapaContext),
     },
   };
 };

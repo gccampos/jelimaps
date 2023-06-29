@@ -4,7 +4,7 @@ import { mapaReducer } from "./MapaDispatchEvents";
 import MapaFunctionHelpers from "./MapaFunctionsHelpers";
 
 const initialMapaContexto = {
-  elemento: null,
+  elementoAdd: null,
   conteudo: null,
   modoVisao: "",
 };
