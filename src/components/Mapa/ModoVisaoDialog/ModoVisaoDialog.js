@@ -13,7 +13,7 @@ import { MODO_VISAO } from "@/components/Studio/Mapa";
 
 export default function ModoVisaoDialog() {
   const [open, setOpen] = React.useState(true);
-  const dispatch = useMapaDispatch();
+  const dispatch = useMapaDispatch() ;
 
   const handleClickOpen = () => {
     setOpen(true);
