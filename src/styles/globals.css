@@ -37,3 +37,7 @@ body {
     flex-grow: 1;
   }
 }
+
+.leaflet-speeddial{
+  border: none !important;
+}

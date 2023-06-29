@@ -12,7 +12,9 @@ import {
 import { LatLngBounds, LatLng } from "leaflet";
 import { useEffect, useMemo, useState } from "react";
 import React from "react";
-import CustomControlLeaftlet from "@/components/CustomControlLeaftlet/CustomControlLeaftlet";
+import CustomControlLeaftlet, {
+  POSITION_CLASSES_CUSTOM_CONTROL,
+} from "@/components/CustomControlLeaftlet/CustomControlLeaftlet";
 import dynamic from "next/dynamic";
 import {
   useMapaContext,
@@ -20,6 +22,7 @@ import {
 } from "@/components/Mapa/context/MapaContext";
 import { Grid } from "@mui/material";
 import { elementos } from "@/main/constants/elementos";
+import Elementos from "./Elementos";
 
 const MODO_VISAO = {
   openstreetmap: "OpenStreetMap",
@@ -187,6 +190,9 @@ export default function Mapa() {
                   ></Polygon>
                 ) : null;
               })}
+            <CustomControlLeaftlet position={POSITION_CLASSES_CUSTOM_CONTROL.bottomright}>
+              <Elementos />
+            </CustomControlLeaftlet>
             <LocationMarker />
           </MapContainer>
         </div>

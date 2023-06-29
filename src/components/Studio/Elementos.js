@@ -1,11 +1,12 @@
 import React, { useEffect } from "react";
-import { Grid, IconButton } from "@mui/material";
+import { Grid, IconButton, SpeedDial, SpeedDialAction, SpeedDialIcon } from "@mui/material";
 import {
   useMapaContext,
   useMapaDispatch,
 } from "@/components/Mapa/context/MapaContext";
 import { elementos } from "@/main/constants/elementos";
 import { PinDrop, Polyline } from "@mui/icons-material";
+import CustomControlLeaftlet from "@/components/CustomControlLeaftlet/CustomControlLeaftlet";
 
 export default function Elementos() {
   const mapaContext = useMapaContext();
@@ -36,17 +37,12 @@ export default function Elementos() {
   }, []);
 
   return (
-    <Grid item xs={0.5}>
-      <Grid container>
-        {elementos &&
-          Object.keys(elementos)
-            .map((x) => elementos[x])
-            .map((x) => (
-              <Grid key={x.nome} item xs={12} textAlign="center">
-                <Icont key={x.nome} elemento={x} />
-              </Grid>
-            ))}
-      </Grid>
-    </Grid>
+    <SpeedDial ariaLabel="" icon={<SpeedDialIcon/>}>
+      {Object.keys(elementos)
+        .map((x) => elementos[x])
+        .map((x) => (
+          <SpeedDialAction icon={Icont({elemento: x})} ></SpeedDialAction>
+        ))}
+    </SpeedDial>
   );
 }

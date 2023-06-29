@@ -8,7 +8,6 @@ import Mapa from "./Mapa";
 const Studio = () => {
   return (
     <Grid container spacing={2} sx={{}}>
-      <Elementos />
       <Mapa />
       <Propriedades />
       <LinhaTempo />

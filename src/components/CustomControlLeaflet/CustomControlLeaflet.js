@@ -1,5 +1,13 @@
 import React from "react"
 
+export const POSITION_CLASSES_CUSTOM_CONTROL = {
+  bottomleft: "bottomleft",
+  bottomright: "bottomright",
+  topleft: "topleft",
+  topright: "topright",
+};
+ 
+
 const POSITION_CLASSES = {
   bottomleft: 'leaflet-bottom leaflet-left',
   bottomright: 'leaflet-bottom leaflet-right',
@@ -9,10 +17,10 @@ const POSITION_CLASSES = {
 
 export default function CustomControlLeaftlet({ position, children }) {
   const positionClass =
-    (position && POSITION_CLASSES[position]) || POSITION_CLASSES.topright
+    (position && POSITION_CLASSES[position]) || POSITION_CLASSES.topright 
   return (
     <div className={positionClass}>
-      <div className="leaflet-control leaflet-bar">{children}</div>
+      <div className="leaflet-control leaflet-bar leaflet-speeddial">{children}</div>
     </div>
   )
 }
