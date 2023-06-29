@@ -20,12 +20,7 @@ const ModoVisaoDialog = dynamic(
 const Studio = dynamic(() => import("@/components/Studio"), {
   ssr: false,
 });
-const Propriedades = dynamic(() => import("@/components/Studio/Propriedades"), {
-  ssr: false,
-});
-const LinhaTempo = dynamic(() => import("@/components/Studio/LinhaTempo"), {
-  ssr: false,
-});
+
 export default function Mapa() {
   const mapaContext = useMapaContext();
   const dispatch = useMapaDispatch();

@@ -1,9 +1,9 @@
 import { elementos } from "@/main/constants/elementos";
 
-const changeElementos = (oldMapaContext, nome, posicao) => {
+const changeElementos = (oldMapaContext, elemento, posicao) => {
   return {
     ...oldMapaContext,
-    elemento: { ...oldMapaContext.elemento, nome: nome, posicao: posicao },
+    elementoAdd: { ...oldMapaContext.elemento, ...elemento, posicao: posicao },
   };
 };
 

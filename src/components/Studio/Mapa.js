@@ -23,24 +23,12 @@ import {
 import { Grid } from "@mui/material";
 import { elementos } from "@/main/constants/elementos";
 import Elementos from "./Elementos";
+import { AddMarker } from "@/components/Mapa/AddMarker";
 
 export const MODO_VISAO = {
   openstreetmap: "OpenStreetMap",
   mapaProprio: "Mapa Próprio",
 };
-
-function isControlLeafLet(node) {
-  console.log(node);
-  return node.tagName !== "path"
-    ? node.className.includes("leaflet-control")
-      ? node.className.includes("leaflet-control")
-      : node.className.includes("leaflet-container")
-      ? !node.className.includes("leaflet-container")
-      : node.parentElement
-      ? isControlLeafLet(node.parentElement)
-      : false
-    : false;
-}
 
 export default function Mapa() {
   const [isMounted, setIsMounted] = React.useState(false);
@@ -55,31 +43,6 @@ export default function Mapa() {
     [mapaContext.modoVisao]
   );
 
-  function LocationMarker() {
-    useMapEvents(
-      mapaContext?.elemento &&
-        mapaContext?.elemento.nome &&
-        mapaContext?.elemento.nome !== elementos.Hand.nome
-        ? {
-            click(e) {
-              console.log(e.latlng);
-              if (!isControlLeafLet(e.originalEvent.target))
-                dispatch({
-                  type: "addMarker",
-                  elemento: mapaContext.elemento.nome,
-                  posicao: e.latlng,
-                });
-            },
-          }
-        : {}
-    );
-
-    return mapaContext?.elemento?.posicao != null ? (
-      <Marker position={mapaContext.elemento.posicao}>
-        <Popup>You are here</Popup>
-      </Marker>
-    ) : null;
-  }
   useEffect(() => {
     setIsMounted(true);
   }, []);
@@ -109,6 +72,10 @@ export default function Mapa() {
 
   const bounds = new LatLngBounds([0, 0], [1, 1.5]);
 
+  const cliqueElementoNoMapa = (elemento, ...nsei) => {
+    console.log("evento cliqueElementoNoMapa", elemento);
+  };
+
   return (
     isMounted && (
       <Grid item xs>
@@ -133,13 +100,14 @@ export default function Mapa() {
                     key={`marker#${i}`}
                     eventHandlers={{
                       click: () =>
-                        mapaContext.elemento?.nome !== elementos.Marker.nome &&
-                        x.dataRef === mapaContext.elemento?.nome
+                        mapaContext.elementoAdd?.nome !==
+                          elementos.Marker.nome &&
+                        x.dataRef === mapaContext.elementoAdd?.nome
                           ? dispatch({
                               type: `add${x.dataRef}`,
-                              elemento: mapaContext.elemento.nome,
+                              elemento: mapaContext.elementoAdd.nome,
                             })
-                          : null,
+                          : cliqueElementoNoMapa(x),
                     }}
                   >
                     {/* <Popup>
@@ -156,16 +124,9 @@ export default function Mapa() {
                   <Polyline
                     {...x}
                     key={`polyline#${i}`}
-                    // eventHandlers={{
-                    //   click: () =>
-                    //     mapaContext.elemento?.nome !== elementos.Marker.nome &&
-                    //     x.dataRef === mapaContext.elemento?.nome
-                    //       ? dispatch({
-                    //           type: `add${x.dataRef}`,
-                    //           elemento: mapaContext.elemento.nome,
-                    //         })
-                    //       : null,
-                    // }}
+                    eventHandlers={{
+                      click: () => cliqueElementoNoMapa(x),
+                    }}
                   ></Polyline>
                 ) : null;
               })}
@@ -177,23 +138,18 @@ export default function Mapa() {
                   <Polygon
                     {...x}
                     key={`polygon#${i}`}
-                    // eventHandlers={{
-                    //   click: () =>
-                    //     mapaContext.elemento?.nome !== elementos.Marker.nome &&
-                    //     x.dataRef === mapaContext.elemento?.nome
-                    //       ? dispatch({
-                    //           type: `add${x.dataRef}`,
-                    //           elemento: mapaContext.elemento.nome,
-                    //         })
-                    //       : null,
-                    // }}
+                    eventHandlers={{
+                      click: () => cliqueElementoNoMapa(x),
+                    }}
                   ></Polygon>
                 ) : null;
               })}
-            <CustomControlLeaflet position={POSITION_CLASSES_CUSTOM_CONTROL.bottomright}>
+            <CustomControlLeaflet
+              position={POSITION_CLASSES_CUSTOM_CONTROL.bottomright}
+            >
               <Elementos />
             </CustomControlLeaflet>
-            <LocationMarker />
+            <AddMarker />
           </MapContainer>
         </div>
       </Grid>

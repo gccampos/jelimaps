@@ -1,5 +1,11 @@
 import React, { useEffect } from "react";
-import { Grid, IconButton, SpeedDial, SpeedDialAction, SpeedDialIcon } from "@mui/material";
+import {
+  Grid,
+  IconButton,
+  SpeedDial,
+  SpeedDialAction,
+  SpeedDialIcon,
+} from "@mui/material";
 import {
   useMapaContext,
   useMapaDispatch,
@@ -7,41 +13,35 @@ import {
 import { elementos } from "@/main/constants/elementos";
 import { PinDrop, Polyline } from "@mui/icons-material";
 import CustomControlLeaflet from "@/components/CustomControlLeaflet/CustomControlLeaflet";
+import IceSkatingIcon from "@mui/icons-material/IceSkating";
 
 export default function Elementos() {
   const mapaContext = useMapaContext();
   const dispatch = useMapaDispatch();
 
-  const Icont = ({ elemento }) => {
-    return (
-      <IconButton
-        aria-label={elemento.label}
-        color={colorIcon(elemento.nome)}
-        onClick={() => handleClick(elemento)}
-      >
-        {elemento.icon}
-      </IconButton>
-    );
-  };
-
-  const colorIcon = (nome) =>
-    mapaContext?.elemento?.nome == nome ? "default" : "primary";
-
   const handleClick = (elemento) =>
-    mapaContext?.elemento?.nome == elemento.nome
-      ? dispatch({ type: "desativarElementos" })
-      : dispatch({ type: "elementos", arg: elemento.nome });
+    mapaContext?.elementoAdd?.nome == elemento.nome
+      ? dispatch({ type: "elementos", arg: elementos.Hand })
+      : dispatch({ type: "elementos", arg: elemento });
 
   useEffect(() => {
     console.log(Object.keys(elementos).map((x) => elementos[x]));
   }, []);
 
   return (
-    <SpeedDial ariaLabel="" icon={<SpeedDialIcon/>}>
+    <SpeedDial
+      ariaLabel=""
+      icon={<SpeedDialIcon icon={mapaContext?.elementoAdd?.icon} />}
+    >
       {Object.keys(elementos)
         .map((x) => elementos[x])
-        .map((x) => (
-          <SpeedDialAction icon={Icont({elemento: x})} ></SpeedDialAction>
+        .map((x, i) => (
+          <SpeedDialAction
+            key={i}
+            icon={x.icon}
+            aria-label={x.label}
+            onClick={() => handleClick(x)}
+          />
         ))}
     </SpeedDial>
   );
