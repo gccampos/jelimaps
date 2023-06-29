@@ -35,6 +35,20 @@ export function mapaReducer(oldMapaContext, action) {
         action.elemento
       );
     }
+    case "addCircle": {
+      console.log("chegou add circle")
+      return MapaFunctionHelpers.addElementoCirculo(
+        oldMapaContext,
+        action.posicao,
+        action.elemento
+      );
+    }
+    case "addRectangle": {
+      return MapaFunctionHelpers.addElementoFromMarkers(
+        oldMapaContext,
+        action.elemento
+      );
+    }
     default: {
       throw Error("Unknown action: " + action.type);
     }
