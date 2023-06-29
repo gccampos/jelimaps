@@ -8,6 +8,7 @@ import {
   useMap,
   Polyline,
   Polygon,
+  Circle,
 } from "react-leaflet";
 import { LatLngBounds, LatLng } from "leaflet";
 import { useEffect, useMemo, useState } from "react";
@@ -142,6 +143,33 @@ export default function Mapa() {
                       click: () => cliqueElementoNoMapa(x),
                     }}
                   ></Polygon>
+                ) : null;
+              })}
+            {mapaContext.conteudo &&
+              mapaContext.conteudo.Circle &&
+              mapaContext.conteudo.Circle.length > 0 &&
+              mapaContext.conteudo.Circle.map((x, i) => {
+                return x?.position ? (
+                  <Circle
+                    {...x}
+                    center={x.position}
+                    key={`circle#${i}`}
+                    radius={100}
+                    eventHandlers={{
+                      click: () =>
+                        mapaContext.elemento?.nome !== elementos.Circle.nome &&
+                        x.dataRef === mapaContext.elemento?.nome
+                          ? dispatch({
+                              type: `add${x.dataRef}`,
+                              elemento: mapaContext.elemento.nome,
+                            })
+                          : null,
+                    }}
+                  >
+                    {/* <Popup>
+                      A pretty CSS3 popup. <br /> Easily customizable.
+                    </Popup> */}
+                  </Circle>
                 ) : null;
               })}
             <CustomControlLeaflet

@@ -20,6 +20,32 @@ const addElementoMarker = (oldMapaContext, position, dataRef) => {
   };
 };
 
+const addElementoCirculo = (oldMapaContext, position, dataRef) => {
+  const newCircle = { position };
+  console.log("add elemento circ", position);
+  return {
+    ...oldMapaContext,
+    conteudo: {
+      ...oldMapaContext.conteudo,
+      Marker: retornarMarkersPuros(oldMapaContext),
+      Circle: oldMapaContext.conteudo?.Circle
+        ? [...oldMapaContext.conteudo.Circle, newCircle]
+        : [newCircle],
+    },
+  };
+};
+
+const retornarCirculosPuros = (oldMapaContext) => {
+  return oldMapaContext.conteudo?.Circle &&
+    oldMapaContext.conteudo?.Circle.length
+    ? [
+        ...oldMapaContext.conteudo.Circle.filter(
+          (x) => x.dataRef === elementos.Circle.nome
+        ),
+      ]
+    : [];
+};
+
 const retornarMarkersPuros = (oldMapaContext) => {
   return oldMapaContext.conteudo?.Marker &&
     oldMapaContext.conteudo?.Marker.length
@@ -73,6 +99,7 @@ const addElementoFromMarkers = (oldMapaContext, nomeElemento) => {
         elementos.Polygon.nome,
         newElemento
       ),
+      Circle: retornarCirculosPuros(oldMapaContext),
     },
   };
 };
@@ -81,5 +108,6 @@ const MapaFunctionHelpers = {
   changeElementos,
   addElementoMarker,
   addElementoFromMarkers,
+  addElementoCirculo,
 };
 export default MapaFunctionHelpers;
