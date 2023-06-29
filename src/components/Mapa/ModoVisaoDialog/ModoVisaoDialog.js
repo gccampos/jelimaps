@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import { Button } from "react-bootstrap";
 import { useMapaDispatch } from "@/components/Mapa/context/MapaContext";
-import { MODO_VISAO } from "../teste";
+import { MODO_VISAO } from "@/components/Studio/Mapa";
 
 export default function ModoVisaoDialog() {
   const [open, setOpen] = React.useState(true);

@@ -15,7 +15,7 @@ const POSITION_CLASSES = {
   topright: 'leaflet-top leaflet-right',
 }
 
-export default function CustomControlLeaftlet({ position, children }) {
+export default function CustomControlLeaflet({ position, children }) {
   const positionClass =
     (position && POSITION_CLASSES[position]) || POSITION_CLASSES.topright 
   return (

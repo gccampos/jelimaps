@@ -13,10 +13,6 @@ import {
 // import ModoVisaoDialog from "@/components/Mapa/ModoVisaoDialog/ModoVisaoDialog";
 import { PinDrop } from "@mui/icons-material";
 
-const Map = dynamic(() => import("../../components/Mapa/teste"), {
-  loading: () => <p>A map is loading</p>,
-  ssr: false,
-});
 const ModoVisaoDialog = dynamic(
   () => import("@/components/Mapa/ModoVisaoDialog/ModoVisaoDialog"),
   { ssr: false }

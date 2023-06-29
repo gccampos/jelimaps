@@ -6,7 +6,7 @@ import {
 } from "@/components/Mapa/context/MapaContext";
 import { elementos } from "@/main/constants/elementos";
 import { PinDrop, Polyline } from "@mui/icons-material";
-import CustomControlLeaftlet from "@/components/CustomControlLeaftlet/CustomControlLeaftlet";
+import CustomControlLeaflet from "@/components/CustomControlLeaflet/CustomControlLeaflet";
 
 export default function Elementos() {
   const mapaContext = useMapaContext();
