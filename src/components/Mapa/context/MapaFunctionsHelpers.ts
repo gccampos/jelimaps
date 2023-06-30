@@ -30,7 +30,7 @@ const addElementoMarker = (oldMapaContext, position, dataRef) => {
 };
 
 const addElementoCirculo = (oldMapaContext, position, dataRef) => {
-  const newCircle = { center: position, radius: 100 };
+  const newCircle = { center: position, radius: 100, dataRef };
   return {
     ...oldMapaContext,
     conteudo: {
@@ -69,6 +69,7 @@ const retornarElementoPositionsFromMarkersDataRef = (
     positions: oldMapaContext.conteudo.Marker.filter(
       (x) => x.dataRef === nomeElemento
     ).map((x) => x.position),
+    dataRef: nomeElemento,
   };
 };
 
@@ -78,6 +79,7 @@ const retornarBoundsPositionsFromTwoMarkersDataRef = (oldMapaContext) => {
   );
   return {
     bounds: markers.splice(0, 2).map((x) => x.position),
+    dataRef: elementos.Rectangle.nome,
   };
 };
 
@@ -136,11 +138,19 @@ const addElementoFromMarkers = (oldMapaContext, nomeElemento) => {
   };
 };
 
+const removeElemento = (oldMapaContext, tipoElemento, indiceElemento) => {
+  oldMapaContext.conteudo[tipoElemento].splice(indiceElemento, 1);
+  return {
+    ...oldMapaContext,
+  };
+};
+
 const MapaFunctionHelpers = {
   changeElementos,
   addElementoMarker,
   addElementoFromMarkers,
   addElementoCirculo,
   addElementoQuadrilatero,
+  removeElemento,
 };
 export default MapaFunctionHelpers;

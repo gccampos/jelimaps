@@ -54,6 +54,13 @@ export function mapaReducer(oldMapaContext, action) {
         slidePropriedade: !oldMapaContext.slidePropriedade,
       };
     }
+    case "removeElement": {
+      return MapaFunctionHelpers.removeElemento(
+        oldMapaContext,
+        action.elemento,
+        action.indiceElemento
+      );
+    }
     default: {
       throw Error("Unknown action: " + action.type);
     }
