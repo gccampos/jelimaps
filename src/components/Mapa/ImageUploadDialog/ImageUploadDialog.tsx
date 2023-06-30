@@ -34,7 +34,7 @@ class ImageUploadDialog extends Component {
     return (
       <div>
         <DropzoneDialog
-          open={this.state.open}
+          open={true}
           onSave={this.handleSave.bind(this)}
           acceptedFiles={["image/jpeg", "image/png", "image/bmp"]}
           showPreviews={true}
