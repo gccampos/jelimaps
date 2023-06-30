@@ -3,7 +3,9 @@ import { useMapaContext, useMapaDispatch } from "./context/MapaContext";
 import { Marker, Popup, useMapEvents } from "react-leaflet";
 
 function isControlLeafLet(node) {
-  return node.tagName === "path" || node.tagName === "svg"
+  return node.tagName === "path" ||
+    node.tagName === "svg" ||
+    typeof node.className === "object"
     ? isControlLeafLet(node.parentElement)
     : node.className.includes("leaflet-control")
     ? node.className.includes("leaflet-control")

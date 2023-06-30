@@ -36,7 +36,6 @@ export function mapaReducer(oldMapaContext, action) {
       );
     }
     case "addCircle": {
-      console.log("chegou add circle")
       return MapaFunctionHelpers.addElementoCirculo(
         oldMapaContext,
         action.posicao,
@@ -44,7 +43,7 @@ export function mapaReducer(oldMapaContext, action) {
       );
     }
     case "addRectangle": {
-      return MapaFunctionHelpers.addElementoFromMarkers(
+      return MapaFunctionHelpers.addElementoQuadrilatero(
         oldMapaContext,
         action.elemento
       );

@@ -9,6 +9,7 @@ import {
   Polyline,
   Polygon,
   Circle,
+  Rectangle,
 } from "react-leaflet";
 import { LatLngBounds, LatLng } from "leaflet";
 import { useEffect, useMemo, useState } from "react";
@@ -54,7 +55,6 @@ export default function Mapa() {
   );
   const zoom = mapaContext.modoVisao === MODO_VISAO.openstreetmap ? 15 : 9;
   useEffect(() => {
-    console.log(center);
     if (map != null) map.setView(center, zoom);
   }, [mapaContext.modoVisao, map, center, zoom]);
 
@@ -63,6 +63,10 @@ export default function Mapa() {
   const cliqueElementoNoMapa = (elemento, ...nsei) => {
     console.log("evento cliqueElementoNoMapa", elemento);
   };
+
+  useEffect(() => {
+    console.log("conteudo do mapa", mapaContext.conteudo);
+  }, [mapaContext.conteudo]);
 
   return (
     isMounted && (
@@ -137,27 +141,36 @@ export default function Mapa() {
               mapaContext.conteudo.Circle &&
               mapaContext.conteudo.Circle.length > 0 &&
               mapaContext.conteudo.Circle.map((x, i) => {
-                return x?.position ? (
+                return x?.center ? (
                   <Circle
                     {...x}
-                    center={x.position}
                     key={`circle#${i}`}
-                    radius={100}
                     eventHandlers={{
-                      click: () =>
-                        mapaContext.elemento?.nome !== elementos.Circle.nome &&
-                        x.dataRef === mapaContext.elemento?.nome
-                          ? dispatch({
-                              type: `add${x.dataRef}`,
-                              elemento: mapaContext.elemento.nome,
-                            })
-                          : null,
+                      click: () => cliqueElementoNoMapa(x),
                     }}
                   >
                     {/* <Popup>
                       A pretty CSS3 popup. <br /> Easily customizable.
                     </Popup> */}
                   </Circle>
+                ) : null;
+              })}
+            {mapaContext.conteudo &&
+              mapaContext.conteudo.Rectangle &&
+              mapaContext.conteudo.Rectangle.length > 0 &&
+              mapaContext.conteudo.Rectangle.map((x, i) => {
+                return x?.bounds ? (
+                  <Rectangle
+                    {...x}
+                    key={`Rectangle#${i}`}
+                    eventHandlers={{
+                      click: () => cliqueElementoNoMapa(x),
+                    }}
+                  >
+                    {/* <Popup>
+                        A pretty CSS3 popup. <br /> Easily customizable.
+                      </Popup> */}
+                  </Rectangle>
                 ) : null;
               })}
             <CustomControlLeaflet

@@ -21,8 +21,7 @@ const addElementoMarker = (oldMapaContext, position, dataRef) => {
 };
 
 const addElementoCirculo = (oldMapaContext, position, dataRef) => {
-  const newCircle = { position };
-  console.log("add elemento circ", position);
+  const newCircle = { center: position, radius: 100 };
   return {
     ...oldMapaContext,
     conteudo: {
@@ -46,11 +45,30 @@ const retornarMarkersPuros = (oldMapaContext) => {
     : [];
 };
 
-const retornarElementoPositionsFromMarkersDataRef = (oldMapaContext) => {
+const removerMarkersReferenciados = (oldMapaContext, ref) => {
+  return oldMapaContext.conteudo?.Marker &&
+    oldMapaContext.conteudo?.Marker.length
+    ? [...oldMapaContext.conteudo.Marker.filter((x) => x.dataRef !== ref)]
+    : [];
+};
+
+const retornarElementoPositionsFromMarkersDataRef = (
+  oldMapaContext,
+  nomeElemento
+) => {
   return {
     positions: oldMapaContext.conteudo.Marker.filter(
-      (x) => x.dataRef !== elementos.Marker.nome
+      (x) => x.dataRef === nomeElemento
     ).map((x) => x.position),
+  };
+};
+
+const retornarBoundsPositionsFromTwoMarkersDataRef = (oldMapaContext) => {
+  const markers = oldMapaContext.conteudo.Marker.filter(
+    (x) => x.dataRef === elementos.Rectangle.nome
+  );
+  return {
+    bounds: markers.splice(0, 2).map((x) => x.position),
   };
 };
 
@@ -67,15 +85,32 @@ const retornarElementosPositionsWithNewElemento = (
     : oldMapaContext.conteudo[tipoElemento];
 };
 
-const addElementoFromMarkers = (oldMapaContext, nomeElemento) => {
-  const newElemento =
-    retornarElementoPositionsFromMarkersDataRef(oldMapaContext);
-  console.log("novo elemento", newElemento);
+const addElementoQuadrilatero = (oldMapaContext, nomeElemento) => {
+  const newRectangle =
+    retornarBoundsPositionsFromTwoMarkersDataRef(oldMapaContext);
   return {
     ...oldMapaContext,
     conteudo: {
       ...oldMapaContext.conteudo,
-      Marker: retornarMarkersPuros(oldMapaContext),
+      Marker: removerMarkersReferenciados(oldMapaContext, nomeElemento),
+      Rectangle: oldMapaContext.conteudo?.Rectangle
+        ? [...oldMapaContext.conteudo.Rectangle, newRectangle]
+        : [newRectangle],
+    },
+  };
+};
+
+const addElementoFromMarkers = (oldMapaContext, nomeElemento) => {
+  const newElemento = retornarElementoPositionsFromMarkersDataRef(
+    oldMapaContext,
+    nomeElemento
+  );
+
+  return {
+    ...oldMapaContext,
+    conteudo: {
+      ...oldMapaContext.conteudo,
+      Marker: removerMarkersReferenciados(oldMapaContext, nomeElemento),
       Polyline: retornarElementosPositionsWithNewElemento(
         oldMapaContext,
         nomeElemento,
@@ -97,5 +132,6 @@ const MapaFunctionHelpers = {
   addElementoMarker,
   addElementoFromMarkers,
   addElementoCirculo,
+  addElementoQuadrilatero,
 };
 export default MapaFunctionHelpers;

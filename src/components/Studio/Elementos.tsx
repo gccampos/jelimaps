@@ -15,10 +15,6 @@ export default function Elementos() {
       ? dispatch({ type: "elementos", arg: elementos.Hand })
       : dispatch({ type: "elementos", arg: elemento });
 
-  useEffect(() => {
-    console.log(Object.keys(elementos).map((x) => elementos[x]));
-  }, []);
-
   return (
     <SpeedDial
       ariaLabel=""
