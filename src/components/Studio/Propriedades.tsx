@@ -30,13 +30,7 @@ export default function Propriedades() {
   return (
     mapaContext?.slidePropriedade && (
       <Grid item xs={0}>
-        <Slide
-          direction="left"
-          in={mapaContext?.slidePropriedade}
-          unmountOnExit
-        >
-          <div
-            style={{
+          <div style={{
               width: 250,
               maxWidth: 500,
               height: "580px",
@@ -92,9 +86,8 @@ export default function Propriedades() {
               </ListItemIcon>
               <ListItemText primary="Inbox" />
             </ListItem> */}
-            </List>
-          </div>
-        </Slide>
+          </List>
+        </div>
         {/* Lateral direita */}
       </Grid>
     )
