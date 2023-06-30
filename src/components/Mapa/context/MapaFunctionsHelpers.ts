@@ -1,9 +1,18 @@
 import { elementos } from "@/main/constants/elementos";
+import { mapaContextSchema } from "./MapaContext";
 
-const changeElementos = (oldMapaContext, elemento, posicao) => {
+const changeElementos = (
+  oldMapaContext: mapaContextSchema,
+  elemento,
+  posicao
+): mapaContextSchema => {
   return {
     ...oldMapaContext,
-    elementoAdd: { ...oldMapaContext.elemento, ...elemento, posicao: posicao },
+    elementoAdd: {
+      ...oldMapaContext.elementoAdd,
+      ...elemento,
+      posicao: posicao,
+    },
   };
 };
 

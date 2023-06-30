@@ -11,7 +11,7 @@ export default function LinhaTempo() {
 
   return (
     <Grid item xs={12}>
-      <Typography>Linha do Tempo</Typography>
+      {/* <Typography>Linha do Tempo</Typography> */}
       <img width={"100%"} src="/timeline.png" />
     </Grid>
   );

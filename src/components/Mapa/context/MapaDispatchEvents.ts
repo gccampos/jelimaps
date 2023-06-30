@@ -48,6 +48,12 @@ export function mapaReducer(oldMapaContext, action) {
         action.elemento
       );
     }
+    case "propriedadeToggle": {
+      return {
+        ...oldMapaContext,
+        slidePropriedade: !oldMapaContext.slidePropriedade,
+      };
+    }
     default: {
       throw Error("Unknown action: " + action.type);
     }

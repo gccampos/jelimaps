@@ -22,10 +22,11 @@ import {
   useMapaContext,
   useMapaDispatch,
 } from "@/components/Mapa/context/MapaContext";
-import { Grid } from "@mui/material";
+import { Fab, Grid } from "@mui/material";
 import { elementos } from "@/main/constants/elementos";
 import Elementos from "./Elementos";
 import AddMarker from "@/components/Mapa/AddMarker";
+import { PlaylistPlay, RotateLeft } from "@mui/icons-material";
 
 export const MODO_VISAO = {
   openstreetmap: "OpenStreetMap",
@@ -177,6 +178,22 @@ export default function Mapa() {
               position={POSITION_CLASSES_CUSTOM_CONTROL.bottomright}
             >
               <Elementos />
+            </CustomControlLeaflet>
+            <CustomControlLeaflet
+              position={POSITION_CLASSES_CUSTOM_CONTROL.topright}
+            >
+              <Fab
+                color="primary"
+                onClick={() => dispatch({ type: "propriedadeToggle" })}
+              >
+                <PlaylistPlay
+                  sx={{
+                    transform: !mapaContext.slidePropriedade
+                      ? "scaleX(-1)"
+                      : "",
+                  }}
+                />
+              </Fab>
             </CustomControlLeaflet>
             <AddMarker />
           </MapContainer>

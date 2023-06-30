@@ -8,25 +8,30 @@ import { LatLng, LatLngBoundsExpression } from "leaflet";
 
 const initialMapaContexto: mapaContextSchema = {
   elementoAdd: elementos.Hand,
+  slidePropriedade: false,
   conteudo: null,
 };
 
+type elementoPadrao = {
+  nome: string;
+};
 type elementoComPosition = {
   position: LatLng;
-};
+} & elementoPadrao;
 type elementoCircle = {
   center: LatLng;
   radius: number;
-};
+} & elementoPadrao;
 type elementoComPositions = {
   positions: LatLng[];
-};
+} & elementoPadrao;
 type elementoComBounds = {
   bounds: LatLngBoundsExpression;
-};
+} & elementoPadrao;
 export type mapaContextSchema = {
   elementoAdd: elementoProto;
-  modoVisao?: keyof typeof MODO_VISAO;
+  slidePropriedade: boolean;
+  modoVisao?: string;
   conteudo: {
     Marker: ({ dataRef: string } & elementoComPosition)[];
     Polyline: elementoComPositions[];
