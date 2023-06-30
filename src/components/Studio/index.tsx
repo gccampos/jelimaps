@@ -9,7 +9,7 @@ const Studio = () => {
   return (
     <Grid container spacing={2} sx={{}} id="studioMapa">
       <Mapa />
-      {/* <Propriedades /> */}
+      <Propriedades />
       <LinhaTempo />
     </Grid>
   );

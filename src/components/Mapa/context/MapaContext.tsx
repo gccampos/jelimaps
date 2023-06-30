@@ -2,13 +2,41 @@ import { createContext, useContext, useReducer } from "react";
 import React from "react";
 import { mapaReducer } from "./MapaDispatchEvents";
 import MapaFunctionHelpers from "./MapaFunctionsHelpers";
+import { elementoProto, elementos } from "@/main/constants/elementos";
+import { MODO_VISAO } from "@/components/Studio/Mapa";
+import { LatLng, LatLngBoundsExpression } from "leaflet";
 
-const initialMapaContexto = {
-  elementoAdd: null,
+const initialMapaContexto: mapaContextSchema = {
+  elementoAdd: elementos.Hand,
   conteudo: null,
-  modoVisao: "",
 };
-const MapaContext = createContext(initialMapaContexto);
+
+type elementoComPosition = {
+  position: LatLng;
+};
+type elementoCircle = {
+  center: LatLng;
+  radius: number;
+};
+type elementoComPositions = {
+  positions: LatLng[];
+};
+type elementoComBounds = {
+  bounds: LatLngBoundsExpression;
+};
+export type mapaContextSchema = {
+  elementoAdd: elementoProto;
+  modoVisao?: keyof typeof MODO_VISAO;
+  conteudo: {
+    Marker: ({ dataRef: string } & elementoComPosition)[];
+    Polyline: elementoComPositions[];
+    Polygon: elementoComPositions[];
+    Circle: elementoCircle[];
+    Rectangle: elementoComBounds[];
+  };
+};
+
+const MapaContext = createContext<mapaContextSchema>(initialMapaContexto);
 export function useMapaContext() {
   return useContext(MapaContext);
 }
