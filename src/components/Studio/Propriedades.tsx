@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Grid,
   List,
@@ -18,6 +18,8 @@ import {
 import { Delete } from "@mui/icons-material";
 import { elementos } from "@/main/constants/elementos";
 import Menu from "@mui/icons-material/Menu";
+import { Rnd } from "react-rnd";
+import AlignVerticalCenterIcon from "@mui/icons-material/AlignVerticalCenter";
 
 const WrapperStyled = styled("div")``;
 
@@ -32,90 +34,112 @@ export default function Propriedades() {
   const mapaContext = useMapaContext();
   const dispatch = useMapaDispatch();
 
+  const [elemento, setElemento] = useState<HTMLDivElement>();
+  const [position, setPosition] = useState<{
+    Top: number;
+    Left: number;
+  }>({ Top: 0, Left: 0 });
   const [larguraPropriedades, setLargurasPropriedades] = useState(250);
-  let tamanho = 0;
 
-  const calculaRedimensionamento = (valor) => {
-    if (!tamanho) tamanho = valor;
-    else {
-      if (tamanho !== valor)
-        setLargurasPropriedades(larguraPropriedades + (tamanho - valor));
-    }
-  };
-
+  useEffect(() => {
+    if (elemento?.offsetLeft && elemento?.offsetTop)
+      setPosition({ Top: elemento?.offsetTop, Left: elemento?.offsetLeft });
+  }, [elemento]);
   return (
     mapaContext?.slidePropriedade && (
       <Grid item xs={0}>
-        <Dragger
-          onDrag={(e) => {
-            if (e.screenX) calculaRedimensionamento(e.screenX);
-          }}
-        >
-          <Chip
-            color="default"
-            style={{
-              cursor: "e-resize",
-              position: "relative",
-              top: "50%",
-            }}
-          />
-        </Dragger>
         <div
+          ref={(el) => setElemento(el)}
           style={{
             width: larguraPropriedades,
             maxWidth: 500,
+            minWidth: 190,
             height: "580px",
           }}
         >
-          <List sx={{ overflow: "auto", height: "100%", pt: 0 }} key={"lista"}>
-            {mapaContext?.conteudo &&
-              Object.keys(mapaContext?.conteudo).map(
-                (x, i) =>
-                  mapaContext?.conteudo[x]?.length > 0 && (
-                    <WrapperStyled key={`Wrapper#${x}-${i}`}>
-                      <ListSubheader>
-                        <ListItemIcon sx={{ display: "inline-block" }}>
-                          {elementos[x].icon}
-                        </ListItemIcon>
-                        {x + "s"}
-                      </ListSubheader>
-                      {mapaContext?.conteudo[x].map((z, il) => (
-                        <ListItem
-                          key={`ListItem#${z}-${il}`}
-                          secondaryAction={
-                            <IconButton
-                              edge="end"
-                              aria-label="delete"
-                              onClick={() => {
-                                dispatch({
-                                  type: "removeElement",
-                                  elemento: z.dataRef,
-                                  indiceElemento: il,
-                                  nomeElemento: z.nome,
-                                });
-                              }}
-                            >
-                              <Delete />
-                            </IconButton>
-                          }
-                        >
-                          <ListItemIcon>
-                            <Menu />
+          <Rnd
+            maxWidth={500}
+            minWidth={190}
+            resizeHandleComponent={{
+              left: (
+                <Dragger>
+                  <Chip
+                    color="default"
+                    size="small"
+                    icon={<AlignVerticalCenterIcon />}
+                    style={{
+                      cursor: "e-resize",
+                      position: "relative",
+                      top: "50%",
+                    }}
+                  />
+                </Dragger>
+              ),
+            }}
+            default={{
+              x: position.Left,
+              y: position.Top,
+              width: larguraPropriedades,
+              height: 580,
+            }}
+            disableDragging
+            onResize={(e, dir, ref) => {
+              setLargurasPropriedades(ref.offsetWidth);
+            }}
+          >
+            <List
+              sx={{ overflow: "auto", height: "100%", pt: 0 }}
+              key={"lista"}
+            >
+              {mapaContext?.conteudo &&
+                Object.keys(mapaContext?.conteudo).map(
+                  (x, i) =>
+                    mapaContext?.conteudo[x]?.length > 0 && (
+                      <WrapperStyled key={`Wrapper#${x}-${i}`}>
+                        <ListSubheader>
+                          <ListItemIcon sx={{ display: "inline-block" }}>
+                            {elementos[x].icon}
                           </ListItemIcon>
-                          <ListItemText primary={z.nome} />
-                        </ListItem>
-                      ))}
-                      <Divider />
-                    </WrapperStyled>
-                  )
-              )}
-            {/* <ListItem onClick={(event) => handleListItemClick(event, 0)}>
+                          {x + "s"}
+                        </ListSubheader>
+                        {mapaContext?.conteudo[x].map((z, il) => (
+                          <ListItem
+                            key={`ListItem#${z}-${il}`}
+                            secondaryAction={
+                              <IconButton
+                                edge="end"
+                                aria-label="delete"
+                                onClick={() => {
+                                  dispatch({
+                                    type: "removeElement",
+                                    elemento: z.dataRef,
+                                    indiceElemento: il,
+                                    nomeElemento: z.nome,
+                                  });
+                                }}
+                              >
+                                <Delete />
+                              </IconButton>
+                            }
+                          >
+                            <ListItemIcon>
+                              <Menu />
+                            </ListItemIcon>
+                            <ListItemText primary={z.nome} />
+                          </ListItem>
+                        ))}
+                        <Divider />
+                      </WrapperStyled>
+                    )
+                )}
+              {/* <ListItem onClick={(event) => handleListItemClick(event, 0)}>
               <ListItemIcon>
                 <Inbox />
               </ListItemIcon>
               <ListItemText primary="Inbox" />
             </ListItem> */}
-          </List>
+            </List>
+          </Rnd>
         </div>
         {/* Lateral direita */}
       </Grid>
