@@ -25,9 +25,7 @@ const WrapperStyled = styled("div")``;
 
 const Dragger = styled("div")`
   cursor: e-resize;
-  width: 15px;
   height: 100%;
-  float: left;
 `;
 
 export default function Propriedades() {
@@ -45,6 +43,8 @@ export default function Propriedades() {
     if (elemento?.offsetLeft && elemento?.offsetTop)
       setPosition({ Top: elemento?.offsetTop, Left: elemento?.offsetLeft });
   }, [elemento]);
+
+  const displaYNoneStyle = { display: "none" };
   return (
     mapaContext?.slidePropriedade && (
       <Grid item xs={0}>
@@ -60,6 +60,13 @@ export default function Propriedades() {
           <Rnd
             maxWidth={500}
             minWidth={190}
+            resizeHandleStyles={{
+              right: displaYNoneStyle,
+              topLeft: displaYNoneStyle,
+              topRight: displaYNoneStyle,
+              bottomLeft: displaYNoneStyle,
+              bottomRight: displaYNoneStyle,
+            }}
             resizeHandleComponent={{
               left: (
                 <Dragger>
@@ -71,6 +78,7 @@ export default function Propriedades() {
                       cursor: "e-resize",
                       position: "relative",
                       top: "50%",
+                      left: 10,
                     }}
                   />
                 </Dragger>
