@@ -1,5 +1,4 @@
 import React from "react";
-import Elementos from "./Elementos";
 import Propriedades from "./Propriedades";
 import LinhaTempo from "./LinhaTempo";
 import { Grid } from "@mui/material";

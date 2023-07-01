@@ -2,10 +2,7 @@ import {
   MapContainer,
   TileLayer,
   Marker,
-  Popup,
-  useMapEvents,
   ImageOverlay,
-  useMap,
   Polyline,
   Polygon,
   Circle,
@@ -17,7 +14,6 @@ import React from "react";
 import CustomControlLeaflet, {
   POSITION_CLASSES_CUSTOM_CONTROL,
 } from "@/components/CustomControlLeaflet/CustomControlLeaflet";
-import dynamic from "next/dynamic";
 import {
   useMapaContext,
   useMapaDispatch,
@@ -26,7 +22,7 @@ import { Fab, Grid } from "@mui/material";
 import { elementos } from "@/main/constants/elementos";
 import Elementos from "./Elementos";
 import AddMarker from "@/components/Mapa/AddMarker";
-import { PlaylistPlay, RotateLeft } from "@mui/icons-material";
+import { PlaylistPlay } from "@mui/icons-material";
 
 export const MODO_VISAO = {
   openstreetmap: "OpenStreetMap",
@@ -61,7 +57,7 @@ export default function Mapa() {
 
   const bounds = new LatLngBounds([0, 0], [1, 1.5]);
 
-  const cliqueElementoNoMapa = (elemento, ...nsei) => {
+  const cliqueElementoNoMapa = (elemento) => {
     console.log("evento cliqueElementoNoMapa", elemento);
   };
 

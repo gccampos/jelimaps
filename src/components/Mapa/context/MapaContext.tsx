@@ -1,9 +1,7 @@
-import { createContext, useContext, useReducer } from "react";
+import { Dispatch, createContext, useContext, useReducer } from "react";
 import React from "react";
 import { mapaReducer } from "./MapaDispatchEvents";
-import MapaFunctionHelpers from "./MapaFunctionsHelpers";
 import { elementoProto, elementos } from "@/main/constants/elementos";
-import { MODO_VISAO } from "@/components/Studio/Mapa";
 import { LatLng, LatLngBoundsExpression } from "leaflet";
 
 const initialMapaContexto: mapaContextSchema = {
@@ -47,7 +45,7 @@ export function useMapaContext() {
   return useContext(MapaContext);
 }
 
-const MapaDispatchContext = createContext(({ ...initialMapaContexto }) => {});
+const MapaDispatchContext = createContext<Dispatch<any>>(() => {});
 export function useMapaDispatch() {
   return useContext(MapaDispatchContext);
 }

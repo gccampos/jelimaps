@@ -17,7 +17,11 @@ const changeElementos = (
 };
 
 const addElementoMarker = (oldMapaContext, position, dataRef) => {
-  const newMarker = { position, dataRef };
+  const newMarker = {
+    position,
+    dataRef,
+    nome: `marker#${oldMapaContext.conteudo?.Marker?.length + 1 || 1}`,
+  };
   return {
     ...oldMapaContext,
     conteudo: {
@@ -30,7 +34,12 @@ const addElementoMarker = (oldMapaContext, position, dataRef) => {
 };
 
 const addElementoCirculo = (oldMapaContext, position, dataRef) => {
-  const newCircle = { center: position, radius: 100, dataRef };
+  const newCircle = {
+    center: position,
+    radius: 100,
+    dataRef,
+    nome: `circle#${oldMapaContext.conteudo?.Circle?.length + 1 || 1}`,
+  };
   return {
     ...oldMapaContext,
     conteudo: {
@@ -65,21 +74,27 @@ const retornarElementoPositionsFromMarkersDataRef = (
   oldMapaContext,
   nomeElemento
 ) => {
+  const arrayElemento = oldMapaContext.conteudo[nomeElemento];
   return {
     positions: oldMapaContext.conteudo.Marker.filter(
       (x) => x.dataRef === nomeElemento
     ).map((x) => x.position),
     dataRef: nomeElemento,
+    nome: `${nomeElemento}#${arrayElemento?.length + 1 || 1}`,
   };
 };
 
-const retornarBoundsPositionsFromTwoMarkersDataRef = (oldMapaContext) => {
+const retornarBoundsPositionsFromTwoMarkersDataRef = (
+  oldMapaContext,
+  nomeElemento
+) => {
   const markers = oldMapaContext.conteudo.Marker.filter(
     (x) => x.dataRef === elementos.Rectangle.nome
   );
+  const arrayElemento = oldMapaContext.conteudo[nomeElemento];
   return {
     bounds: markers.splice(0, 2).map((x) => x.position),
-    dataRef: elementos.Rectangle.nome,
+    nome: `${nomeElemento}#${arrayElemento?.length + 1 || 1}`,
   };
 };
 
@@ -97,8 +112,10 @@ const retornarElementosPositionsWithNewElemento = (
 };
 
 const addElementoQuadrilatero = (oldMapaContext, nomeElemento) => {
-  const newRectangle =
-    retornarBoundsPositionsFromTwoMarkersDataRef(oldMapaContext);
+  const newRectangle = retornarBoundsPositionsFromTwoMarkersDataRef(
+    oldMapaContext,
+    nomeElemento
+  );
   return {
     ...oldMapaContext,
     conteudo: {
@@ -138,8 +155,15 @@ const addElementoFromMarkers = (oldMapaContext, nomeElemento) => {
   };
 };
 
-const removeElemento = (oldMapaContext, tipoElemento, indiceElemento) => {
-  oldMapaContext.conteudo[tipoElemento].splice(indiceElemento, 1);
+const removeElemento = (
+  oldMapaContext,
+  tipoElemento,
+  indiceElemento,
+  nomeElemento
+) => {
+  const arrayElemento = oldMapaContext.conteudo[tipoElemento];
+  if (arrayElemento[indiceElemento]?.nome === nomeElemento)
+    arrayElemento.splice(indiceElemento, 1);
   return {
     ...oldMapaContext,
   };

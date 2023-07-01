@@ -1,6 +1,6 @@
 import { elementos } from "@/main/constants/elementos";
 import { useMapaContext, useMapaDispatch } from "./context/MapaContext";
-import { Marker, Popup, useMapEvents } from "react-leaflet";
+import { useMapEvents } from "react-leaflet";
 
 function isControlLeafLet(node) {
   return node.tagName === "path" ||

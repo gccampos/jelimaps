@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { DropzoneDialog } from "material-ui-dropzone";
-import Button from "@material-ui/core/Button";
 
 class ImageUploadDialog extends Component {
   constructor(props) {
@@ -51,4 +50,4 @@ class ImageUploadDialog extends Component {
   }
 }
 
-export default ImageUploadDialog
+export default ImageUploadDialog;

@@ -1,4 +1,3 @@
-import { elementos } from "@/main/constants/elementos";
 import MapaFunctionHelpers from "./MapaFunctionsHelpers";
 
 export function mapaReducer(oldMapaContext, action) {
@@ -58,7 +57,8 @@ export function mapaReducer(oldMapaContext, action) {
       return MapaFunctionHelpers.removeElemento(
         oldMapaContext,
         action.elemento,
-        action.indiceElemento
+        action.indiceElemento,
+        action.nomeElemento
       );
     }
     default: {

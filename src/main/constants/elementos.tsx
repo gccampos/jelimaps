@@ -7,14 +7,15 @@ import {
 } from "@mui/icons-material";
 import polygonIcon from "public/assets/polygonIcon.svg";
 import SvgIcon from "@mui/material/SvgIcon";
+import { ReactNode } from "react";
 
 export type elementoProto = {
   nome: string;
   label: string;
-  icon: React.ReactNode;
+  icon: ReactNode;
 };
 
-export const elementos = {
+export const elementos: { [key: string]: elementoProto } = {
   Hand: {
     nome: "Hand",
     label: "Interagir com elementos",
