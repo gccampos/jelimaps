@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Grid,
   List,
@@ -32,24 +32,13 @@ export default function Propriedades() {
   const mapaContext = useMapaContext();
   const dispatch = useMapaDispatch();
 
-  const [elemento, setElemento] = useState<HTMLDivElement>();
-  const [position, setPosition] = useState<{
-    Top: number;
-    Left: number;
-  }>({ Top: 0, Left: 0 });
   const [larguraPropriedades, setLargurasPropriedades] = useState(250);
-
-  useEffect(() => {
-    if (elemento?.offsetLeft && elemento?.offsetTop)
-      setPosition({ Top: elemento?.offsetTop, Left: elemento?.offsetLeft });
-  }, [elemento]);
 
   const displaYNoneStyle = { display: "none" };
   return (
     mapaContext?.slidePropriedade && (
       <Grid item xs={0}>
         <div
-          ref={(el) => setElemento(el)}
           style={{
             width: larguraPropriedades,
             maxWidth: 500,
@@ -84,12 +73,7 @@ export default function Propriedades() {
                 </Dragger>
               ),
             }}
-            default={{
-              x: position.Left,
-              y: position.Top,
-              width: larguraPropriedades,
-              height: 580,
-            }}
+            size={{ height: 580, width: larguraPropriedades }}
             disableDragging
             onResize={(e, dir, ref) => {
               setLargurasPropriedades(ref.offsetWidth);
