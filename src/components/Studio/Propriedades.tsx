@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Grid,
   List,
@@ -9,6 +9,7 @@ import {
   IconButton,
   ListSubheader,
   styled,
+  Chip,
 } from "@mui/material";
 import {
   useMapaContext,
@@ -20,16 +21,48 @@ import Menu from "@mui/icons-material/Menu";
 
 const WrapperStyled = styled("div")``;
 
+const Dragger = styled("div")`
+  cursor: e-resize;
+  width: 15px;
+  height: 100%;
+  float: left;
+`;
+
 export default function Propriedades() {
   const mapaContext = useMapaContext();
   const dispatch = useMapaDispatch();
 
+  const [larguraPropriedades, setLargurasPropriedades] = useState(250);
+  let tamanho = 0;
+
+  const calculaRedimensionamento = (valor) => {
+    if (!tamanho) tamanho = valor;
+    else {
+      if (tamanho !== valor)
+        setLargurasPropriedades(larguraPropriedades + (tamanho - valor));
+    }
+  };
+
   return (
     mapaContext?.slidePropriedade && (
       <Grid item xs={0}>
+        <Dragger
+          onDrag={(e) => {
+            if (e.screenX) calculaRedimensionamento(e.screenX);
+          }}
+        >
+          <Chip
+            color="default"
+            style={{
+              cursor: "e-resize",
+              position: "relative",
+              top: "50%",
+            }}
+          />
+        </Dragger>
         <div
           style={{
-            width: 250,
+            width: larguraPropriedades,
             maxWidth: 500,
             height: "580px",
           }}
