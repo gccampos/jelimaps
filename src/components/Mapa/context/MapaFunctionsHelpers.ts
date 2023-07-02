@@ -95,6 +95,7 @@ const retornarBoundsPositionsFromTwoMarkersDataRef = (
   return {
     bounds: markers.splice(0, 2).map((x) => x.position),
     nome: `${nomeElemento}#${arrayElemento?.length + 1 || 1}`,
+    dataRef: nomeElemento,
   };
 };
 

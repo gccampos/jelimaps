@@ -10,12 +10,13 @@ import {
   ListSubheader,
   styled,
   Chip,
+  Collapse,
 } from "@mui/material";
 import {
   useMapaContext,
   useMapaDispatch,
 } from "@/components/Mapa/context/MapaContext";
-import { Delete } from "@mui/icons-material";
+import { Delete, ExpandLess, ExpandMore } from "@mui/icons-material";
 import { elementos } from "@/main/constants/elementos";
 import Menu from "@mui/icons-material/Menu";
 import { Rnd } from "react-rnd";
@@ -33,6 +34,13 @@ export default function Propriedades() {
   const dispatch = useMapaDispatch();
 
   const [larguraPropriedades, setLargurasPropriedades] = useState(250);
+
+  const [open, setOpen] = React.useState(true);
+
+  const handleCollapse = (e, x) => {
+    console.log(x);
+    setOpen(!open);
+  };
 
   const displaYNoneStyle = { display: "none" };
   return (
@@ -88,38 +96,49 @@ export default function Propriedades() {
                   (x, i) =>
                     mapaContext?.conteudo[x]?.length > 0 && (
                       <WrapperStyled key={`Wrapper#${x}-${i}`}>
-                        <ListSubheader>
+                        <ListSubheader
+                          onClick={(evento) => handleCollapse(evento, x)}
+                        >
                           <ListItemIcon sx={{ display: "inline-block" }}>
                             {elementos[x].icon}
                           </ListItemIcon>
                           {x + "s"}
+                          {open ? <ExpandLess /> : <ExpandMore />}
                         </ListSubheader>
-                        {mapaContext?.conteudo[x].map((z, il) => (
-                          <ListItem
-                            key={`ListItem#${z}-${il}`}
-                            secondaryAction={
-                              <IconButton
-                                edge="end"
-                                aria-label="delete"
-                                onClick={() => {
-                                  dispatch({
-                                    type: "removeElement",
-                                    elemento: z.dataRef,
-                                    indiceElemento: il,
-                                    nomeElemento: z.nome,
-                                  });
-                                }}
-                              >
-                                <Delete />
-                              </IconButton>
-                            }
-                          >
-                            <ListItemIcon>
-                              <Menu />
-                            </ListItemIcon>
-                            <ListItemText primary={z.nome} />
-                          </ListItem>
-                        ))}
+                        <Collapse
+                          in={open}
+                          className={x}
+                          timeout="auto"
+                          unmountOnExit
+                        >
+                          {mapaContext?.conteudo[x].map((z, il) => (
+                            <ListItem
+                              key={`ListItem#${z}-${il}`}
+                              secondaryAction={
+                                <IconButton
+                                  edge="end"
+                                  aria-label="delete"
+                                  onClick={() => {
+                                    console.log(z)
+                                    dispatch({
+                                      type: "removeElement",
+                                      elemento: z.dataRef,
+                                      indiceElemento: il,
+                                      nomeElemento: z.nome,
+                                    });
+                                  }}
+                                >
+                                  <Delete />
+                                </IconButton>
+                              }
+                            >
+                              <ListItemIcon>
+                                <Menu />
+                              </ListItemIcon>
+                              <ListItemText primary={z.nome} />
+                            </ListItem>
+                          ))}
+                        </Collapse>
                         <Divider />
                       </WrapperStyled>
                     )
