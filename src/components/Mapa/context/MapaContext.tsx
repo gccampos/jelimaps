@@ -13,6 +13,7 @@ const initialMapaContexto: mapaContextSchema = {
 type elementoPadrao = {
   nome: string;
   selecionado: boolean;
+  texto: string;
 };
 type elementoComPosition = {
   position: LatLng;

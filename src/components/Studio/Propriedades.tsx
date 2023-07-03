@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import {
   Grid,
   List,
@@ -11,12 +11,14 @@ import {
   styled,
   Chip,
   Collapse,
+  ListItemButton,
+  TextField,
 } from "@mui/material";
 import {
   useMapaContext,
   useMapaDispatch,
 } from "@/components/Mapa/context/MapaContext";
-import { Delete, ExpandLess, ExpandMore } from "@mui/icons-material";
+import { Delete, ExpandLess, ExpandMore, Save } from "@mui/icons-material";
 import { elementos } from "@/main/constants/elementos";
 import Menu from "@mui/icons-material/Menu";
 import { Rnd } from "react-rnd";
@@ -36,10 +38,15 @@ export default function Propriedades() {
   const [larguraPropriedades, setLargurasPropriedades] = useState(250);
 
   const [open, setOpen] = React.useState(true);
+  const [openPropriedades, setOpenPropriedades] = React.useState(true);
 
   const handleCollapse = (e, x) => {
     console.log(x);
     setOpen(!open);
+  };
+
+  const handleCollapsePropriedades = () => {
+    setOpenPropriedades(!openPropriedades);
   };
 
   const displaYNoneStyle = { display: "none" };
@@ -112,31 +119,67 @@ export default function Propriedades() {
                           unmountOnExit
                         >
                           {mapaContext?.conteudo[x].map((z, il) => (
-                            <ListItem
-                              key={`ListItem#${z}-${il}`}
-                              secondaryAction={
-                                <IconButton
-                                  edge="end"
-                                  aria-label="delete"
-                                  onClick={() => {
-                                    console.log(z)
-                                    dispatch({
-                                      type: "removeElement",
-                                      elemento: z.dataRef,
-                                      indiceElemento: il,
-                                      nomeElemento: z.nome,
-                                    });
-                                  }}
+                            <>
+                              <ListItem
+                                key={`ListItem#${z}-${il}`}
+                                secondaryAction={
+                                  <IconButton
+                                    edge="end"
+                                    aria-label="delete"
+                                    onClick={() => {
+                                      dispatch({
+                                        type: "removeElement",
+                                        elemento: z.dataRef,
+                                        indiceElemento: il,
+                                        nomeElemento: z.nome,
+                                      });
+                                    }}
+                                  >
+                                    <Delete />
+                                  </IconButton>
+                                }
+                              >
+                                <ListItemButton
+                                  onClick={handleCollapsePropriedades}
                                 >
-                                  <Delete />
-                                </IconButton>
-                              }
-                            >
-                              <ListItemIcon>
-                                <Menu />
-                              </ListItemIcon>
-                              <ListItemText primary={z.nome} />
-                            </ListItem>
+                                  <ListItemIcon>
+                                    <Menu />
+                                    {z.nome}
+                                  </ListItemIcon>
+                                </ListItemButton>
+                              </ListItem>
+                              <ListItem>
+                                <Collapse
+                                  in={openPropriedades}
+                                  timeout="auto"
+                                  unmountOnExit
+                                  orientation="vertical"
+                                >
+                                  <form
+                                    onSubmit={(event) => {
+                                      event.preventDefault();
+                                      dispatch({
+                                        type: "editarPropriedade",
+                                        elemento: z.dataRef,
+                                        nomeElemento: z.nome,
+                                        nomePropriedade: "texto",
+                                        valorPropriedade: event.target[0].value,
+                                      });
+                                    }}
+                                  >
+                                    <TextField
+                                      multiline
+                                      defaultValue={z.texto}
+                                      label="Texto"
+                                      name="texto"
+                                    />
+                                    <IconButton type="submit">
+                                      <Save />
+                                    </IconButton>
+                                  </form>
+                                </Collapse>
+                              </ListItem>
+                            </>
                           ))}
                         </Collapse>
                         <Divider />
@@ -148,7 +191,19 @@ export default function Propriedades() {
                 <Inbox />
               </ListItemIcon>
               <ListItemText primary="Inbox" />
-            </ListItem> */}
+            </ListItem> 
+             <Collapse
+                                    in={openPropriedades}
+                                    timeout="auto"
+                                    unmountOnExit
+                                    orientation="vertical"
+                                  >
+                                    <div>
+                                      Texto
+                                      <textarea value={z.texto}></textarea>
+                                    </div>
+                                  </Collapse>
+                                  */}
             </List>
           </Rnd>
         </div>

@@ -21,6 +21,7 @@ const addElementoMarker = (oldMapaContext, position, dataRef) => {
     position,
     dataRef,
     nome: `marker#${oldMapaContext.conteudo?.Marker?.length + 1 || 1}`,
+    texto: "",
   };
   return {
     ...oldMapaContext,
@@ -170,6 +171,21 @@ const removeElemento = (
   };
 };
 
+const editarPropriedadeElemento = (
+  oldMapaContext,
+  tipoElemento,
+  nomeElemento,
+  nomePropriedade,
+  novoValor
+) => {
+  oldMapaContext.conteudo[tipoElemento].find(
+    (elemento) => elemento.nome === nomeElemento
+  )[nomePropriedade] = novoValor;
+  return {
+    ...oldMapaContext,
+  };
+};
+
 const MapaFunctionHelpers = {
   changeElementos,
   addElementoMarker,
@@ -177,5 +193,6 @@ const MapaFunctionHelpers = {
   addElementoCirculo,
   addElementoQuadrilatero,
   removeElemento,
+  editarPropriedadeElemento,
 };
 export default MapaFunctionHelpers;

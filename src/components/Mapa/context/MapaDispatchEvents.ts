@@ -61,6 +61,15 @@ export function mapaReducer(oldMapaContext, action) {
         action.nomeElemento
       );
     }
+    case "editarPropriedade": {
+      return MapaFunctionHelpers.editarPropriedadeElemento(
+        oldMapaContext,
+        action.elemento,
+        action.nomeElemento,
+        action.nomePropriedade,
+        action.valorPropriedade
+      );
+    }
     default: {
       throw Error("Unknown action: " + action.type);
     }
