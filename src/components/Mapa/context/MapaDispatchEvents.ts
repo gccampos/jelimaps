@@ -1,50 +1,50 @@
+import { actionContextChange, mapaContextSchema } from "./MapaContext";
 import MapaFunctionHelpers from "./MapaFunctionsHelpers";
 
-export function mapaReducer(oldMapaContext, action) {
+export function mapaReducer(
+  oldMapaContext: mapaContextSchema,
+  action: actionContextChange
+): mapaContextSchema {
   switch (action.type) {
     case "modoVisao": {
-      return { ...oldMapaContext, modoVisao: action.arg };
+      return { ...oldMapaContext, modoVisao: action.tipo };
     }
     case "elementos": {
-      return MapaFunctionHelpers.changeElementos(
-        oldMapaContext,
-        action.arg,
-        action.posicao || oldMapaContext.elemento?.posicao
-      );
+      return MapaFunctionHelpers.changeElemento(oldMapaContext, action.arg);
     }
     case "desativarElementos": {
-      return MapaFunctionHelpers.changeElementos(oldMapaContext, "", null);
+      return MapaFunctionHelpers.changeElemento(oldMapaContext, null);
     }
     case "addMarker": {
       return MapaFunctionHelpers.addElementoMarker(
         oldMapaContext,
         action.posicao,
-        action.elemento
+        action.tipo
       );
     }
     case "addPolyline": {
       return MapaFunctionHelpers.addElementoFromMarkers(
         oldMapaContext,
-        action.elemento
+        action.tipo
       );
     }
     case "addPolygon": {
       return MapaFunctionHelpers.addElementoFromMarkers(
         oldMapaContext,
-        action.elemento
+        action.tipo
       );
     }
     case "addCircle": {
       return MapaFunctionHelpers.addElementoCirculo(
         oldMapaContext,
         action.posicao,
-        action.elemento
+        action.tipo
       );
     }
     case "addRectangle": {
       return MapaFunctionHelpers.addElementoQuadrilatero(
         oldMapaContext,
-        action.elemento
+        action.tipo
       );
     }
     case "propriedadeToggle": {
@@ -56,7 +56,7 @@ export function mapaReducer(oldMapaContext, action) {
     case "removeElement": {
       return MapaFunctionHelpers.removeElemento(
         oldMapaContext,
-        action.elemento,
+        action.tipo,
         action.indiceElemento,
         action.nomeElemento
       );

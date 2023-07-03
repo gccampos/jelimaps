@@ -38,6 +38,7 @@ export default function Propriedades() {
   const [open, setOpen] = React.useState(true);
 
   const handleCollapse = (e, x) => {
+    dispatch({ type: "collapse", arg: x });
     console.log(x);
     setOpen(!open);
   };
@@ -106,7 +107,7 @@ export default function Propriedades() {
                           {open ? <ExpandLess /> : <ExpandMore />}
                         </ListSubheader>
                         <Collapse
-                          in={open}
+                          in={mapaContext?.conteudo[x].aberto}
                           className={x}
                           timeout="auto"
                           unmountOnExit
@@ -119,10 +120,10 @@ export default function Propriedades() {
                                   edge="end"
                                   aria-label="delete"
                                   onClick={() => {
-                                    console.log(z)
+                                    console.log(z);
                                     dispatch({
                                       type: "removeElement",
-                                      elemento: z.dataRef,
+                                      tipo: z.dataRef,
                                       indiceElemento: il,
                                       nomeElemento: z.nome,
                                     });

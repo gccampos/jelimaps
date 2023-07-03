@@ -10,34 +10,58 @@ const initialMapaContexto: mapaContextSchema = {
   conteudo: null,
 };
 
-type elementoPadrao = {
+export type elementoPadrao = {
   nome: string;
-  selecionado: boolean;
+  selecionado?: boolean;
+  dataRef?: string;
 };
-type elementoComPosition = {
+export type elementoComPosition = {
   position: LatLng;
 } & elementoPadrao;
-type elementoCircle = {
+export type elementoCircle = {
   center: LatLng;
   radius: number;
 } & elementoPadrao;
-type elementoComPositions = {
+export type elementoComPositions = {
   positions: LatLng[];
 } & elementoPadrao;
-type elementoComBounds = {
+export type elementoComBounds = {
   bounds: LatLngBoundsExpression;
 } & elementoPadrao;
 export type mapaContextSchema = {
   elementoAdd: elementoProto;
   slidePropriedade: boolean;
   modoVisao?: string;
-  conteudo: {
-    Marker: ({ dataRef: string } & elementoComPosition)[];
-    Polyline: elementoComPositions[];
-    Polygon: elementoComPositions[];
-    Circle: elementoCircle[];
-    Rectangle: elementoComBounds[];
+  conteudo: conteudoType & {
+    Marker: markerType;
+    Polyline: PolylineType;
+    Polygon: PolygonType;
+    Circle: CircleType;
+    Rectangle: RectangleType;
   };
+};
+
+type conteudoType = {
+  [key: string]: arrayElementoPadrao;
+};
+
+export type markerType = arrayElementoGenerico<elementoComPosition>;
+export type PolylineType = arrayElementoGenerico<elementoComPositions>;
+export type PolygonType = arrayElementoGenerico<elementoComPositions>;
+export type CircleType = arrayElementoGenerico<elementoCircle>;
+export type RectangleType = arrayElementoGenerico<elementoComBounds>;
+
+type basePrototypeArray = { aberto?: boolean };
+type arrayElementoPadrao = basePrototypeArray & elementoPadrao[];
+type arrayElementoGenerico<T> = basePrototypeArray & T[];
+
+export type actionContextChange = {
+  type: string;
+  arg?: elementoProto;
+  tipo?: string;
+  posicao?: LatLng;
+  indiceElemento?: number;
+  nomeElemento?: string;
 };
 
 const MapaContext = createContext<mapaContextSchema>(initialMapaContexto);
@@ -45,7 +69,9 @@ export function useMapaContext() {
   return useContext(MapaContext);
 }
 
-const MapaDispatchContext = createContext<Dispatch<any>>(() => {});
+const MapaDispatchContext = createContext<Dispatch<actionContextChange>>(
+  () => {}
+);
 export function useMapaDispatch() {
   return useContext(MapaDispatchContext);
 }

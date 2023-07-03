@@ -1,22 +1,30 @@
-import { elementos } from "@/main/constants/elementos";
-import { mapaContextSchema } from "./MapaContext";
+import { elementoProto, elementos } from "@/main/constants/elementos";
+import {
+  elementoComPositions,
+  elementoPadrao,
+  mapaContextSchema,
+  markerType,
+} from "./MapaContext";
+import { LatLng, latLngBounds } from "leaflet";
 
-const changeElementos = (
+const changeElemento = (
   oldMapaContext: mapaContextSchema,
-  elemento,
-  posicao
+  elemento: elementoProto
 ): mapaContextSchema => {
   return {
     ...oldMapaContext,
     elementoAdd: {
       ...oldMapaContext.elementoAdd,
       ...elemento,
-      posicao: posicao,
     },
   };
 };
 
-const addElementoMarker = (oldMapaContext, position, dataRef) => {
+const addElementoMarker = (
+  oldMapaContext: mapaContextSchema,
+  position: LatLng,
+  dataRef: string
+): mapaContextSchema => {
   const newMarker = {
     position,
     dataRef,
@@ -33,7 +41,11 @@ const addElementoMarker = (oldMapaContext, position, dataRef) => {
   };
 };
 
-const addElementoCirculo = (oldMapaContext, position, dataRef) => {
+const addElementoCirculo = (
+  oldMapaContext: mapaContextSchema,
+  position: LatLng,
+  dataRef: string
+): mapaContextSchema => {
   const newCircle = {
     center: position,
     radius: 100,
@@ -52,27 +64,34 @@ const addElementoCirculo = (oldMapaContext, position, dataRef) => {
   };
 };
 
-const retornarMarkersPuros = (oldMapaContext) => {
+const retornarMarkersPuros = (
+  oldMapaContext: mapaContextSchema
+): markerType => {
   return oldMapaContext.conteudo?.Marker &&
     oldMapaContext.conteudo?.Marker.length
-    ? [
+    ? ([
         ...oldMapaContext.conteudo.Marker.filter(
           (x) => x.dataRef === elementos.Marker.nome
         ),
-      ]
-    : [];
+      ] as markerType)
+    : ([] as markerType);
 };
 
-const removerMarkersReferenciados = (oldMapaContext, ref) => {
+const removerMarkersReferenciados = (
+  oldMapaContext: mapaContextSchema,
+  ref: string
+): markerType => {
   return oldMapaContext.conteudo?.Marker &&
     oldMapaContext.conteudo?.Marker.length
-    ? [...oldMapaContext.conteudo.Marker.filter((x) => x.dataRef !== ref)]
-    : [];
+    ? ([
+        ...oldMapaContext.conteudo.Marker.filter((x) => x.dataRef !== ref),
+      ] as markerType)
+    : ([] as markerType);
 };
 
 const retornarElementoPositionsFromMarkersDataRef = (
-  oldMapaContext,
-  nomeElemento
+  oldMapaContext: mapaContextSchema,
+  nomeElemento: string
 ) => {
   const arrayElemento = oldMapaContext.conteudo[nomeElemento];
   return {
@@ -85,34 +104,39 @@ const retornarElementoPositionsFromMarkersDataRef = (
 };
 
 const retornarBoundsPositionsFromTwoMarkersDataRef = (
-  oldMapaContext,
-  nomeElemento
+  oldMapaContext: mapaContextSchema,
+  nomeElemento: string
 ) => {
   const markers = oldMapaContext.conteudo.Marker.filter(
     (x) => x.dataRef === elementos.Rectangle.nome
   );
   const arrayElemento = oldMapaContext.conteudo[nomeElemento];
   return {
-    bounds: markers.splice(0, 2).map((x) => x.position),
+    bounds: latLngBounds(markers.splice(0, 2).map((x) => x.position)),
     nome: `${nomeElemento}#${arrayElemento?.length + 1 || 1}`,
     dataRef: nomeElemento,
   };
 };
 
 const retornarElementosPositionsWithNewElemento = (
-  oldMapaContext,
-  nomeElemento,
-  tipoElemento,
-  newElemento
-) => {
-  return nomeElemento === elementos[tipoElemento].nome
-    ? oldMapaContext.conteudo[tipoElemento]
-      ? [...oldMapaContext.conteudo[tipoElemento], newElemento]
-      : [newElemento]
-    : oldMapaContext.conteudo[tipoElemento];
+  oldMapaContext: mapaContextSchema,
+  nomeElemento: string,
+  tipoElemento: string,
+  newElemento: elementoPadrao
+): elementoComPositions[] => {
+  return (
+    nomeElemento === elementos[tipoElemento].nome
+      ? oldMapaContext.conteudo[tipoElemento]
+        ? [...oldMapaContext.conteudo[tipoElemento], newElemento]
+        : [newElemento]
+      : oldMapaContext.conteudo[tipoElemento]
+  ) as elementoComPositions[];
 };
 
-const addElementoQuadrilatero = (oldMapaContext, nomeElemento) => {
+const addElementoQuadrilatero = (
+  oldMapaContext: mapaContextSchema,
+  nomeElemento: string
+): mapaContextSchema => {
   const newRectangle = retornarBoundsPositionsFromTwoMarkersDataRef(
     oldMapaContext,
     nomeElemento
@@ -129,7 +153,10 @@ const addElementoQuadrilatero = (oldMapaContext, nomeElemento) => {
   };
 };
 
-const addElementoFromMarkers = (oldMapaContext, nomeElemento) => {
+const addElementoFromMarkers = (
+  oldMapaContext: mapaContextSchema,
+  nomeElemento: string
+): mapaContextSchema => {
   const newElemento = retornarElementoPositionsFromMarkersDataRef(
     oldMapaContext,
     nomeElemento
@@ -157,11 +184,11 @@ const addElementoFromMarkers = (oldMapaContext, nomeElemento) => {
 };
 
 const removeElemento = (
-  oldMapaContext,
-  tipoElemento,
-  indiceElemento,
-  nomeElemento
-) => {
+  oldMapaContext: mapaContextSchema,
+  tipoElemento: string,
+  indiceElemento: number,
+  nomeElemento: string
+): mapaContextSchema => {
   const arrayElemento = oldMapaContext.conteudo[tipoElemento];
   if (arrayElemento[indiceElemento]?.nome === nomeElemento)
     arrayElemento.splice(indiceElemento, 1);
@@ -171,7 +198,7 @@ const removeElemento = (
 };
 
 const MapaFunctionHelpers = {
-  changeElementos,
+  changeElemento,
   addElementoMarker,
   addElementoFromMarkers,
   addElementoCirculo,
