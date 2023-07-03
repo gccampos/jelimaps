@@ -1,4 +1,4 @@
-import { actionContextChange, mapaContextSchema } from "./MapaContext";
+import { actionContextChange, mapaContextSchema } from "./mapaContextTypes";
 import MapaFunctionHelpers from "./MapaFunctionsHelpers";
 
 export function mapaReducer(
@@ -60,6 +60,28 @@ export function mapaReducer(
         action.indiceElemento,
         action.nomeElemento
       );
+    }
+    case "editarPropriedade": {
+      return MapaFunctionHelpers.editarPropriedadeElemento(
+        oldMapaContext,
+        action.tipo,
+        action.nomeElemento,
+        action.nomePropriedade,
+        action.valorPropriedade
+      );
+    }
+    case "collapse": {
+      console.log("action", action);
+      if (action.indiceElemento != null) {
+        oldMapaContext.conteudo[action.tipo][action.indiceElemento].collapse =
+          action.valorBooleano;
+      } else
+        oldMapaContext.conteudo[action.tipo].collapse =
+          action.valorBooleano ??
+          !oldMapaContext.conteudo[action.tipo].collapse;
+      return {
+        ...oldMapaContext,
+      };
     }
     default: {
       throw Error("Unknown action: " + action.type);

@@ -17,7 +17,7 @@ export default function ModoVisaoDialog() {
   const handleOpenStreetMap = () => {
     dispatch({
       type: "modoVisao",
-      arg: MODO_VISAO.openstreetmap,
+      tipo: MODO_VISAO.openstreetmap,
     });
     //setModoVisao(MODO_VISAO.openstreetmap);
     setOpen(false);
@@ -25,7 +25,7 @@ export default function ModoVisaoDialog() {
   const handleMapaProprio = () => {
     dispatch({
       type: "modoVisao",
-      arg: MODO_VISAO.mapaProprio,
+      tipo: MODO_VISAO.mapaProprio,
     });
     //setModoVisao(MODO_VISAO.mapaProprio);
     setOpen(false);

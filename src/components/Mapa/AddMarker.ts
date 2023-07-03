@@ -29,7 +29,7 @@ function AddMarker() {
             if (!isControlLeafLet(e.originalEvent.target))
               dispatch({
                 type: "addMarker",
-                elemento: mapaContext.elementoAdd.nome,
+                tipo: mapaContext.elementoAdd.nome,
                 posicao: e.latlng,
               });
           },

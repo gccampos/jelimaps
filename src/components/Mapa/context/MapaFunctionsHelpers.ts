@@ -1,10 +1,12 @@
 import { elementoProto, elementos } from "@/main/constants/elementos";
 import {
+  CircleType,
+  RectangleType,
   elementoComPositions,
   elementoPadrao,
   mapaContextSchema,
   markerType,
-} from "./MapaContext";
+} from "./mapaContextTypes";
 import { LatLng, latLngBounds } from "leaflet";
 
 const changeElemento = (
@@ -29,6 +31,7 @@ const addElementoMarker = (
     position,
     dataRef,
     nome: `marker#${oldMapaContext.conteudo?.Marker?.length + 1 || 1}`,
+    texto: "",
   };
   return {
     ...oldMapaContext,
@@ -57,9 +60,9 @@ const addElementoCirculo = (
     conteudo: {
       ...oldMapaContext.conteudo,
       Marker: retornarMarkersPuros(oldMapaContext),
-      Circle: oldMapaContext.conteudo?.Circle
+      Circle: (oldMapaContext.conteudo?.Circle
         ? [...oldMapaContext.conteudo.Circle, newCircle]
-        : [newCircle],
+        : [newCircle]) as CircleType,
     },
   };
 };
@@ -92,7 +95,7 @@ const removerMarkersReferenciados = (
 const retornarElementoPositionsFromMarkersDataRef = (
   oldMapaContext: mapaContextSchema,
   nomeElemento: string
-) => {
+): elementoComPositions => {
   const arrayElemento = oldMapaContext.conteudo[nomeElemento];
   return {
     positions: oldMapaContext.conteudo.Marker.filter(
@@ -146,9 +149,9 @@ const addElementoQuadrilatero = (
     conteudo: {
       ...oldMapaContext.conteudo,
       Marker: removerMarkersReferenciados(oldMapaContext, nomeElemento),
-      Rectangle: oldMapaContext.conteudo?.Rectangle
+      Rectangle: (oldMapaContext.conteudo?.Rectangle
         ? [...oldMapaContext.conteudo.Rectangle, newRectangle]
-        : [newRectangle],
+        : [newRectangle]) as RectangleType,
     },
   };
 };
@@ -197,6 +200,21 @@ const removeElemento = (
   };
 };
 
+const editarPropriedadeElemento = (
+  oldMapaContext: mapaContextSchema,
+  tipoElemento: string,
+  nomeElemento: string,
+  nomePropriedade: string,
+  novoValor: string
+): mapaContextSchema => {
+  oldMapaContext.conteudo[tipoElemento].find(
+    (elemento) => elemento.nome === nomeElemento
+  )[nomePropriedade] = novoValor;
+  return {
+    ...oldMapaContext,
+  };
+};
+
 const MapaFunctionHelpers = {
   changeElemento,
   addElementoMarker,
@@ -204,5 +222,6 @@ const MapaFunctionHelpers = {
   addElementoCirculo,
   addElementoQuadrilatero,
   removeElemento,
+  editarPropriedadeElemento,
 };
 export default MapaFunctionHelpers;

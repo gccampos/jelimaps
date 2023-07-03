@@ -59,6 +59,7 @@ export default function Mapa() {
 
   const cliqueElementoNoMapa = (elemento) => {
     console.log("evento cliqueElementoNoMapa", elemento);
+    // TODO: focar na propriedade
   };
 
   useEffect(() => {
@@ -94,7 +95,7 @@ export default function Mapa() {
                         x.dataRef === mapaContext.elementoAdd?.nome
                           ? dispatch({
                               type: `add${x.dataRef}`,
-                              elemento: mapaContext.elementoAdd.nome,
+                              tipo: mapaContext.elementoAdd.nome,
                               posicao: x.position,
                             })
                           : cliqueElementoNoMapa(x),

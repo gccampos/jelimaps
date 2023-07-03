@@ -4,19 +4,20 @@ import {
   List,
   ListItem,
   ListItemIcon,
-  ListItemText,
   Divider,
   IconButton,
   ListSubheader,
   styled,
   Chip,
   Collapse,
+  ListItemButton,
+  TextField,
 } from "@mui/material";
 import {
   useMapaContext,
   useMapaDispatch,
 } from "@/components/Mapa/context/MapaContext";
-import { Delete, ExpandLess, ExpandMore } from "@mui/icons-material";
+import { Delete, ExpandLess, ExpandMore, Save } from "@mui/icons-material";
 import { elementos } from "@/main/constants/elementos";
 import Menu from "@mui/icons-material/Menu";
 import { Rnd } from "react-rnd";
@@ -35,12 +36,17 @@ export default function Propriedades() {
 
   const [larguraPropriedades, setLargurasPropriedades] = useState(250);
 
-  const [open, setOpen] = React.useState(true);
-
   const handleCollapse = (e, x) => {
-    dispatch({ type: "collapse", arg: x });
-    console.log(x);
-    setOpen(!open);
+    dispatch({ type: "collapse", tipo: x, valorBooleano: e });
+  };
+
+  const handleCollapsePropriedades = (tipo, index, collapse) => {
+    dispatch({
+      type: "collapse",
+      tipo: tipo,
+      indiceElemento: index,
+      valorBooleano: collapse,
+    });
   };
 
   const displaYNoneStyle = { display: "none" };
@@ -98,46 +104,96 @@ export default function Propriedades() {
                     mapaContext?.conteudo[x]?.length > 0 && (
                       <WrapperStyled key={`Wrapper#${x}-${i}`}>
                         <ListSubheader
-                          onClick={(evento) => handleCollapse(evento, x)}
+                          onClick={() =>
+                            handleCollapse(
+                              !mapaContext?.conteudo[x].collapse,
+                              x
+                            )
+                          }
                         >
                           <ListItemIcon sx={{ display: "inline-block" }}>
                             {elementos[x].icon}
                           </ListItemIcon>
                           {x + "s"}
-                          {open ? <ExpandLess /> : <ExpandMore />}
+                          {!mapaContext?.conteudo[x].collapse ? (
+                            <ExpandLess />
+                          ) : (
+                            <ExpandMore />
+                          )}
                         </ListSubheader>
                         <Collapse
-                          in={mapaContext?.conteudo[x].aberto}
+                          in={!mapaContext?.conteudo[x].collapse}
                           className={x}
                           timeout="auto"
                           unmountOnExit
                         >
                           {mapaContext?.conteudo[x].map((z, il) => (
-                            <ListItem
-                              key={`ListItem#${z}-${il}`}
-                              secondaryAction={
-                                <IconButton
-                                  edge="end"
-                                  aria-label="delete"
-                                  onClick={() => {
-                                    console.log(z);
-                                    dispatch({
-                                      type: "removeElement",
-                                      tipo: z.dataRef,
-                                      indiceElemento: il,
-                                      nomeElemento: z.nome,
-                                    });
-                                  }}
+                            <>
+                              <ListItem
+                                key={`ListItem#${z}-${il}`}
+                                secondaryAction={
+                                  <IconButton
+                                    edge="end"
+                                    aria-label="delete"
+                                    onClick={() => {
+                                      dispatch({
+                                        type: "removeElement",
+                                        tipo: z.dataRef,
+                                        indiceElemento: il,
+                                        nomeElemento: z.nome,
+                                      });
+                                    }}
+                                  >
+                                    <Delete />
+                                  </IconButton>
+                                }
+                              >
+                                <ListItemButton
+                                  onClick={() =>
+                                    handleCollapsePropriedades(
+                                      x,
+                                      il,
+                                      !z.collapse
+                                    )
+                                  }
                                 >
-                                  <Delete />
-                                </IconButton>
-                              }
-                            >
-                              <ListItemIcon>
-                                <Menu />
-                              </ListItemIcon>
-                              <ListItemText primary={z.nome} />
-                            </ListItem>
+                                  <ListItemIcon>
+                                    <Menu />
+                                    {z.nome}
+                                  </ListItemIcon>
+                                </ListItemButton>
+                              </ListItem>
+                              <ListItem>
+                                <Collapse
+                                  in={!z.collapse}
+                                  timeout="auto"
+                                  unmountOnExit
+                                >
+                                  <form
+                                    onSubmit={(event) => {
+                                      event.preventDefault();
+                                      dispatch({
+                                        type: "editarPropriedade",
+                                        tipo: z.dataRef,
+                                        nomeElemento: z.nome,
+                                        nomePropriedade: "texto",
+                                        valorPropriedade: event.target[0].value,
+                                      });
+                                    }}
+                                  >
+                                    <TextField
+                                      multiline
+                                      defaultValue={z.texto}
+                                      label="Texto"
+                                      name="texto"
+                                    />
+                                    <IconButton type="submit">
+                                      <Save />
+                                    </IconButton>
+                                  </form>
+                                </Collapse>
+                              </ListItem>
+                            </>
                           ))}
                         </Collapse>
                         <Divider />
@@ -149,7 +205,19 @@ export default function Propriedades() {
                 <Inbox />
               </ListItemIcon>
               <ListItemText primary="Inbox" />
-            </ListItem> */}
+            </ListItem> 
+             <Collapse
+                                    in={openPropriedades}
+                                    timeout="auto"
+                                    unmountOnExit
+                                    orientation="vertical"
+                                  >
+                                    <div>
+                                      Texto
+                                      <textarea value={z.texto}></textarea>
+                                    </div>
+                                  </Collapse>
+                                  */}
             </List>
           </Rnd>
         </div>
