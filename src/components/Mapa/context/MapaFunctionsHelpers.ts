@@ -7,7 +7,7 @@ import {
   mapaContextSchema,
   markerType,
 } from "./mapaContextTypes";
-import { LatLng, latLngBounds } from "leaflet";
+import { LatLng, LatLngBounds } from "leaflet";
 
 const changeElemento = (
   oldMapaContext: mapaContextSchema,
@@ -114,8 +114,10 @@ const retornarBoundsPositionsFromTwoMarkersDataRef = (
     (x) => x.dataRef === elementos.Rectangle.nome
   );
   const arrayElemento = oldMapaContext.conteudo[nomeElemento];
+  const positions = markers.splice(0, 2).map((x) => x.position);
+  const bounds = positions as unknown as LatLngBounds;
   return {
-    bounds: latLngBounds(markers.splice(0, 2).map((x) => x.position)),
+    bounds: bounds,
     nome: `${nomeElemento}#${arrayElemento?.length + 1 || 1}`,
     dataRef: nomeElemento,
   };
