@@ -22,6 +22,7 @@ import { elementos } from "@/main/constants/elementos";
 import Menu from "@mui/icons-material/Menu";
 import { Rnd } from "react-rnd";
 import AlignVerticalCenterIcon from "@mui/icons-material/AlignVerticalCenter";
+import { elementoPadrao } from "../Mapa/context/mapaContextTypes";
 
 const WrapperStyled = styled("div")``;
 
@@ -38,6 +39,17 @@ export default function Propriedades() {
 
   const handleCollapse = (e, x) => {
     dispatch({ type: "collapse", tipo: x, valorBooleano: e });
+  };
+
+  const handleEditarPropriedade = (event, elemento: elementoPadrao) => {
+    event.preventDefault();
+    dispatch({
+      type: "editarPropriedade",
+      tipo: elemento.dataRef,
+      nomeElemento: elemento.nome,
+      nomePropriedade: event.currentTarget.elements["texto"].name,
+      valorPropriedade: event.currentTarget.elements["texto"].value,
+    });
   };
 
   const handleCollapsePropriedades = (tipo, index, collapse) => {
@@ -171,14 +183,7 @@ export default function Propriedades() {
                                 >
                                   <form
                                     onSubmit={(event) => {
-                                      event.preventDefault();
-                                      dispatch({
-                                        type: "editarPropriedade",
-                                        tipo: z.dataRef,
-                                        nomeElemento: z.nome,
-                                        nomePropriedade: "texto",
-                                        valorPropriedade: event.target[0].value,
-                                      });
+                                      handleEditarPropriedade(event, z);
                                     }}
                                   >
                                     <TextField
