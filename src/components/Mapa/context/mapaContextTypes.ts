@@ -6,6 +6,8 @@ export type elementoPadrao = {
   collapse?: boolean;
   dataRef?: string;
   texto?: string;
+  color?: string;
+  draggable?: boolean;
 };
 export type elementoComPosition = {
   position: LatLng;

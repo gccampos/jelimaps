@@ -8,7 +8,7 @@ import {
   Circle,
   Rectangle,
 } from "react-leaflet";
-import { LatLngBounds, LatLng } from "leaflet";
+import { LatLngBounds, LatLng, divIcon } from "leaflet";
 import { useEffect, useMemo, useState } from "react";
 import React from "react";
 import CustomControlLeaflet, {
@@ -23,6 +23,8 @@ import { elementos } from "@/main/constants/elementos";
 import Elementos from "./Elementos";
 import AddMarker from "@/components/Mapa/AddMarker";
 import { PlaylistPlay } from "@mui/icons-material";
+import { LocationOn } from "@mui/icons-material";
+import ReactDOMServer from "react-dom/server";
 
 export const MODO_VISAO = {
   openstreetmap: "OpenStreetMap",
@@ -87,6 +89,19 @@ export default function Mapa() {
                 return x?.position ? (
                   <Marker
                     {...x}
+                    icon={divIcon({
+                      className: "",
+                      html: ReactDOMServer.renderToString(
+                        <LocationOn
+                          style={{
+                            color: x.color ?? "#0d6efd",
+                            position: "absolute",
+                            top: "-150%",
+                            left: "-67%",
+                          }}
+                        />
+                      ),
+                    })}
                     key={`marker#${i}`}
                     eventHandlers={{
                       click: () =>
