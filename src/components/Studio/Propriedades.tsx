@@ -163,36 +163,39 @@ export default function Propriedades() {
                                   </ListItemIcon>
                                 </ListItemButton>
                               </ListItem>
-                              <ListItem>
-                                <Collapse
-                                  in={!z.collapse}
-                                  timeout="auto"
-                                  unmountOnExit
-                                >
-                                  <form
-                                    onSubmit={(event) => {
-                                      event.preventDefault();
-                                      dispatch({
-                                        type: "editarPropriedade",
-                                        tipo: z.dataRef,
-                                        nomeElemento: z.nome,
-                                        nomePropriedade: "texto",
-                                        valorPropriedade: event.target[0].value,
-                                      });
-                                    }}
+                              {!z.collapse && (
+                                <ListItem>
+                                  <Collapse
+                                    in={!z.collapse}
+                                    timeout="auto"
+                                    unmountOnExit
                                   >
-                                    <TextField
-                                      multiline
-                                      defaultValue={z.texto}
-                                      label="Texto"
-                                      name="texto"
-                                    />
-                                    <IconButton type="submit">
-                                      <Save />
-                                    </IconButton>
-                                  </form>
-                                </Collapse>
-                              </ListItem>
+                                    <form
+                                      onSubmit={(event) => {
+                                        event.preventDefault();
+                                        dispatch({
+                                          type: "editarPropriedade",
+                                          tipo: z.dataRef,
+                                          nomeElemento: z.nome,
+                                          nomePropriedade: "texto",
+                                          valorPropriedade:
+                                            event.target[0].value,
+                                        });
+                                      }}
+                                    >
+                                      <TextField
+                                        multiline
+                                        defaultValue={z.texto}
+                                        label="Texto"
+                                        name="texto"
+                                      />
+                                      <IconButton type="submit">
+                                        <Save />
+                                      </IconButton>
+                                    </form>
+                                  </Collapse>
+                                </ListItem>
+                              )}
                             </>
                           ))}
                         </Collapse>
