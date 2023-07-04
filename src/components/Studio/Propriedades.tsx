@@ -175,29 +175,31 @@ export default function Propriedades() {
                                   </ListItemIcon>
                                 </ListItemButton>
                               </ListItem>
-                              <ListItem>
-                                <Collapse
-                                  in={!z.collapse}
-                                  timeout="auto"
-                                  unmountOnExit
-                                >
-                                  <form
-                                    onSubmit={(event) => {
-                                      handleEditarPropriedade(event, z);
-                                    }}
+                              {!z.collapse && (
+                                <ListItem>
+                                  <Collapse
+                                    in={!z.collapse}
+                                    timeout="auto"
+                                    unmountOnExit
                                   >
-                                    <TextField
-                                      multiline
-                                      defaultValue={z.texto}
-                                      label="Texto"
-                                      name="texto"
-                                    />
-                                    <IconButton type="submit">
-                                      <Save />
-                                    </IconButton>
-                                  </form>
-                                </Collapse>
-                              </ListItem>
+                                    <form
+                                      onSubmit={(event) => {
+                                        handleEditarPropriedade(event, z);
+                                      }}
+                                    >
+                                      <TextField
+                                        multiline
+                                        defaultValue={z.texto}
+                                        label="Texto"
+                                        name="texto"
+                                      />
+                                      <IconButton type="submit">
+                                        <Save />
+                                      </IconButton>
+                                    </form>
+                                  </Collapse>
+                                </ListItem>
+                              )}
                             </>
                           ))}
                         </Collapse>
