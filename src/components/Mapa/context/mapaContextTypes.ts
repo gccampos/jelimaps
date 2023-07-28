@@ -1,3 +1,4 @@
+import React from "react";
 import { elementoProto } from "@/main/constants/elementos";
 import { LatLng, LatLngBoundsExpression } from "leaflet";
 
@@ -8,6 +9,17 @@ export type elementoPadrao = {
   texto?: string;
   color?: string;
   draggable?: boolean;
+  propriedades?: propriedadeVisual[];
+};
+type periodoInicioFim = {
+  cenaFim: Date;
+  cenaInicio: Date;
+};
+type propriedadeVisual = periodoInicioFim & {
+  nome: string;
+  tipo: any;
+  valor: any;
+  form: React.ReactNode;
 };
 export type elementoComPosition = {
   position: LatLng;
