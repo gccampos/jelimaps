@@ -24,7 +24,7 @@ const Studio = () => {
     <Grid container sx={{ height: "100%" }} id="studioMapa">
       <Grid item container xs={12}>
         <Mapa altura={height - altura} />
-        <Propriedades />
+        <Propriedades altura={height - altura} />
       </Grid>
       <Rnd
         ref={(c) => {

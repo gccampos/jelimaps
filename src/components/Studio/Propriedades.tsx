@@ -23,6 +23,7 @@ import Menu from "@mui/icons-material/Menu";
 import { Rnd } from "react-rnd";
 import AlignVerticalCenterIcon from "@mui/icons-material/AlignVerticalCenter";
 import { elementoPadrao } from "../Mapa/context/mapaContextTypes";
+import useWindowDimensions from "./useWindowDimensions";
 
 const WrapperStyled = styled("div")``;
 
@@ -32,8 +33,10 @@ const Dragger = styled("div")`
 `;
 
 export default function Propriedades(props: { altura: number }) {
+  const { width } = useWindowDimensions();
   const mapaContext = useMapaContext();
   const dispatch = useMapaDispatch();
+  const [rndRef, setRndRef] = useState<Rnd>();
 
   const [larguraPropriedades, setLargurasPropriedades] = useState(250);
 
@@ -68,14 +71,18 @@ export default function Propriedades(props: { altura: number }) {
         <div
           style={{
             width: larguraPropriedades,
-            maxWidth: 500,
-            minWidth: 190,
+            maxWidth: width * 0.6,
+            minWidth: width * 0.1,
             height: props.altura,
           }}
+          id="foraDIv"
         >
           <Rnd
-            maxWidth={500}
-            minWidth={190}
+            ref={(r) => {
+              setRndRef(r);
+            }}
+            maxWidth={width * 0.6}
+            minWidth={width * 0.1}
             resizeHandleStyles={{
               right: displaYNoneStyle,
               topLeft: displaYNoneStyle,
@@ -100,9 +107,11 @@ export default function Propriedades(props: { altura: number }) {
                 </Dragger>
               ),
             }}
-            size={{ height: 580, width: larguraPropriedades }}
+            size={{ height: props.altura, width: larguraPropriedades }}
             disableDragging
             onResize={(e, dir, ref) => {
+              if (rndRef && rndRef.updatePosition)
+                rndRef?.updatePosition({ x: width - ref.offsetWidth, y: 0 });
               setLargurasPropriedades(ref.offsetWidth);
             }}
           >
