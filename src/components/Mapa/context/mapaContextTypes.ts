@@ -1,8 +1,10 @@
 import React from "react";
 import { elementoProto } from "@/main/constants/elementos";
 import { LatLng, LatLngBoundsExpression } from "leaflet";
+import { UUID } from "crypto";
 
 export type elementoPadrao = periodoInicioFim & {
+  uuid: UUID;
   nome: string;
   collapse?: boolean;
   dataRef?: string;

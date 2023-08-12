@@ -9,7 +9,8 @@ import {
   markerType,
 } from "./mapaContextTypes";
 import { LatLng, LatLngBounds } from "leaflet";
-import { v4 as uuidv4 } from "uuid";
+//import { v4 as uuidv4 } from "uuid";
+import { randomUUID } from "crypto";
 
 const changeElementoInteracao = (
   oldMapaContext: mapaContextSchema,
@@ -40,7 +41,7 @@ const addElementoMarker = (
     dataRef,
     nome: `marker#${oldMapaContext.conteudo?.Marker?.length + 1 || 1}`,
     texto: "",
-    id: uuidv4(),
+    uuid: randomUUID(),
     ...padraoPeriodoMapaContext(oldMapaContext),
   };
 
@@ -112,7 +113,7 @@ const retornarElementoPositionsFromMarkersDataRef = (
     ).map<LatLng>((x) => x.position),
     dataRef: nomeElemento,
     nome: `${nomeElemento}#${arrayElemento?.length + 1 || 1}`,
-    id: uuidv4(),
+    uuid: randomUUID(),
     ...padraoPeriodoMapaContext(oldMapaContext),
   };
 };
