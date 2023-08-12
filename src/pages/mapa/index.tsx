@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import dynamic from "next/dynamic";
 import "leaflet/dist/leaflet.css";
 import React from "react";
-import DefaultTemplate from "@/main/template/DefaultTemplate";
+//import DefaultTemplate from "@/main/template/DefaultTemplate";
 import { MapaProvider } from "@/components/Mapa/context/MapaContext";
 // import ModoVisaoDialog from "@/components/Mapa/ModoVisaoDialog/ModoVisaoDialog";
 
@@ -21,13 +21,13 @@ export default function Mapa() {
     console.log("outerHeight", window.outerHeight);
   }, []);
   return (
-    <DefaultTemplate>
-      <main style={{ height: "100%" }}>
-        <MapaProvider>
-          <ModoVisaoDialog />
-          <Studio />
-        </MapaProvider>
-      </main>
-    </DefaultTemplate>
+    // <DefaultTemplate>
+    <main style={{ height: "100%" }}>
+      <MapaProvider>
+        <ModoVisaoDialog />
+        <Studio />
+      </MapaProvider>
+    </main>
+    // </DefaultTemplate>
   );
 }

@@ -2,6 +2,7 @@ import { elementoProto, elementos } from "@/main/constants/elementos";
 import {
   CircleType,
   RectangleType,
+  elementoComPosition,
   elementoComPositions,
   elementoPadrao,
   mapaContextSchema,
@@ -21,26 +22,31 @@ const changeElemento = (
     },
   };
 };
+const padraoPeriodoMapaContext = (oldMapaContext: mapaContextSchema) => {
+  return {
+    cenaInicio: oldMapaContext.cenaInicio,
+    cenaFim: oldMapaContext.cenaFim,
+  };
+};
 
 const addElementoMarker = (
   oldMapaContext: mapaContextSchema,
   position: LatLng,
   dataRef: string
 ): mapaContextSchema => {
-  const newMarker = {
+  const newMarker: elementoComPosition = {
     position,
     dataRef,
     nome: `marker#${oldMapaContext.conteudo?.Marker?.length + 1 || 1}`,
     texto: "",
+    ...padraoPeriodoMapaContext(oldMapaContext),
   };
+
+  oldMapaContext.conteudo.Marker = oldMapaContext.conteudo?.Marker
+    ? [...oldMapaContext.conteudo.Marker, newMarker]
+    : [newMarker];
   return {
     ...oldMapaContext,
-    conteudo: {
-      ...oldMapaContext.conteudo,
-      Marker: oldMapaContext.conteudo?.Marker
-        ? [...oldMapaContext.conteudo.Marker, newMarker]
-        : [newMarker],
-    },
   };
 };
 
@@ -100,9 +106,10 @@ const retornarElementoPositionsFromMarkersDataRef = (
   return {
     positions: oldMapaContext.conteudo.Marker.filter(
       (x) => x.dataRef === nomeElemento
-    ).map((x) => x.position),
+    ).map<LatLng>((x) => x.position),
     dataRef: nomeElemento,
     nome: `${nomeElemento}#${arrayElemento?.length + 1 || 1}`,
+    ...padraoPeriodoMapaContext(oldMapaContext),
   };
 };
 

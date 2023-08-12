@@ -2,7 +2,7 @@ import React from "react";
 import { elementoProto } from "@/main/constants/elementos";
 import { LatLng, LatLngBoundsExpression } from "leaflet";
 
-export type elementoPadrao = {
+export type elementoPadrao = periodoInicioFim & {
   nome: string;
   collapse?: boolean;
   dataRef?: string;
@@ -34,7 +34,7 @@ export type elementoComPositions = {
 export type elementoComBounds = {
   bounds: LatLngBoundsExpression;
 } & elementoPadrao;
-export type mapaContextSchema = {
+export type mapaContextSchema = periodoInicioFim & {
   elementoAdd: elementoProto;
   slidePropriedade: boolean;
   modoVisao?: string;

@@ -22,8 +22,7 @@ import { Fab, Grid } from "@mui/material";
 import { elementos } from "@/main/constants/elementos";
 import Elementos from "./Elementos";
 import AddMarker from "@/components/Mapa/AddMarker";
-import { PlaylistPlay } from "@mui/icons-material";
-import { LocationOn } from "@mui/icons-material";
+import { PlaylistPlay, LocationOn } from "@mui/icons-material";
 import ReactDOMServer from "react-dom/server";
 
 export const MODO_VISAO = {
@@ -31,7 +30,7 @@ export const MODO_VISAO = {
   mapaProprio: "Mapa Próprio",
 };
 
-export default function Mapa() {
+export default function Mapa(props: { altura: number }) {
   const [isMounted, setIsMounted] = React.useState(false);
   const [map, setMap] = useState(null);
   const mapaContext = useMapaContext();
@@ -71,7 +70,7 @@ export default function Mapa() {
   return (
     isMounted && (
       <Grid item xs>
-        <div style={{ height: "580px", display: "grid" }}>
+        <div style={{ height: props.altura, display: "grid" }}>
           <MapContainer center={center} zoom={zoom} ref={setMap} maxZoom={18}>
             {mapaContext.modoVisao === MODO_VISAO.openstreetmap && (
               <TileLayer

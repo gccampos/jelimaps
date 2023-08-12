@@ -31,7 +31,7 @@ const Dragger = styled("div")`
   height: 100%;
 `;
 
-export default function Propriedades() {
+export default function Propriedades(props: { altura: number }) {
   const mapaContext = useMapaContext();
   const dispatch = useMapaDispatch();
 
@@ -70,7 +70,7 @@ export default function Propriedades() {
             width: larguraPropriedades,
             maxWidth: 500,
             minWidth: 190,
-            height: "580px",
+            height: props.altura,
           }}
         >
           <Rnd
