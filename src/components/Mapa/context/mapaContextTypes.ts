@@ -35,7 +35,8 @@ export type elementoComBounds = {
   bounds: LatLngBoundsExpression;
 } & elementoPadrao;
 export type mapaContextSchema = periodoInicioFim & {
-  elementoAdd: elementoProto;
+  elementoInteracao: elementoProto;
+  conteudoInteracao?: elementoPadrao;
   slidePropriedade: boolean;
   modoVisao?: string;
   conteudo: conteudoType & {

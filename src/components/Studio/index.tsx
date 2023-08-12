@@ -1,10 +1,15 @@
 import React, { useState } from "react";
 import Propriedades from "./Propriedades";
 import LinhaTempo from "./LinhaTempo";
-import { Grid } from "@mui/material";
+import { Chip, Grid, styled } from "@mui/material";
+import { AlignHorizontalCenter } from "@mui/icons-material";
 import Mapa from "./Mapa";
 import { Rnd } from "react-rnd";
 import useWindowDimensions from "./useWindowDimensions";
+
+const Dragger = styled("div")`
+  cursor: n-resize;
+`;
 
 const Studio = () => {
   const { height } = useWindowDimensions();
@@ -36,6 +41,20 @@ const Studio = () => {
         size={{ height: altura, width: "100%" }}
         disableDragging
         position={{ y: height - altura, x: 0 }}
+        resizeHandleComponent={{
+          top: (
+            <Dragger
+              id="oi"
+              sx={{
+                borderStyle: "outset",
+                borderBottom: 2,
+                height: 7,
+                backgroundColor: "grey",
+                marginTop: 0.6,
+              }}
+            ></Dragger>
+          ),
+        }}
         onResize={(e, dir, ref) => {
           if (rndRef && rndRef.updatePosition)
             rndRef?.updatePosition({ x: 0, y: height - ref.offsetHeight });

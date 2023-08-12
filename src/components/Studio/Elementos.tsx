@@ -13,15 +13,15 @@ export default function Elementos() {
 
   const handleClick = (elemento) => {
     setOpen(!open);
-    mapaContext?.elementoAdd?.nome == elemento.nome
-      ? dispatch({ type: "elementos", arg: elementos.Hand })
-      : dispatch({ type: "elementos", arg: elemento });
+    mapaContext?.elementoInteracao?.nome == elemento.nome
+      ? dispatch({ type: "selecionarElementoInteracao", arg: elementos.Hand })
+      : dispatch({ type: "selecionarElementoInteracao", arg: elemento });
   };
 
   return (
     <SpeedDial
       ariaLabel=""
-      icon={<SpeedDialIcon icon={mapaContext?.elementoAdd?.icon} />}
+      icon={<SpeedDialIcon icon={mapaContext?.elementoInteracao?.icon} />}
       open={open}
       onClick={() => setOpen(!open)}
     >

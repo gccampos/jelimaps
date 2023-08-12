@@ -9,15 +9,16 @@ import {
   markerType,
 } from "./mapaContextTypes";
 import { LatLng, LatLngBounds } from "leaflet";
+import { v4 as uuidv4 } from "uuid";
 
-const changeElemento = (
+const changeElementoInteracao = (
   oldMapaContext: mapaContextSchema,
   elemento: elementoProto
 ): mapaContextSchema => {
   return {
     ...oldMapaContext,
-    elementoAdd: {
-      ...oldMapaContext.elementoAdd,
+    elementoInteracao: {
+      ...oldMapaContext.elementoInteracao,
       ...elemento,
     },
   };
@@ -39,9 +40,11 @@ const addElementoMarker = (
     dataRef,
     nome: `marker#${oldMapaContext.conteudo?.Marker?.length + 1 || 1}`,
     texto: "",
+    id: uuidv4(),
     ...padraoPeriodoMapaContext(oldMapaContext),
   };
 
+  oldMapaContext.conteudoInteracao = newMarker;
   oldMapaContext.conteudo.Marker = oldMapaContext.conteudo?.Marker
     ? [...oldMapaContext.conteudo.Marker, newMarker]
     : [newMarker];
@@ -109,6 +112,7 @@ const retornarElementoPositionsFromMarkersDataRef = (
     ).map<LatLng>((x) => x.position),
     dataRef: nomeElemento,
     nome: `${nomeElemento}#${arrayElemento?.length + 1 || 1}`,
+    id: uuidv4(),
     ...padraoPeriodoMapaContext(oldMapaContext),
   };
 };
@@ -225,7 +229,7 @@ const editarPropriedadeElemento = (
 };
 
 const MapaFunctionHelpers = {
-  changeElemento,
+  changeElementoInteracao,
   addElementoMarker,
   addElementoFromMarkers,
   addElementoCirculo,

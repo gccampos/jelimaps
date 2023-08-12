@@ -5,7 +5,7 @@ import { elementos } from "@/main/constants/elementos";
 import { mapaContextSchema, actionContextChange } from "./mapaContextTypes";
 
 const initialMapaContexto: mapaContextSchema = {
-  elementoAdd: elementos.Hand,
+  elementoInteracao: elementos.Hand,
   slidePropriedade: false,
   conteudo: {},
   cenaFim: null,

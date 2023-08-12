@@ -21,7 +21,7 @@ import {
 import { Fab, Grid } from "@mui/material";
 import { elementos } from "@/main/constants/elementos";
 import Elementos from "./Elementos";
-import AddMarker from "@/components/Mapa/AddMarker";
+import AddElementoInteracao from "@/components/Mapa/AddMarker";
 import { PlaylistPlay, LocationOn } from "@mui/icons-material";
 import ReactDOMServer from "react-dom/server";
 
@@ -104,12 +104,12 @@ export default function Mapa(props: { altura: number }) {
                     key={`marker#${i}`}
                     eventHandlers={{
                       click: () =>
-                        mapaContext.elementoAdd?.nome !==
+                        mapaContext.elementoInteracao?.nome !==
                           elementos.Marker.nome &&
-                        x.dataRef === mapaContext.elementoAdd?.nome
+                        x.dataRef === mapaContext.elementoInteracao?.nome
                           ? dispatch({
                               type: `add${x.dataRef}`,
-                              tipo: mapaContext.elementoAdd.nome,
+                              tipo: mapaContext.elementoInteracao.nome,
                               posicao: x.position,
                             })
                           : cliqueElementoNoMapa(x),
@@ -206,7 +206,7 @@ export default function Mapa(props: { altura: number }) {
                 />
               </Fab>
             </CustomControlLeaflet>
-            <AddMarker />
+            <AddElementoInteracao />
           </MapContainer>
         </div>
       </Grid>

@@ -9,11 +9,14 @@ export function mapaReducer(
     case "modoVisao": {
       return { ...oldMapaContext, modoVisao: action.tipo };
     }
-    case "elementos": {
-      return MapaFunctionHelpers.changeElemento(oldMapaContext, action.arg);
+    case "selecionarElementoInteracao": {
+      return MapaFunctionHelpers.changeElementoInteracao(
+        oldMapaContext,
+        action.arg
+      );
     }
     case "desativarElementos": {
-      return MapaFunctionHelpers.changeElemento(oldMapaContext, null);
+      return MapaFunctionHelpers.changeElementoInteracao(oldMapaContext, null);
     }
     case "addMarker": {
       return MapaFunctionHelpers.addElementoMarker(
