@@ -39,11 +39,11 @@ export type mapaContextSchema = periodoInicioFim & {
   slidePropriedade: boolean;
   modoVisao?: string;
   conteudo: conteudoType & {
-    Marker: markerType;
-    Polyline: PolylineType;
-    Polygon: PolygonType;
-    Circle: CircleType;
-    Rectangle: RectangleType;
+    Marker?: markerType;
+    Polyline?: PolylineType;
+    Polygon?: PolygonType;
+    Circle?: CircleType;
+    Rectangle?: RectangleType;
   };
 };
 type conteudoType = {

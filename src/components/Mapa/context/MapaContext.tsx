@@ -7,7 +7,7 @@ import { mapaContextSchema, actionContextChange } from "./mapaContextTypes";
 const initialMapaContexto: mapaContextSchema = {
   elementoAdd: elementos.Hand,
   slidePropriedade: false,
-  conteudo: null,
+  conteudo: {},
   cenaFim: null,
   cenaInicio: null,
 };
