@@ -19,23 +19,13 @@ export function mapaReducer(
       return MapaFunctionHelpers.changeElementoInteracao(oldMapaContext, null);
     }
     case "addMarker": {
-      return MapaFunctionHelpers.addElementoMarker(
-        oldMapaContext,
-        action.posicao,
-        action.tipo
-      );
+      return MapaFunctionHelpers.addElementoMarker(oldMapaContext, action);
     }
     case "addPolyline": {
-      return MapaFunctionHelpers.addElementoFromMarkers(
-        oldMapaContext,
-        action.tipo
-      );
+      return MapaFunctionHelpers.addElementoFromMarkers(oldMapaContext, action);
     }
     case "addPolygon": {
-      return MapaFunctionHelpers.addElementoFromMarkers(
-        oldMapaContext,
-        action.tipo
-      );
+      return MapaFunctionHelpers.addElementoFromMarkers(oldMapaContext, action);
     }
     case "addCircle": {
       return MapaFunctionHelpers.addElementoCirculo(

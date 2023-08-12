@@ -1,10 +1,10 @@
 import React from "react";
 import { elementoProto } from "@/main/constants/elementos";
 import { LatLng, LatLngBoundsExpression } from "leaflet";
-import { UUID } from "crypto";
+import { NIL } from "uuid";
 
 export type elementoPadrao = periodoInicioFim & {
-  uuid: UUID;
+  uuid: NIL;
   nome: string;
   collapse?: boolean;
   dataRef?: string;
@@ -64,6 +64,7 @@ type arrayElementoGenerico<T> = basePrototypeArray & T[];
 
 export type actionContextChange = {
   type: string;
+  uuid?: NIL;
   arg?: elementoProto;
   tipo?: string;
   posicao?: LatLng;

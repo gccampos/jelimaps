@@ -2,6 +2,7 @@ import { elementoProto, elementos } from "@/main/constants/elementos";
 import {
   CircleType,
   RectangleType,
+  actionContextChange,
   elementoComPosition,
   elementoComPositions,
   elementoPadrao,
@@ -9,8 +10,7 @@ import {
   markerType,
 } from "./mapaContextTypes";
 import { LatLng, LatLngBounds } from "leaflet";
-//import { v4 as uuidv4 } from "uuid";
-import { randomUUID } from "crypto";
+import { v4 } from "uuid";
 
 const changeElementoInteracao = (
   oldMapaContext: mapaContextSchema,
@@ -33,15 +33,14 @@ const padraoPeriodoMapaContext = (oldMapaContext: mapaContextSchema) => {
 
 const addElementoMarker = (
   oldMapaContext: mapaContextSchema,
-  position: LatLng,
-  dataRef: string
+  actionContext: actionContextChange
 ): mapaContextSchema => {
   const newMarker: elementoComPosition = {
-    position,
-    dataRef,
+    position: actionContext.posicao,
+    dataRef: actionContext.tipo,
     nome: `marker#${oldMapaContext.conteudo?.Marker?.length + 1 || 1}`,
     texto: "",
-    uuid: randomUUID(),
+    uuid: v4(),
     ...padraoPeriodoMapaContext(oldMapaContext),
   };
 
@@ -104,8 +103,9 @@ const removerMarkersReferenciados = (
 
 const retornarElementoPositionsFromMarkersDataRef = (
   oldMapaContext: mapaContextSchema,
-  nomeElemento: string
+  actionContext: actionContextChange
 ): elementoComPositions => {
+  const { nomeElemento } = actionContext;
   const arrayElemento = oldMapaContext.conteudo[nomeElemento];
   return {
     positions: oldMapaContext.conteudo.Marker.filter(
@@ -113,7 +113,7 @@ const retornarElementoPositionsFromMarkersDataRef = (
     ).map<LatLng>((x) => x.position),
     dataRef: nomeElemento,
     nome: `${nomeElemento}#${arrayElemento?.length + 1 || 1}`,
-    uuid: randomUUID(),
+    uuid: v4(),
     ...padraoPeriodoMapaContext(oldMapaContext),
   };
 };
@@ -172,11 +172,12 @@ const addElementoQuadrilatero = (
 
 const addElementoFromMarkers = (
   oldMapaContext: mapaContextSchema,
-  nomeElemento: string
+  actionContextChange: actionContextChange
 ): mapaContextSchema => {
+  const { nomeElemento } = actionContextChange;
   const newElemento = retornarElementoPositionsFromMarkersDataRef(
     oldMapaContext,
-    nomeElemento
+    actionContextChange
   );
 
   return {

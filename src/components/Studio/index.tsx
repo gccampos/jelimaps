@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import Propriedades from "./Propriedades";
 import LinhaTempo from "./LinhaTempo";
-import { Chip, Grid, styled } from "@mui/material";
-import { AlignHorizontalCenter } from "@mui/icons-material";
+import { Grid, styled } from "@mui/material";
 import Mapa from "./Mapa";
 import { Rnd } from "react-rnd";
 import useWindowDimensions from "./useWindowDimensions";
