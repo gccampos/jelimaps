@@ -19,9 +19,8 @@ import {
   useMapaDispatch,
 } from "@/components/Mapa/context/MapaContext";
 import { Fab, Grid } from "@mui/material";
-import { elementos } from "@/main/constants/elementos";
 import Elementos from "./Elementos";
-import AddElementoInteracao from "@/components/Mapa/AddMarker";
+import AddElementoInteracao from "@/components/Mapa/AddElementoInteracao";
 import { PlaylistPlay, LocationOn } from "@mui/icons-material";
 import ReactDOMServer from "react-dom/server";
 
@@ -58,15 +57,22 @@ export default function Mapa(props: { altura: number }) {
 
   const bounds = new LatLngBounds([0, 0], [1, 1.5]);
 
-  const cliqueElementoNoMapa = (elemento) => {
-    console.log("evento cliqueElementoNoMapa", elemento);
-    // TODO: focar na propriedade
+  const cliqueElementoNoMapa = (elemento, evento) => {
+    if (evento.originalEvent.shiftKey)
+      dispatch({ type: "adicionarElementoFoco", elemento: elemento });
+    else dispatch({ type: "selecionarElementoFoco", elemento: elemento });
   };
 
   useEffect(() => {
     console.log("conteudo do mapa", mapaContext.conteudo);
-  }, [mapaContext.conteudo]);
+  }, [mapaContext.conteudo, mapaContext.elementoFoco]);
 
+  const corItemSelecionadoFoco = (el) => {
+    return mapaContext.elementoFoco?.uuid === el.uuid ||
+      mapaContext.elementosFoco?.some((x) => x.uuid === el.uuid)
+      ? "#000000"
+      : el.color ?? "#0d6efd";
+  };
   return (
     isMounted && (
       <Grid item xs>
@@ -84,8 +90,8 @@ export default function Mapa(props: { altura: number }) {
             {mapaContext.conteudo &&
               mapaContext.conteudo.Marker &&
               mapaContext.conteudo.Marker.length > 0 &&
-              mapaContext.conteudo.Marker.map((x, i) => {
-                return x?.position ? (
+              mapaContext.conteudo.Marker.map((x, i, arr) => {
+                return (
                   <Marker
                     {...x}
                     icon={divIcon({
@@ -93,7 +99,7 @@ export default function Mapa(props: { altura: number }) {
                       html: ReactDOMServer.renderToString(
                         <LocationOn
                           style={{
-                            color: x.color ?? "#0d6efd",
+                            color: corItemSelecionadoFoco(x),
                             position: "absolute",
                             top: "-150%",
                             left: "-67%",
@@ -103,37 +109,31 @@ export default function Mapa(props: { altura: number }) {
                     })}
                     key={`marker#${i}`}
                     eventHandlers={{
-                      click: () =>
-                        mapaContext.elementoInteracao?.nome !==
-                          elementos.Marker.nome &&
-                        x.dataRef === mapaContext.elementoInteracao?.nome
-                          ? dispatch({
-                              type: `add${x.dataRef}`,
-                              tipo: mapaContext.elementoInteracao.nome,
-                              posicao: x.position,
-                            })
-                          : cliqueElementoNoMapa(x),
+                      click: (e) => cliqueElementoNoMapa(arr[i], e),
                     }}
                   >
                     {/* <Popup>
                       A pretty CSS3 popup. <br /> Easily customizable.
                     </Popup> */}
                   </Marker>
-                ) : null;
+                );
               })}
             {mapaContext.conteudo &&
               mapaContext.conteudo.Polyline &&
               mapaContext.conteudo.Polyline.length > 0 &&
-              mapaContext.conteudo.Polyline.map((x, i) => {
-                return x?.positions ? (
+              mapaContext.conteudo.Polyline.map((x, i, arr) => {
+                return (
                   <Polyline
                     {...x}
+                    pathOptions={{
+                      color: corItemSelecionadoFoco(x),
+                    }}
                     key={`polyline#${i}`}
                     eventHandlers={{
-                      click: () => cliqueElementoNoMapa(x),
+                      click: (e) => cliqueElementoNoMapa(arr[i], e),
                     }}
                   ></Polyline>
-                ) : null;
+                );
               })}
             {mapaContext.conteudo &&
               mapaContext.conteudo.Polygon &&
@@ -142,9 +142,12 @@ export default function Mapa(props: { altura: number }) {
                 return x?.positions ? (
                   <Polygon
                     {...x}
+                    pathOptions={{
+                      color: corItemSelecionadoFoco(x),
+                    }}
                     key={`polygon#${i}`}
                     eventHandlers={{
-                      click: () => cliqueElementoNoMapa(x),
+                      click: (e) => cliqueElementoNoMapa(x, e),
                     }}
                   ></Polygon>
                 ) : null;
@@ -156,9 +159,12 @@ export default function Mapa(props: { altura: number }) {
                 return x?.center ? (
                   <Circle
                     {...x}
+                    pathOptions={{
+                      color: corItemSelecionadoFoco(x),
+                    }}
                     key={`circle#${i}`}
                     eventHandlers={{
-                      click: () => cliqueElementoNoMapa(x),
+                      click: (e) => cliqueElementoNoMapa(x, e),
                     }}
                   >
                     {/* <Popup>
@@ -176,7 +182,7 @@ export default function Mapa(props: { altura: number }) {
                     {...x}
                     key={`Rectangle#${i}`}
                     eventHandlers={{
-                      click: () => cliqueElementoNoMapa(x),
+                      click: (e) => cliqueElementoNoMapa(x, e),
                     }}
                   >
                     {/* <Popup>

@@ -38,7 +38,8 @@ export type elementoComBounds = {
 } & elementoPadrao;
 export type mapaContextSchema = periodoInicioFim & {
   elementoInteracao: elementoProto;
-  conteudoInteracao?: elementoPadrao;
+  elementoFoco?: elementoPadrao;
+  elementosFoco?: elementoPadrao[];
   slidePropriedade: boolean;
   modoVisao?: string;
   conteudo: conteudoType & {
@@ -66,6 +67,11 @@ export type actionContextChange = {
   type: string;
   uuid?: NIL;
   arg?: elementoProto;
+  elemento?:
+    | elementoPadrao
+    | elementoComPosition
+    | elementoComPositions
+    | elementoComBounds;
   tipo?: string;
   posicao?: LatLng;
   indiceElemento?: number;

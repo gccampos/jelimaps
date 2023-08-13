@@ -3,7 +3,6 @@ import {
   PanToolAlt,
   ShowChart,
   RadioButtonUnchecked,
-  Crop54,
 } from "@mui/icons-material";
 import polygonIcon from "public/assets/polygonIcon.svg";
 import SvgIcon from "@mui/material/SvgIcon";
@@ -37,9 +36,9 @@ export const elementos: { [key: string]: elementoProto } = {
     label: "Insira um Círculo no mapa",
     icon: <RadioButtonUnchecked />,
   } as elementoProto,
-  Rectangle: {
-    nome: "Rectangle",
-    label: "Insira um Retângulo no mapa",
-    icon: <Crop54 />,
-  } as elementoProto,
+  // Rectangle: {
+  //   nome: "Rectangle",
+  //   label: "Insira um Retângulo no mapa",
+  //   icon: <Crop54 />,
+  // } as elementoProto,
 };

@@ -43,12 +43,11 @@ const Studio = () => {
         resizeHandleComponent={{
           top: (
             <Dragger
-              id="oi"
               sx={{
                 borderStyle: "outset",
                 borderBottom: 2,
-                height: 7,
-                backgroundColor: "grey",
+                height: 10,
+                backgroundColor: "#e2e2e2",
                 marginTop: 0.6,
               }}
             ></Dragger>

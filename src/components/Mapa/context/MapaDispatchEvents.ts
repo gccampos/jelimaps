@@ -15,6 +15,12 @@ export function mapaReducer(
         action.arg
       );
     }
+    case "adicionarElementoFoco": {
+      return MapaFunctionHelpers.changeElementosFoco(oldMapaContext, action);
+    }
+    case "selecionarElementoFoco": {
+      return MapaFunctionHelpers.changeElementoFoco(oldMapaContext, action);
+    }
     case "desativarElementos": {
       return MapaFunctionHelpers.changeElementoInteracao(oldMapaContext, null);
     }
@@ -22,24 +28,20 @@ export function mapaReducer(
       return MapaFunctionHelpers.addElementoMarker(oldMapaContext, action);
     }
     case "addPolyline": {
-      return MapaFunctionHelpers.addElementoFromMarkers(oldMapaContext, action);
+      return MapaFunctionHelpers.addElementoPolyline(oldMapaContext, action);
     }
     case "addPolygon": {
-      return MapaFunctionHelpers.addElementoFromMarkers(oldMapaContext, action);
+      return MapaFunctionHelpers.addElementoPolygon(oldMapaContext, action);
     }
     case "addCircle": {
-      return MapaFunctionHelpers.addElementoCirculo(
-        oldMapaContext,
-        action.posicao,
-        action.tipo
-      );
+      return MapaFunctionHelpers.addElementoCirculo(oldMapaContext, action);
     }
-    case "addRectangle": {
-      return MapaFunctionHelpers.addElementoQuadrilatero(
-        oldMapaContext,
-        action.tipo
-      );
-    }
+    // case "addRectangle": {
+    //   return MapaFunctionHelpers.addElementoQuadrilatero(
+    //     oldMapaContext,
+    //     action
+    //   );
+    // }
     case "propriedadeToggle": {
       return {
         ...oldMapaContext,

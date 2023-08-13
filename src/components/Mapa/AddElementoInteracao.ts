@@ -1,6 +1,7 @@
 import { elementos } from "@/main/constants/elementos";
 import { useMapaContext, useMapaDispatch } from "./context/MapaContext";
 import { useMapEvents } from "react-leaflet";
+import { LeafletEventHandlerFnMap } from "leaflet";
 
 function isControlLeafLet(node) {
   return node.tagName === "path" ||
@@ -20,23 +21,17 @@ function AddElementoInteracao() {
   const mapaContext = useMapaContext();
   const dispatch = useMapaDispatch();
 
-  function interagirMapa(nomeElemento: string) {
-    switch (nomeElemento) {
-      case elementos.Marker.nome:
-        return {
-          click(e) {
-            if (!isControlLeafLet(e.originalEvent.target))
-              dispatch({
-                type: "addMarker",
-                tipo: nomeElemento,
-                posicao: e.latlng,
-              });
-          },
-        };
-
-      default:
-        break;
-    }
+  function interagirMapa(nomeElemento: string): LeafletEventHandlerFnMap {
+    return {
+      click(e) {
+        if (!isControlLeafLet(e.originalEvent.target))
+          dispatch({
+            type: `add${nomeElemento}`,
+            tipo: nomeElemento,
+            posicao: e.latlng,
+          });
+      },
+    };
   }
 
   useMapEvents(
