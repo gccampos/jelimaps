@@ -6,20 +6,21 @@ import {
   ListItem,
   ListItemButton,
   ListItemIcon,
+  Typography,
 } from "@mui/material";
-//import Image from "next/image";
-//import timeline from "public/timeline.png";
 import { useMapaContext, useMapaDispatch } from "../Mapa/context/MapaContext";
 import { Delete, Menu } from "@mui/icons-material";
 import { elementoPadrao } from "../Mapa/context/mapaContextTypes";
 import { ReactSortable } from "react-sortablejs";
 import styled from "@emotion/styled";
+// import useWindowDimensions from "./useWindowDimensions";
 
 const SortableDiv = styled.div``;
 
 export default function LinhaTempo() {
   const mapaContext = useMapaContext();
   const dispatch = useMapaDispatch();
+  // const { width } = useWindowDimensions();
   const [listaElementos, setListaElementos] = useState<elementoPadrao[]>(
     Object.keys(mapaContext?.conteudo)
       .map((x) => mapaContext?.conteudo[x])
@@ -41,50 +42,73 @@ export default function LinhaTempo() {
 
   function SortableItem(props) {
     return (
-      <ListItem
-        sx={{
-          paddingLeft: 0,
-          backgroundColor: corItemSelecionadoFoco(props.elemento),
-        }}
-        secondaryAction={
-          <IconButton
-            edge="end"
-            aria-label="delete"
-            onClick={() => {
-              dispatch({
-                type: "removeElement",
-                tipo: props.elemento.dataRef,
-                indiceElemento: props.numero,
-                nomeElemento: props.elemento.nome,
-              });
-            }}
-          >
-            <Delete />
-          </IconButton>
-        }
-      >
-        <ListItemButton
-          onClick={
-            (e) => {
+      <>
+        <ListItem
+          sx={{
+            paddingLeft: 0,
+            backgroundColor: corItemSelecionadoFoco(props.elemento),
+          }}
+        >
+          <ListItemButton
+            sx={{ maxWidth: 155 }}
+            onClick={(e) => {
               console.log(e);
               cliqueElementoNoMapa(props.elemento, e);
-            }
-            //handleCollapsePropriedades(x, il, !z.collapse)
-          }
-        >
-          <ListItemIcon className="handle-sortable">
-            <Menu />
-            {props.elemento.nome}
+            }}
+          >
+            <ListItemIcon className="handle-sortable">
+              <Menu />
+            </ListItemIcon>
+            <Typography>{props.elemento.nome}</Typography>
+          </ListItemButton>
+          <ListItemIcon>
+            <IconButton
+              edge="end"
+              aria-label="delete"
+              onClick={() => {
+                dispatch({
+                  type: "removeElement",
+                  tipo: props.elemento.dataRef,
+                  indiceElemento: props.numero,
+                  nomeElemento: props.elemento.nome,
+                });
+              }}
+            >
+              <Delete />
+            </IconButton>
           </ListItemIcon>
-        </ListItemButton>
+          <Grid
+            item
+            xs={12}
+            sx={{
+              height: "100%",
+              display: "contents",
+              marginLeft: 2,
+              "&:before": {
+                content: '""',
+                position: "absolute",
+                height: "100%",
+                width: "1px",
+                left: 200,
+                bgcolor: "#6e7073bf",
+              },
+            }}
+          >
+            {/* TODO: Fazer o preenchimento da linha do tempo com cenaInicio e cenaFim  */}
+            <Typography>oi</Typography>
+          </Grid>
+        </ListItem>
+
         <Divider />
-      </ListItem>
+      </>
     );
   }
 
   useEffect(() => {
     setListaElementos((lista) => [
-      ...lista,
+      ...lista.filter((x) =>
+        mapaContext?.conteudo[x.dataRef].some((z) => z.id === x.id)
+      ),
       ...Object.keys(mapaContext?.conteudo)
         .map((x) => mapaContext?.conteudo[x])
         .flat()
@@ -117,6 +141,8 @@ export default function LinhaTempo() {
         handle=".handle-sortable"
         style={{ height: "100%", overflowY: "scroll" }}
         scroll={true}
+        direction={"vertical"}
+        animation={0}
       >
         {listaElementos &&
           listaElementos.map((z, il) => {

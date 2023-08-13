@@ -48,7 +48,7 @@ const Studio = () => {
               sx={{
                 borderStyle: "outset",
                 borderBottom: 2,
-                height: 13,
+                height: 20,
                 backgroundColor: "#e2e2e2",
                 marginTop: 0.6,
               }}
@@ -65,7 +65,7 @@ const Studio = () => {
           item
           container
           xs={12}
-          mt={1.4}
+          mt={2.2}
           sx={{ height: "95%", maxHeight: altura }}
         >
           <LinhaTempo />
