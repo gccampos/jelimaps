@@ -1,26 +1,96 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
-  Collapse,
   Divider,
   Grid,
   IconButton,
   ListItem,
   ListItemButton,
   ListItemIcon,
-  ListSubheader,
-  styled,
 } from "@mui/material";
 //import Image from "next/image";
 //import timeline from "public/timeline.png";
 import { useMapaContext, useMapaDispatch } from "../Mapa/context/MapaContext";
-import { Delete, ExpandLess, ExpandMore, Menu } from "@mui/icons-material";
-import { elementos } from "@/main/constants/elementos";
+import { Delete, Menu } from "@mui/icons-material";
+import { elementoPadrao } from "../Mapa/context/mapaContextTypes";
+import { ReactSortable } from "react-sortablejs";
+import styled from "@emotion/styled";
 
-const WrapperStyled = styled("div")``;
+const SortableDiv = styled.div``;
 
 export default function LinhaTempo() {
   const mapaContext = useMapaContext();
   const dispatch = useMapaDispatch();
+  const [listaElementos, setListaElementos] = useState<elementoPadrao[]>(
+    Object.keys(mapaContext?.conteudo)
+      .map((x) => mapaContext?.conteudo[x])
+      .flat()
+  );
+
+  const cliqueElementoNoMapa = (elemento, evento) => {
+    if (evento.shiftKey)
+      dispatch({ type: "adicionarElementoFoco", elemento: elemento });
+    else dispatch({ type: "selecionarElementoFoco", elemento: elemento });
+  };
+
+  const corItemSelecionadoFoco = (el) => {
+    return mapaContext.elementoFoco?.id === el.id ||
+      mapaContext.elementosFoco?.some((x) => x.id === el.id)
+      ? "#1976d245"
+      : "";
+  };
+
+  function SortableItem(props) {
+    return (
+      <ListItem
+        sx={{
+          paddingLeft: 0,
+          backgroundColor: corItemSelecionadoFoco(props.elemento),
+        }}
+        secondaryAction={
+          <IconButton
+            edge="end"
+            aria-label="delete"
+            onClick={() => {
+              dispatch({
+                type: "removeElement",
+                tipo: props.elemento.dataRef,
+                indiceElemento: props.numero,
+                nomeElemento: props.elemento.nome,
+              });
+            }}
+          >
+            <Delete />
+          </IconButton>
+        }
+      >
+        <ListItemButton
+          onClick={
+            (e) => {
+              console.log(e);
+              cliqueElementoNoMapa(props.elemento, e);
+            }
+            //handleCollapsePropriedades(x, il, !z.collapse)
+          }
+        >
+          <ListItemIcon className="handle-sortable">
+            <Menu />
+            {props.elemento.nome}
+          </ListItemIcon>
+        </ListItemButton>
+        <Divider />
+      </ListItem>
+    );
+  }
+
+  useEffect(() => {
+    setListaElementos((lista) => [
+      ...lista,
+      ...Object.keys(mapaContext?.conteudo)
+        .map((x) => mapaContext?.conteudo[x])
+        .flat()
+        .filter((x) => !lista.some((z) => z.id === x.id)),
+    ]);
+  }, [mapaContext, mapaContext.conteudo]);
   return (
     <Grid
       id={"oi"}
@@ -28,90 +98,39 @@ export default function LinhaTempo() {
       xs={12}
       sx={{
         height: "100%",
-        overflowY: "scroll",
-        "&::-webkit-scrollbar": {
-          width: 7,
-        },
-        "&::-webkit-scrollbar-thumb": {
-          backgroundColor: "darkgrey",
-          outline: `1px solid slategrey`,
+        ".react-sortable-personalized-scrollbar": {
+          overflowY: "scroll",
+          "&::-webkit-scrollbar": {
+            width: 7,
+          },
+          "&::-webkit-scrollbar-thumb": {
+            backgroundColor: "darkgrey",
+            outline: `1px solid slategrey`,
+          },
         },
       }}
     >
-      {/* <Typography>Linha do Tempo</Typography>
-      <Image
-        src={timeline}
-        alt="linha do tempo falsa"
-        style={{ width: "100%", maxWidth: props.maxWidth }}
-      /> */}
-      {mapaContext?.conteudo &&
-        Object.keys(mapaContext?.conteudo).map(
-          (x, i) =>
-            mapaContext?.conteudo[x]?.length > 0 && (
-              <WrapperStyled key={`Wrapper#${x}-${i}`}>
-                <ListSubheader
-                  disableSticky
-                  onClick={
-                    () => {}
-                    //handleCollapse(!mapaContext?.conteudo[x].collapse, x)
-                  }
-                >
-                  <ListItemIcon sx={{ display: "inline-block" }}>
-                    {elementos[x].icon}
-                  </ListItemIcon>
-                  {x + "s"}
-                  {!mapaContext?.conteudo[x].collapse ? (
-                    <ExpandLess />
-                  ) : (
-                    <ExpandMore />
-                  )}
-                </ListSubheader>
-                <Collapse
-                  in={!mapaContext?.conteudo[x].collapse}
-                  className={x}
-                  timeout="auto"
-                  unmountOnExit
-                >
-                  {mapaContext?.conteudo[x].map((z, il) => (
-                    <>
-                      <ListItem
-                        key={`ListItem#${z}-${il}`}
-                        secondaryAction={
-                          <IconButton
-                            edge="end"
-                            aria-label="delete"
-                            onClick={() => {
-                              dispatch({
-                                type: "removeElement",
-                                tipo: z.dataRef,
-                                indiceElemento: il,
-                                nomeElemento: z.nome,
-                              });
-                            }}
-                          >
-                            <Delete />
-                          </IconButton>
-                        }
-                      >
-                        <ListItemButton
-                          onClick={
-                            () => {}
-                            //handleCollapsePropriedades(x, il, !z.collapse)
-                          }
-                        >
-                          <ListItemIcon>
-                            <Menu />
-                            {z.nome}
-                          </ListItemIcon>
-                        </ListItemButton>
-                      </ListItem>
-                    </>
-                  ))}
-                </Collapse>
-                <Divider />
-              </WrapperStyled>
-            )
-        )}
+      <ReactSortable
+        list={listaElementos}
+        setList={setListaElementos}
+        className="react-sortable-personalized-scrollbar"
+        handle=".handle-sortable"
+        style={{ height: "100%", overflowY: "scroll" }}
+        scroll={true}
+      >
+        {listaElementos &&
+          listaElementos.map((z, il) => {
+            return (
+              <SortableDiv key={z.id}>
+                <SortableItem
+                  key={`ListItem#${z.nome}-${il}`}
+                  elemento={z}
+                  numero={il}
+                />
+              </SortableDiv>
+            );
+          })}
+      </ReactSortable>
     </Grid>
   );
 }

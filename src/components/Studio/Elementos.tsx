@@ -6,6 +6,7 @@ import {
   SpeedDial,
   SpeedDialAction,
   SpeedDialIcon,
+  Tooltip,
 } from "@mui/material";
 import {
   useMapaContext,
@@ -28,6 +29,8 @@ export function ElementosLateral(props: { altura: number }) {
       item
       xs={0}
       sx={{
+        borderRight: 2,
+        borderRightStyle: "outset",
         height: props.altura,
         overflowY: "scroll",
         "&::-webkit-scrollbar": {
@@ -39,7 +42,14 @@ export function ElementosLateral(props: { altura: number }) {
         },
       }}
     >
-      <List sx={{ height: props.altura, width: 55 }}>
+      <List
+        sx={{
+          height: props.altura,
+          width: 55,
+          borderRight: 2,
+          borderRightStyle: "inset",
+        }}
+      >
         {Object.keys(elementos)
           .map((x) => elementos[x])
           .map((x, i) => {
@@ -47,19 +57,26 @@ export function ElementosLateral(props: { altura: number }) {
               height: 24px;
             `;
             return (
-              <ListItem
-                key={i}
-                sx={{
-                  width: "100%",
-                  mb: 1,
-                  cursor: "pointer",
-                  //height: props.altura * 0.1,
-                }}
-                onClick={() => handleClick(x)}
-              >
-                <StyledIcon />
-                {/* <ListItemIcon sx={{}}>{x.icon}</ListItemIcon> */}
-              </ListItem>
+              <Tooltip key={i} title={x.label}>
+                <ListItem
+                  sx={{
+                    width: "100%",
+                    mb: 1,
+                    cursor: "pointer",
+
+                    backgroundColor:
+                      mapaContext?.elementoInteracao?.nome === x.nome
+                        ? "#1976d245"
+                        : "",
+                    borderRadius: 1,
+                    //height: props.altura * 0.1,
+                  }}
+                  onClick={() => handleClick(x)}
+                >
+                  <StyledIcon sx={{}} />
+                  {/* <ListItemIcon sx={{}}>{x.icon}</ListItemIcon> */}
+                </ListItem>
+              </Tooltip>
             );
           })}
       </List>

@@ -64,12 +64,12 @@ export default function Mapa(props: { altura: number }) {
   };
 
   useEffect(() => {
-    console.log("conteudo do mapa", mapaContext.conteudo);
-  }, [mapaContext.conteudo, mapaContext.elementoFoco]);
+    console.log("contexto do mapa", mapaContext);
+  }, [mapaContext]);
 
   const corItemSelecionadoFoco = (el) => {
-    return mapaContext.elementoFoco?.uuid === el.uuid ||
-      mapaContext.elementosFoco?.some((x) => x.uuid === el.uuid)
+    return mapaContext.elementoFoco?.id === el.id ||
+      mapaContext.elementosFoco?.some((x) => x.id === el.id)
       ? "#000000"
       : el.color ?? "#0d6efd";
   };

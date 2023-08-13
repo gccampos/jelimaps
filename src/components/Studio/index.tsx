@@ -66,7 +66,7 @@ const Studio = () => {
           container
           xs={12}
           mt={1.4}
-          sx={{ height: "80%", maxHeight: altura }}
+          sx={{ height: "95%", maxHeight: altura }}
         >
           <LinhaTempo />
         </Grid>

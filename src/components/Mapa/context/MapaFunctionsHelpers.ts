@@ -59,7 +59,7 @@ const addElementoMarker = (
     dataRef: actionContext.tipo,
     nome: `marker#${oldMapaContext.conteudo?.Marker?.length + 1 || 1}`,
     texto: "",
-    uuid: v4(),
+    id: v4(),
     ...padraoPeriodoMapaContext(oldMapaContext),
   };
 
@@ -83,7 +83,7 @@ const addElementoPolyline = (
     const newPolyline: elementoComPositions = {
       positions: [actionContextChange.posicao],
       dataRef: actionContextChange.tipo,
-      uuid: v4(),
+      id: v4(),
       nome: `polyline#${oldMapaContext.conteudo?.Polyline?.length + 1 || 1}`,
       ...padraoPeriodoMapaContext(oldMapaContext),
     };
@@ -119,7 +119,7 @@ const addElementoPolygon = (
     const newPolygon: elementoComPositions = {
       positions: [actionContextChange.posicao],
       dataRef: actionContextChange.tipo,
-      uuid: v4(),
+      id: v4(),
       nome: `polygon#${oldMapaContext.conteudo?.Polygon?.length + 1 || 1}`,
       ...padraoPeriodoMapaContext(oldMapaContext),
     };
@@ -156,7 +156,7 @@ const addElementoCirculo = (
     center: posicao,
     radius: 100,
     dataRef: tipo,
-    uuid: v4(),
+    id: v4(),
     nome: `circle#${oldMapaContext.conteudo?.Circle?.length + 1 || 1}`,
     ...padraoPeriodoMapaContext(oldMapaContext),
   };

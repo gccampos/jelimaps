@@ -4,7 +4,8 @@ import { LatLng, LatLngBoundsExpression } from "leaflet";
 import { NIL } from "uuid";
 
 export type elementoPadrao = periodoInicioFim & {
-  uuid: NIL;
+  id: NIL;
+  //id: UniqueIdentifier;
   nome: string;
   collapse?: boolean;
   dataRef?: string;
@@ -65,7 +66,7 @@ type arrayElementoGenerico<T> = basePrototypeArray & T[];
 
 export type actionContextChange = {
   type: string;
-  uuid?: NIL;
+  id?: NIL;
   arg?: elementoProto;
   elemento?:
     | elementoPadrao
