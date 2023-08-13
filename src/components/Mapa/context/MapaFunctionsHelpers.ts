@@ -36,10 +36,29 @@ const changeElementosFoco = (
   oldMapaContext: mapaContextSchema,
   actionContextChange: actionContextChange
 ): mapaContextSchema => {
+  const elementoNaoSelecionado = !oldMapaContext.elementosFoco?.some(
+    (x) => x.id === actionContextChange.elemento.id
+  );
   oldMapaContext.elementosFoco = oldMapaContext.elementosFoco
-    ? [...oldMapaContext.elementosFoco, actionContextChange.elemento]
-    : [oldMapaContext.elementoFoco, actionContextChange.elemento];
-  oldMapaContext.elementoFoco = null;
+    ? elementoNaoSelecionado
+      ? // Caso elemento clicado não esteja focado deve adiciona-lo
+        [...oldMapaContext.elementosFoco, actionContextChange.elemento]
+      : // Caso elemento clicado esteja focado deve remove-lo
+        oldMapaContext.elementosFoco.filter(
+          (x) => x.id !== actionContextChange.elemento.id
+        )
+    : // Caso exista apenas um elemento focado, adiciona na lista os dois (antigo e novo)
+      [oldMapaContext.elementoFoco, actionContextChange.elemento];
+  oldMapaContext.elementoFoco = actionContextChange.elemento;
+  return { ...oldMapaContext };
+};
+
+const changeTodosElementosFoco = (
+  oldMapaContext: mapaContextSchema,
+  actionContextChange: actionContextChange
+): mapaContextSchema => {
+  oldMapaContext.elementosFoco = actionContextChange.elementos;
+  //oldMapaContext.elementoFoco = null;
   return { ...oldMapaContext };
 };
 
@@ -225,6 +244,7 @@ const MapaFunctionHelpers = {
   changeElementoInteracao,
   changeElementoFoco,
   changeElementosFoco,
+  changeTodosElementosFoco,
   addElementoMarker,
   addElementoCirculo,
   addElementoPolyline,

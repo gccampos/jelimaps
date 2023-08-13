@@ -39,8 +39,8 @@ export type elementoComBounds = {
 } & elementoPadrao;
 export type mapaContextSchema = periodoInicioFim & {
   elementoInteracao: elementoProto;
-  elementoFoco?: elementoPadrao;
-  elementosFoco?: elementoPadrao[];
+  elementoFoco?: tipoElemento;
+  elementosFoco?: tipoElemento[];
   slidePropriedade: boolean;
   modoVisao?: string;
   conteudo: conteudoType & {
@@ -63,16 +63,18 @@ export type RectangleType = arrayElementoGenerico<elementoComBounds>;
 type basePrototypeArray = { collapse?: boolean };
 type arrayElementoPadrao = basePrototypeArray & elementoPadrao[];
 type arrayElementoGenerico<T> = basePrototypeArray & T[];
+type tipoElemento =
+  | elementoPadrao
+  | elementoComPosition
+  | elementoComPositions
+  | elementoComBounds;
 
 export type actionContextChange = {
   type: string;
   id?: NIL;
   arg?: elementoProto;
-  elemento?:
-    | elementoPadrao
-    | elementoComPosition
-    | elementoComPositions
-    | elementoComBounds;
+  elemento?: tipoElemento;
+  elementos?: tipoElemento[];
   tipo?: string;
   posicao?: LatLng;
   indiceElemento?: number;

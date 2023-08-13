@@ -18,6 +18,12 @@ export function mapaReducer(
     case "adicionarElementoFoco": {
       return MapaFunctionHelpers.changeElementosFoco(oldMapaContext, action);
     }
+    case "selecionarElementosFoco": {
+      return MapaFunctionHelpers.changeTodosElementosFoco(
+        oldMapaContext,
+        action
+      );
+    }
     case "selecionarElementoFoco": {
       return MapaFunctionHelpers.changeElementoFoco(oldMapaContext, action);
     }

@@ -27,9 +27,25 @@ export default function LinhaTempo() {
       .flat()
   );
 
-  const cliqueElementoNoMapa = (elemento, evento) => {
-    if (evento.shiftKey)
+  const cliqueElementoConteudoLinhaTempo = (
+    elemento: elementoPadrao,
+    evento: React.MouseEvent<HTMLDivElement, MouseEvent>
+  ) => {
+    const indexClick = listaElementos.findIndex((x) => x.id === elemento.id);
+    const indexAtual = listaElementos.findIndex(
+      (x) => x.id === mapaContext.elementoFoco?.id
+    );
+    const novaListaSelecionados =
+      indexAtual > indexClick
+        ? listaElementos.slice(indexClick, indexAtual + 1)
+        : listaElementos.slice(indexAtual, indexClick + 1);
+    if (evento.ctrlKey)
       dispatch({ type: "adicionarElementoFoco", elemento: elemento });
+    else if (evento.shiftKey)
+      dispatch({
+        type: "selecionarElementosFoco",
+        elementos: novaListaSelecionados,
+      });
     else dispatch({ type: "selecionarElementoFoco", elemento: elemento });
   };
 
@@ -52,8 +68,7 @@ export default function LinhaTempo() {
           <ListItemButton
             sx={{ maxWidth: 155 }}
             onClick={(e) => {
-              console.log(e);
-              cliqueElementoNoMapa(props.elemento, e);
+              cliqueElementoConteudoLinhaTempo(props.elemento, e);
             }}
           >
             <ListItemIcon className="handle-sortable">
@@ -69,7 +84,9 @@ export default function LinhaTempo() {
                 dispatch({
                   type: "removeElement",
                   tipo: props.elemento.dataRef,
-                  indiceElemento: props.numero,
+                  indiceElemento: mapaContext?.conteudo[
+                    props.elemento.dataRef
+                  ].findIndex((x) => x.id === props.elemento.id),
                   nomeElemento: props.elemento.nome,
                 });
               }}
@@ -148,11 +165,7 @@ export default function LinhaTempo() {
           listaElementos.map((z, il) => {
             return (
               <SortableDiv key={z.id}>
-                <SortableItem
-                  key={`ListItem#${z.nome}-${il}`}
-                  elemento={z}
-                  numero={il}
-                />
+                <SortableItem key={`ListItem#${z.nome}-${il}`} elemento={z} />
               </SortableDiv>
             );
           })}
