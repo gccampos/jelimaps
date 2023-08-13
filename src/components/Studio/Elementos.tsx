@@ -1,11 +1,72 @@
 import React, { useState } from "react";
-import { SpeedDial, SpeedDialAction, SpeedDialIcon } from "@mui/material";
+import {
+  Grid,
+  List,
+  ListItem,
+  SpeedDial,
+  SpeedDialAction,
+  SpeedDialIcon,
+} from "@mui/material";
 import {
   useMapaContext,
   useMapaDispatch,
 } from "@/components/Mapa/context/MapaContext";
 import { elementos } from "@/main/constants/elementos";
 import useWindowDimensions from "./useWindowDimensions";
+import styled from "@emotion/styled";
+
+export function ElementosLateral(props: { altura: number }) {
+  const mapaContext = useMapaContext();
+  const dispatch = useMapaDispatch();
+  const { width } = useWindowDimensions();
+  const handleClick = (elemento) => {
+    mapaContext?.elementoInteracao?.nome == elemento.nome
+      ? dispatch({ type: "selecionarElementoInteracao", arg: elementos.Hand })
+      : dispatch({ type: "selecionarElementoInteracao", arg: elemento });
+  };
+  return (
+    <Grid
+      item
+      xs={0}
+      sx={{
+        height: props.altura,
+        overflowY: "scroll",
+        "&::-webkit-scrollbar": {
+          width: 5,
+        },
+        "&::-webkit-scrollbar-thumb": {
+          backgroundColor: "darkgrey",
+          outline: `1px solid slategrey`,
+        },
+      }}
+    >
+      <List sx={{ height: props.altura, width: 55 }}>
+        {Object.keys(elementos)
+          .map((x) => elementos[x])
+          .map((x, i) => {
+            const StyledIcon = styled(x.iconComponent)`
+              height: 24px;
+            `;
+            return (
+              <ListItem
+                key={i}
+                sx={{
+                  width: "100%",
+                  mb: 1,
+                  cursor: "pointer",
+                  //height: props.altura * 0.1,
+                }}
+                onClick={() => handleClick(x)}
+              >
+                <StyledIcon />
+                {/* <ListItemIcon sx={{}}>{x.icon}</ListItemIcon> */}
+              </ListItem>
+            );
+          })}
+      </List>
+    </Grid>
+  );
+}
 
 export default function Elementos(props: { altura: number }) {
   const mapaContext = useMapaContext();

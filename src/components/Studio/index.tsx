@@ -5,6 +5,7 @@ import { Grid, styled } from "@mui/material";
 import Mapa from "./Mapa";
 import { Rnd } from "react-rnd";
 import useWindowDimensions from "./useWindowDimensions";
+import { ElementosLateral } from "./Elementos";
 
 const Dragger = styled("div")`
   cursor: n-resize;
@@ -27,6 +28,7 @@ const Studio = () => {
   return (
     <Grid container sx={{ height: "100%" }} id="studioMapa">
       <Grid item container xs={12}>
+        <ElementosLateral altura={height - altura} />
         <Mapa altura={height - altura} />
         <Propriedades altura={height - altura} />
       </Grid>
@@ -59,8 +61,14 @@ const Studio = () => {
           setAltura(ref.offsetHeight);
         }}
       >
-        <Grid item container xs={12} mt={1.4}>
-          <LinhaTempo maxWidth={altura} />
+        <Grid
+          item
+          container
+          xs={12}
+          mt={1.4}
+          sx={{ height: "80%", maxHeight: altura }}
+        >
+          <LinhaTempo />
         </Grid>
       </Rnd>
     </Grid>
