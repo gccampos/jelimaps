@@ -5,7 +5,7 @@ import {
   RadioButtonUnchecked,
 } from "@mui/icons-material";
 import polygonIcon from "public/assets/polygonIcon.svg";
-import SvgIcon, { SvgIconTypeMap, SvgIconProps } from "@mui/material/SvgIcon";
+import SvgIcon, { SvgIconTypeMap } from "@mui/material/SvgIcon";
 import { ReactNode } from "react";
 import { OverridableComponent } from "@mui/material/OverridableComponent";
 import { styled } from "@mui/material";

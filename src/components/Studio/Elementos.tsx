@@ -18,7 +18,6 @@ import styled from "@emotion/styled";
 export function ElementosLateral(props: { altura: number }) {
   const mapaContext = useMapaContext();
   const dispatch = useMapaDispatch();
-  const { width } = useWindowDimensions();
   const handleClick = (elemento) => {
     mapaContext?.elementoInteracao?.nome == elemento.nome
       ? dispatch({ type: "selecionarElementoInteracao", arg: elementos.Hand })
