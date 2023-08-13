@@ -46,7 +46,7 @@ const Studio = () => {
               sx={{
                 borderStyle: "outset",
                 borderBottom: 2,
-                height: 10,
+                height: 13,
                 backgroundColor: "#e2e2e2",
                 marginTop: 0.6,
               }}
@@ -59,7 +59,7 @@ const Studio = () => {
           setAltura(ref.offsetHeight);
         }}
       >
-        <Grid item container xs={12}>
+        <Grid item container xs={12} mt={1.4}>
           <LinhaTempo maxWidth={altura} />
         </Grid>
       </Rnd>

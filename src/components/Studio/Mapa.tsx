@@ -194,7 +194,7 @@ export default function Mapa(props: { altura: number }) {
             <CustomControlLeaflet
               position={POSITION_CLASSES_CUSTOM_CONTROL.bottomright}
             >
-              <Elementos />
+              <Elementos altura={props.altura} />
             </CustomControlLeaflet>
             <CustomControlLeaflet
               position={POSITION_CLASSES_CUSTOM_CONTROL.topright}
