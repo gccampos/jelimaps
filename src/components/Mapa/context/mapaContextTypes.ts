@@ -15,8 +15,8 @@ export type elementoPadrao = periodoInicioFim & {
   propriedades?: propriedadeVisual[];
 };
 type periodoInicioFim = {
-  cenaFim: Date;
-  cenaInicio: Date;
+  cenaFim: Date | number;
+  cenaInicio: Date | number;
 };
 type propriedadeVisual = periodoInicioFim & {
   nome: string;

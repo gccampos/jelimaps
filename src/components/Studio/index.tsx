@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Propriedades from "./Propriedades";
-import LinhaTempo from "./LinhaTempo";
+import LinhaTempo from "./LinhaTempo/Index";
 import { Grid, styled } from "@mui/material";
 import Mapa from "./Mapa";
 import { Rnd } from "react-rnd";

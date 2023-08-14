@@ -7,12 +7,11 @@ import {
   Tab,
   AppBar,
   Tabs,
-  TabPane,
   Box,
 } from "@mui/material";
 import {
   useMapaContext,
-  useMapaDispatch,
+  //useMapaDispatch,
 } from "@/components/Mapa/context/MapaContext";
 import { Rnd } from "react-rnd";
 import AlignVerticalCenterIcon from "@mui/icons-material/AlignVerticalCenter";
@@ -52,12 +51,12 @@ function TabPanel(props: TabPanelProps) {
 export default function Propriedades(props: { altura: number }) {
   const { width } = useWindowDimensions();
   const mapaContext = useMapaContext();
-  const dispatch = useMapaDispatch();
+  // const dispatch = useMapaDispatch();
   const [rndRef, setRndRef] = useState<Rnd>();
   const [value, setValue] = React.useState(0);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-    setValue(newValue);
+    handleChangeIndex(newValue);
   };
 
   const handleChangeIndex = (index: number) => {

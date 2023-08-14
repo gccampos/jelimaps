@@ -8,8 +8,8 @@ const initialMapaContexto: mapaContextSchema = {
   elementoInteracao: elementos.Hand,
   slidePropriedade: false,
   conteudo: {},
-  cenaFim: null,
-  cenaInicio: null,
+  cenaInicio: 1,
+  cenaFim: 100,
 };
 
 const MapaContext = createContext<mapaContextSchema>(initialMapaContexto);

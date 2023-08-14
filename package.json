@@ -21,6 +21,7 @@
     "eslint": "^8.44.0",
     "eslint-config-next": "^12.0.4",
     "eslint-plugin-prettier": "^4.2.1",
+    "formik": "^2.4.3",
     "leaflet": "^1.9.3",
     "next": "13.3.2",
     "nextjs-google-analytics": "^2.3.3",
@@ -35,7 +36,9 @@
     "react-sortablejs": "^6.1.4",
     "sortablejs": "^1.15.0",
     "tailwindcss": "3.3.2",
-    "uuid": "^9.0.0"
+    "uuid": "^9.0.0",
+    "vis": "^4.21.0-EOL",
+    "vis-timeline": "^7.7.2"
   },
   "devDependencies": {
     "@svgr/webpack": "^8.0.1",
