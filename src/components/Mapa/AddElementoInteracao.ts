@@ -10,11 +10,17 @@ function isControlLeafLet(node) {
     ? isControlLeafLet(node.parentElement)
     : node.className.includes("leaflet-control")
     ? node.className.includes("leaflet-control")
-    : node.className.includes("leaflet-container")
+    : isLeafletContainer(node)
     ? !node.className.includes("leaflet-container")
     : node.parentElement
     ? isControlLeafLet(node.parentElement)
     : false;
+}
+
+function isLeafletContainer(node) {
+  return (
+    node.tagName === "DIV" && node.className?.includes("leaflet-container")
+  );
 }
 
 function AddElementoInteracao() {
@@ -22,6 +28,15 @@ function AddElementoInteracao() {
   const dispatch = useMapaDispatch();
 
   function interagirMapa(nomeElemento: string): LeafletEventHandlerFnMap {
+    if (nomeElemento === elementos.Hand.nome)
+      return {
+        click(e) {
+          if (isLeafletContainer(e.originalEvent.target))
+            dispatch({
+              type: `selecionarElementoFoco`,
+            });
+        },
+      };
     return {
       click(e) {
         if (!isControlLeafLet(e.originalEvent.target))
@@ -35,9 +50,7 @@ function AddElementoInteracao() {
   }
 
   useMapEvents(
-    mapaContext?.elementoInteracao &&
-      mapaContext?.elementoInteracao.nome &&
-      mapaContext?.elementoInteracao.nome !== elementos.Hand.nome
+    mapaContext?.elementoInteracao && mapaContext?.elementoInteracao.nome
       ? interagirMapa(mapaContext.elementoInteracao.nome)
       : {}
   );

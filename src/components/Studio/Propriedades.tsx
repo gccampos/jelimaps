@@ -1,73 +1,89 @@
 import React, { useState } from "react";
 import {
   Grid,
-  List,
-  ListItem,
-  ListItemIcon,
-  Divider,
-  IconButton,
-  ListSubheader,
   styled,
   Chip,
-  Collapse,
-  ListItemButton,
-  TextField,
+  Typography,
+  Tab,
+  AppBar,
+  Tabs,
+  TabPane,
+  Box,
 } from "@mui/material";
 import {
   useMapaContext,
   useMapaDispatch,
 } from "@/components/Mapa/context/MapaContext";
-import { Delete, ExpandLess, ExpandMore, Save } from "@mui/icons-material";
-import { elementos } from "@/main/constants/elementos";
-import Menu from "@mui/icons-material/Menu";
 import { Rnd } from "react-rnd";
 import AlignVerticalCenterIcon from "@mui/icons-material/AlignVerticalCenter";
-import { elementoPadrao } from "../Mapa/context/mapaContextTypes";
 import useWindowDimensions from "./useWindowDimensions";
-
-const WrapperStyled = styled("div")``;
 
 const Dragger = styled("div")`
   cursor: e-resize;
   height: 100%;
 `;
+interface TabPanelProps {
+  children?: React.ReactNode;
+  dir?: string;
+  index: number;
+  value: number;
+}
+
+function TabPanel(props: TabPanelProps) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`full-width-tabpanel-${index}`}
+      aria-labelledby={`full-width-tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box sx={{ p: 3 }}>
+          <Typography>{children}</Typography>
+        </Box>
+      )}
+    </div>
+  );
+}
 
 export default function Propriedades(props: { altura: number }) {
   const { width } = useWindowDimensions();
   const mapaContext = useMapaContext();
   const dispatch = useMapaDispatch();
   const [rndRef, setRndRef] = useState<Rnd>();
+  const [value, setValue] = React.useState(0);
+
+  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+    setValue(newValue);
+  };
+
+  const handleChangeIndex = (index: number) => {
+    setValue(index);
+  };
 
   const [larguraPropriedades, setLargurasPropriedades] = useState(250);
 
-  const handleCollapse = (e, x) => {
-    dispatch({ type: "collapse", tipo: x, valorBooleano: e });
-  };
-
-  const handleEditarPropriedade = (event, elemento: elementoPadrao) => {
-    event.preventDefault();
-    dispatch({
-      type: "editarPropriedade",
-      tipo: elemento.dataRef,
-      nomeElemento: elemento.nome,
-      nomePropriedade: event.currentTarget.elements["texto"].name,
-      valorPropriedade: event.currentTarget.elements["texto"].value,
-    });
-  };
-
-  const handleCollapsePropriedades = (tipo, index, collapse) => {
-    dispatch({
-      type: "collapse",
-      tipo: tipo,
-      indiceElemento: index,
-      valorBooleano: collapse,
-    });
-  };
-
+  function a11yProps(index: number) {
+    return {
+      id: `full-width-tab-${index}`,
+      "aria-controls": `full-width-tabpanel-${index}`,
+      sx: value === index ? { bgcolor: "#1976d245" } : {},
+    };
+  }
   const displaYNoneStyle = { display: "none" };
   return (
     mapaContext?.slidePropriedade && (
-      <Grid item xs={0}>
+      <Grid
+        item
+        xs={0}
+        sx={{
+          borderLeft: 2,
+          borderLeftStyle: "outset",
+        }}
+      >
         <div
           style={{
             width: larguraPropriedades,
@@ -115,126 +131,46 @@ export default function Propriedades(props: { altura: number }) {
               setLargurasPropriedades(ref.offsetWidth);
             }}
           >
-            <List
-              sx={{ overflow: "auto", height: "100%", pt: 0 }}
-              key={"lista"}
+            <AppBar
+              position="static"
+              sx={{
+                borderLeft: 2,
+                borderLeftStyle: "inset",
+              }}
             >
-              {mapaContext?.conteudo &&
-                Object.keys(mapaContext?.conteudo).map(
-                  (x, i) =>
-                    mapaContext?.conteudo[x]?.length > 0 && (
-                      <WrapperStyled key={`Wrapper#${x}-${i}`}>
-                        <ListSubheader
-                          onClick={() =>
-                            handleCollapse(
-                              !mapaContext?.conteudo[x].collapse,
-                              x
-                            )
-                          }
-                        >
-                          <ListItemIcon sx={{ display: "inline-block" }}>
-                            {elementos[x].icon}
-                          </ListItemIcon>
-                          {x + "s"}
-                          {!mapaContext?.conteudo[x].collapse ? (
-                            <ExpandLess />
-                          ) : (
-                            <ExpandMore />
-                          )}
-                        </ListSubheader>
-                        <Collapse
-                          in={!mapaContext?.conteudo[x].collapse}
-                          className={x}
-                          timeout="auto"
-                          unmountOnExit
-                        >
-                          {mapaContext?.conteudo[x].map((z, il) => (
-                            <>
-                              <ListItem
-                                key={`ListItem#${z}-${il}`}
-                                secondaryAction={
-                                  <IconButton
-                                    edge="end"
-                                    aria-label="delete"
-                                    onClick={() => {
-                                      dispatch({
-                                        type: "removeElement",
-                                        tipo: z.dataRef,
-                                        indiceElemento: il,
-                                        nomeElemento: z.nome,
-                                      });
-                                    }}
-                                  >
-                                    <Delete />
-                                  </IconButton>
-                                }
-                              >
-                                <ListItemButton
-                                  onClick={() =>
-                                    handleCollapsePropriedades(
-                                      x,
-                                      il,
-                                      !z.collapse
-                                    )
-                                  }
-                                >
-                                  <ListItemIcon>
-                                    <Menu />
-                                    {z.nome}
-                                  </ListItemIcon>
-                                </ListItemButton>
-                              </ListItem>
-                              {!z.collapse && (
-                                <ListItem>
-                                  <Collapse
-                                    in={!z.collapse}
-                                    timeout="auto"
-                                    unmountOnExit
-                                  >
-                                    <form
-                                      onSubmit={(event) => {
-                                        handleEditarPropriedade(event, z);
-                                      }}
-                                    >
-                                      <TextField
-                                        multiline
-                                        defaultValue={z.texto}
-                                        label="Texto"
-                                        name="texto"
-                                      />
-                                      <IconButton type="submit">
-                                        <Save />
-                                      </IconButton>
-                                    </form>
-                                  </Collapse>
-                                </ListItem>
-                              )}
-                            </>
-                          ))}
-                        </Collapse>
-                        <Divider />
-                      </WrapperStyled>
-                    )
+              <Tabs
+                value={value}
+                onChange={handleChange}
+                sx={{ bgcolor: "#e5e7eb" }}
+                indicatorColor="secondary"
+                variant="fullWidth"
+                aria-label="full width tabs example"
+              >
+                <Tab label="Item One" {...a11yProps(0)} />
+                {(mapaContext.elementoFoco || mapaContext.elementosFoco) && (
+                  <Tab label="Item Two" {...a11yProps(1)} />
                 )}
-              {/* <ListItem onClick={(event) => handleListItemClick(event, 0)}>
-              <ListItemIcon>
-                <Inbox />
-              </ListItemIcon>
-              <ListItemText primary="Inbox" />
-            </ListItem> 
-             <Collapse
-                                    in={openPropriedades}
-                                    timeout="auto"
-                                    unmountOnExit
-                                    orientation="vertical"
-                                  >
-                                    <div>
-                                      Texto
-                                      <textarea value={z.texto}></textarea>
-                                    </div>
-                                  </Collapse>
-                                  */}
-            </List>
+                {(mapaContext.elementoFoco || mapaContext.elementosFoco) && (
+                  <Tab label="Item Three" {...a11yProps(2)} />
+                )}
+              </Tabs>
+            </AppBar>
+            <TabPanel value={value} index={0}>
+              Item One
+            </TabPanel>
+            {(mapaContext.elementoFoco || mapaContext.elementosFoco) && (
+              <>
+                <TabPanel value={value} index={1}>
+                  Item Two
+                </TabPanel>
+                <TabPanel value={value} index={2}>
+                  Item Three
+                </TabPanel>
+              </>
+            )}
+            {/* {(mapaContext.elementoFoco || mapaContext.elementosFoco) && (
+              <Typography>Existe um ou mais elementos selecionados</Typography>
+            )} */}
           </Rnd>
         </div>
         {/* Lateral direita */}

@@ -48,6 +48,7 @@ export function ElementosLateral(props: { altura: number }) {
           width: 55,
           borderRight: 2,
           borderRightStyle: "inset",
+          pt: 0,
         }}
       >
         {Object.keys(elementos)

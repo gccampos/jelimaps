@@ -58,7 +58,7 @@ export default function Mapa(props: { altura: number }) {
   const bounds = new LatLngBounds([0, 0], [1, 1.5]);
 
   const cliqueElementoNoMapa = (elemento, evento) => {
-    if (evento.originalEvent.shiftKey)
+    if (evento.originalEvent.shiftKey || evento.originalEvent.ctrlKey)
       dispatch({ type: "adicionarElementoFoco", elemento: elemento });
     else dispatch({ type: "selecionarElementoFoco", elemento: elemento });
   };
@@ -138,7 +138,7 @@ export default function Mapa(props: { altura: number }) {
             {mapaContext.conteudo &&
               mapaContext.conteudo.Polygon &&
               mapaContext.conteudo.Polygon.length > 0 &&
-              mapaContext.conteudo.Polygon.map((x, i) => {
+              mapaContext.conteudo.Polygon.map((x, i, arr) => {
                 return x?.positions ? (
                   <Polygon
                     {...x}
@@ -147,7 +147,7 @@ export default function Mapa(props: { altura: number }) {
                     }}
                     key={`polygon#${i}`}
                     eventHandlers={{
-                      click: (e) => cliqueElementoNoMapa(x, e),
+                      click: (e) => cliqueElementoNoMapa(arr[i], e),
                     }}
                   ></Polygon>
                 ) : null;
