@@ -55,11 +55,12 @@ export function mapaReducer(
       };
     }
     case "removeElement": {
-      return MapaFunctionHelpers.removeElemento(
+      return MapaFunctionHelpers.removeElemento(oldMapaContext, action.id);
+    }
+    case "updateTimelineElement": {
+      return MapaFunctionHelpers.atualizaLinhaTempoElemento(
         oldMapaContext,
-        action.tipo,
-        action.indiceElemento,
-        action.nomeElemento
+        action
       );
     }
     case "editarPropriedade": {

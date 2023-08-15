@@ -2,23 +2,25 @@ import React from "react";
 import { elementoProto } from "@/main/constants/elementos";
 import { LatLng, LatLngBoundsExpression } from "leaflet";
 import { NIL } from "uuid";
+import { DateType } from "vis-timeline";
 
-export type elementoPadrao = periodoInicioFim & {
+export type tipoGenericoElementoTimeline = periodoInicioFim & {
   id: NIL;
-  //id: UniqueIdentifier;
   nome: string;
-  collapse?: boolean;
   dataRef?: string;
+};
+export type elementoPadrao = tipoGenericoElementoTimeline & {
+  collapse?: boolean;
   texto?: string;
   color?: string;
   draggable?: boolean;
   propriedades?: propriedadeVisual[];
 };
 type periodoInicioFim = {
-  cenaFim: Date | number;
-  cenaInicio: Date | number;
+  cenaFim: DateType;
+  cenaInicio: DateType;
 };
-type propriedadeVisual = periodoInicioFim & {
+type propriedadeVisual = tipoGenericoElementoTimeline & {
   nome: string;
   tipo: any;
   valor: any;
@@ -63,7 +65,7 @@ export type RectangleType = arrayElementoGenerico<elementoComBounds>;
 type basePrototypeArray = { collapse?: boolean };
 type arrayElementoPadrao = basePrototypeArray & elementoPadrao[];
 type arrayElementoGenerico<T> = basePrototypeArray & T[];
-type tipoElemento =
+export type tipoElemento =
   | elementoPadrao
   | elementoComPosition
   | elementoComPositions
@@ -82,4 +84,6 @@ export type actionContextChange = {
   nomePropriedade?: string;
   valorPropriedade?: string;
   valorBooleano?: boolean;
+  start?: DateType;
+  end?: DateType;
 };

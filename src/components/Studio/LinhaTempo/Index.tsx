@@ -23,6 +23,7 @@ export default function LinhaTempo() {
         .filter((x) => !lista.some((z) => z.id === x.id)),
     ]);
   }, [mapaContext, mapaContext.conteudo]);
+
   return (
     <Grid
       id={"oi"}
@@ -42,11 +43,6 @@ export default function LinhaTempo() {
         },
       }}
     >
-      {/* <LinhaTempoArtesanal
-        cliqueElementoConteudoLinhaTempo={cliqueElementoConteudoLinhaTempo}
-        listaElementos={listaElementos}
-        setListaElementos={setListaElementos}
-      /> */}
       <VisTimeline listaElementos={listaElementos} />
     </Grid>
   );

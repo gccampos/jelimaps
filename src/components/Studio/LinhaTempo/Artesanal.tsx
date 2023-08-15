@@ -88,11 +88,7 @@ export default function LinhaTempoArtesanal(props: {
               onClick={() => {
                 dispatch({
                   type: "removeElement",
-                  tipo: p.elemento.dataRef,
-                  indiceElemento: mapaContext?.conteudo[
-                    p.elemento.dataRef
-                  ].findIndex((x) => x.id === p.elemento.id),
-                  nomeElemento: p.elemento.nome,
+                  id: p.elemento.id,
                 });
               }}
             >

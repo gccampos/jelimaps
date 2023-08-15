@@ -8,7 +8,7 @@ import {
   elementoComPositions,
   mapaContextSchema,
 } from "./mapaContextTypes";
-import { v4 } from "uuid";
+import { v4, NIL } from "uuid";
 
 const changeElementoInteracao = (
   oldMapaContext: mapaContextSchema,
@@ -213,13 +213,34 @@ const addElementoCirculo = (
 
 const removeElemento = (
   oldMapaContext: mapaContextSchema,
-  tipoElemento: string,
-  indiceElemento: number,
-  nomeElemento: string
+  id: NIL
 ): mapaContextSchema => {
-  const arrayElemento = oldMapaContext.conteudo[tipoElemento];
-  if (arrayElemento[indiceElemento]?.nome === nomeElemento)
-    arrayElemento.splice(indiceElemento, 1);
+  const elementoDeletado = Object.keys(oldMapaContext?.conteudo)
+    .map((x) => oldMapaContext?.conteudo[x])
+    .flat()
+    .find((x) => x.id === id);
+  if (elementoDeletado) {
+    const arrayElemento = oldMapaContext.conteudo[elementoDeletado.dataRef];
+    arrayElemento.splice(
+      arrayElemento.findIndex((x) => x.id === elementoDeletado.id),
+      1
+    );
+  }
+  return {
+    ...oldMapaContext,
+  };
+};
+
+const atualizaLinhaTempoElemento = (
+  oldMapaContext: mapaContextSchema,
+  actionContextChange: actionContextChange
+): mapaContextSchema => {
+  const elementoAlvo = Object.keys(oldMapaContext?.conteudo)
+    .map((x) => oldMapaContext?.conteudo[x])
+    .flat()
+    .find((x) => x.id === actionContextChange.id);
+  elementoAlvo.cenaFim = actionContextChange.end;
+  elementoAlvo.cenaInicio = actionContextChange.start;
   return {
     ...oldMapaContext,
   };
@@ -251,6 +272,7 @@ const MapaFunctionHelpers = {
   addElementoPolygon,
   //addElementoQuadrilatero,
   removeElemento,
+  atualizaLinhaTempoElemento,
   editarPropriedadeElemento,
 };
 export default MapaFunctionHelpers;
