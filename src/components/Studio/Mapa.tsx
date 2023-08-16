@@ -68,10 +68,11 @@ export default function Mapa(props: { altura: number }) {
   }, [mapaContext]);
 
   const corItemSelecionadoFoco = (el) => {
-    return mapaContext.elementoFoco?.id === el.id ||
-      mapaContext.elementosFoco?.some((x) => x.id === el.id)
-      ? "#000000"
-      : el.color ?? "#0d6efd";
+    return mapaContext.elementosFoco && mapaContext.elementosFoco.length > 0 ?
+      mapaContext.elementosFoco?.some((x) => x.id === el.id) ?
+        "#000000" : el.color ?? "#0d6efd" : mapaContext.elementoFoco?.id === el.id ?
+        "#000000"
+        : el.color ?? "#0d6efd";
   };
   return (
     isMounted && (

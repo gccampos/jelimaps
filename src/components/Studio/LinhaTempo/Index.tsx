@@ -6,24 +6,7 @@ import VisTimeline from "./VisTimeline";
 
 export default function LinhaTempo() {
   const mapaContext = useMapaContext();
-  const [listaElementos, setListaElementos] = useState<elementoPadrao[]>(
-    Object.keys(mapaContext?.conteudo)
-      .map((x) => mapaContext?.conteudo[x])
-      .flat()
-  );
-
-  useEffect(() => {
-    setListaElementos((lista) => [
-      ...lista.filter((x) =>
-        mapaContext?.conteudo[x.dataRef].some((z) => z.id === x.id)
-      ),
-      ...Object.keys(mapaContext?.conteudo)
-        .map((x) => mapaContext?.conteudo[x])
-        .flat()
-        .filter((x) => !lista.some((z) => z.id === x.id)),
-    ]);
-  }, [mapaContext, mapaContext.conteudo]);
-
+  
   return (
     <Grid
       id={"oi"}
@@ -43,7 +26,7 @@ export default function LinhaTempo() {
         },
       }}
     >
-      <VisTimeline listaElementos={listaElementos} />
+      <VisTimeline />
     </Grid>
   );
 }

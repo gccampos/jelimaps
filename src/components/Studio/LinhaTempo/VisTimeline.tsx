@@ -19,11 +19,10 @@ import {
   tipoElemento,
   tipoGenericoElementoTimeline,
 } from "@/components/Mapa/context/mapaContextTypes";
+import useListaElementos from "./useListaElementos";
 
-export default function VisTimeline(props: {
-  listaElementos: elementoPadrao[];
-}) {
-  const { listaElementos } = props;
+export default function VisTimeline() {
+  const listaElementos = useListaElementos();
   const mapaContext = useMapaContext();
   const dispatch = useMapaDispatch();
   const [visTimeline, setVisTimeline] = useState<Timeline>(null);
@@ -42,6 +41,18 @@ export default function VisTimeline(props: {
       });
     },
     [listaElementos]
+  );
+
+  const handleSeleciona = useCallback(
+    (item: any) => {
+      dispatch({
+        type: "selecionarElementosFoco",
+        elementos: Object.keys(mapaContext?.conteudo)
+          .map((x) => mapaContext?.conteudo[x])
+          .flat().filter(x => item.items.some((z: any) => z === x.id)),
+      });
+    },
+    [dispatch, mapaContext]
   );
 
   const handleRemoveConteudo = useCallback(
@@ -63,6 +74,12 @@ export default function VisTimeline(props: {
     [dispatch]
   );
 
+  const elementosFocados = useMemo(() => {
+    if (mapaContext.elementosFoco && mapaContext.elementosFoco.length > 0)
+      return mapaContext.elementosFoco.map(x => x.id)
+    if (mapaContext.elementoFoco)
+      return mapaContext.elementoFoco.id
+  }, [mapaContext])
   const optionsVisTimeline = useMemo<TimelineOptions>(() => {
     return {
       editable: { remove: true, updateTime: true },
@@ -75,6 +92,7 @@ export default function VisTimeline(props: {
       onRemove: handleRemoveConteudo,
       onMove: handleAtualizaConteudo,
       multiselect: true,
+      orientation: 'top',
     };
   }, [mapaContext, handleRemoveConteudo, handleAtualizaConteudo]);
   useEffect(() => {
@@ -83,6 +101,7 @@ export default function VisTimeline(props: {
       const tl =
         visJsRef.current &&
         new Timeline(visJsRef.current, items, optionsVisTimeline);
+      tl.on('select', handleSeleciona)
       setVisTimeline(tl);
     }
   }, [visJsRef, visTimeline, listaMapeada, optionsVisTimeline]);
@@ -105,6 +124,7 @@ export default function VisTimeline(props: {
         groups: listaMapeada(),
         items: listaMapeada().concat(listaPropriedades),
       });
+      visTimeline.setSelection(elementosFocados)
     }
   }, [visTimeline, listaMapeada]);
   return (
