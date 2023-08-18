@@ -14,7 +14,7 @@ const Dragger = styled("div")`
 const Studio = () => {
   const { height } = useWindowDimensions();
   const [rndRef, setRndRef] = useState<Rnd>();
-  const [altura, setAltura] = useState(height * 0.2);
+  const [altura, setAltura] = useState(height * 0.25);
   const displaYNoneStyle = { display: "none" };
   const resizeHandleStylesObject = {
     bottom: displaYNoneStyle,
@@ -36,7 +36,7 @@ const Studio = () => {
         ref={(c) => {
           setRndRef(c);
         }}
-        maxHeight={height * 0.5}
+        maxHeight={height * 0.9}
         minHeight={height * 0.05}
         resizeHandleStyles={resizeHandleStylesObject}
         size={{ height: altura, width: "100%" }}

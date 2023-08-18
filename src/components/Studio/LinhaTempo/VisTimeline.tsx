@@ -44,13 +44,15 @@ export default function VisTimeline() {
 
   const handleSeleciona = useCallback(
     (item: any) => {
-      if (item.event.srcEvent.type === 'pointerup')
+      if (item.event.srcEvent.type === 'pointerup' ||
+        item.event.srcEvent.type === 'pointerdown')
         dispatch({
           type: "selecionarElementosFocoPorId",
           ids: item.items,
         });
-      else
+      else {
         item.event.preventDefault()
+      }
     },
     [dispatch]
   );
