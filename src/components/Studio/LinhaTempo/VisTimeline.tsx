@@ -45,24 +45,26 @@ export default function VisTimeline() {
 
   const handleSeleciona = useCallback(
     (item: any) => {
-      dispatch({
-        type: "selecionarElementosFoco",
-        elementos: Object.keys(mapaContext?.conteudo)
-          .map((x) => mapaContext?.conteudo[x])
-          .flat().filter(x => item.items.some((z: any) => z === x.id)),
-      });
+      if (item.event.srcEvent.type === 'pointerup')
+        dispatch({
+          type: "selecionarElementosFocoPorId",
+          ids: item.items,
+        });
+      else
+        item.event.preventDefault()
     },
     [dispatch, mapaContext]
   );
 
   const handleRemoveConteudo = useCallback(
     (item: TimelineItem) => {
-      dispatch({
-        type: "removeElement",
-        id: item.id,
-      });
+      const dispOpt = {
+        type: "removeElements",
+        id: item.id
+      }
+      dispatch(dispOpt);
     },
-    [dispatch]
+    [dispatch, mapaContext, mapaContext.elementosFoco, mapaContext.elementoFoco]
   );
   const handleAtualizaConteudo = useCallback(
     (item: TimelineItem) => {
@@ -87,12 +89,13 @@ export default function VisTimeline() {
       zoomKey: "ctrlKey",
       start: mapaContext.cenaInicio,
       end: mapaContext.cenaFim,
-      autoResize: false,
+      autoResize: true,
       selectable: true,
       onRemove: handleRemoveConteudo,
       onMove: handleAtualizaConteudo,
       multiselect: true,
       orientation: 'top',
+      longSelectPressTime: 777,
     };
   }, [mapaContext, handleRemoveConteudo, handleAtualizaConteudo]);
   useEffect(() => {
@@ -107,6 +110,7 @@ export default function VisTimeline() {
   }, [visJsRef, visTimeline, listaMapeada, optionsVisTimeline]);
   useEffect(() => {
     if (visTimeline) {
+      const scrollTopValue = visJsRef.current.scrollTop
       const listaPropriedades = listaMapeada(
         listaMapeada()
           .map((x) => {
@@ -125,6 +129,10 @@ export default function VisTimeline() {
         items: listaMapeada().concat(listaPropriedades),
       });
       visTimeline.setSelection(elementosFocados)
+      setTimeout(() => {
+        visJsRef.current.scrollTop = scrollTopValue
+      }, 10)
+
     }
   }, [visTimeline, listaMapeada]);
   return (

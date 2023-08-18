@@ -27,6 +27,9 @@ export function mapaReducer(
     case "selecionarElementoFoco": {
       return MapaFunctionHelpers.changeElementoFoco(oldMapaContext, action);
     }
+    case "selecionarElementosFocoPorId": {
+      return MapaFunctionHelpers.changeTodosElementosFocoPorIds(oldMapaContext, action);
+    }
     case "desativarElementos": {
       return MapaFunctionHelpers.changeElementoInteracao(oldMapaContext, null);
     }
@@ -54,8 +57,8 @@ export function mapaReducer(
         slidePropriedade: !oldMapaContext.slidePropriedade,
       };
     }
-    case "removeElement": {
-      return MapaFunctionHelpers.removeElemento(oldMapaContext, action.id);
+    case "removeElements": {
+      return MapaFunctionHelpers.removeElemento(oldMapaContext, action);
     }
     case "updateTimelineElement": {
       return MapaFunctionHelpers.atualizaLinhaTempoElemento(

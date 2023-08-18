@@ -7,6 +7,7 @@ import {
   elementoComPosition,
   elementoComPositions,
   mapaContextSchema,
+  tipoElemento,
 } from "./mapaContextTypes";
 import { v4, NIL } from "uuid";
 
@@ -52,6 +53,16 @@ const changeElementosFoco = (
   oldMapaContext.elementoFoco = actionContextChange.elemento;
   return { ...oldMapaContext };
 };
+
+const changeTodosElementosFocoPorIds = (
+  oldMapaContext: mapaContextSchema,
+  actionContextChange: actionContextChange) => {
+    const todoConteudo = Object.keys(oldMapaContext?.conteudo)
+    .map((x) => oldMapaContext?.conteudo[x]).flat()
+    const listaNovaElementos = todoConteudo.filter(x=> actionContextChange.ids.some(z=> z === x.id ))
+    oldMapaContext.elementoFoco = null;
+    return changeTodosElementosFoco(oldMapaContext, {...actionContextChange, elementos: listaNovaElementos});
+  }
 
 const changeTodosElementosFoco = (
   oldMapaContext: mapaContextSchema,
@@ -213,19 +224,23 @@ const addElementoCirculo = (
 
 const removeElemento = (
   oldMapaContext: mapaContextSchema,
-  id: NIL
+  actionContextChange: actionContextChange
 ): mapaContextSchema => {
-  const elementoDeletado = Object.keys(oldMapaContext?.conteudo)
-    .map((x) => oldMapaContext?.conteudo[x])
-    .flat()
-    .find((x) => x.id === id);
-  if (elementoDeletado) {
-    const arrayElemento = oldMapaContext.conteudo[elementoDeletado.dataRef];
-    arrayElemento.splice(
-      arrayElemento.findIndex((x) => x.id === elementoDeletado.id),
-      1
-    );
+  const removerUmElemento = (elementos: tipoElemento[], id: NIL) => {
+    elementos
+    .splice(elementos.findIndex(x=> x.id === id), 1) 
   }
+  oldMapaContext.elementosFoco ?  oldMapaContext.elementosFoco.forEach(element => {
+    removerUmElemento(oldMapaContext.conteudo[element.dataRef], element.id) 
+  }) : oldMapaContext.elementoFoco ? 
+    removerUmElemento(oldMapaContext.conteudo[oldMapaContext.elementoFoco.dataRef], oldMapaContext.elementoFoco.id) :
+  actionContextChange.id ?  
+    removerUmElemento(oldMapaContext.conteudo[Object.keys(oldMapaContext?.conteudo)
+      .map((x) => oldMapaContext?.conteudo[x])
+      .flat()
+      .find((x) => x.id === actionContextChange.id).dataRef], actionContextChange.id) : 
+  oldMapaContext
+  
   return {
     ...oldMapaContext,
   };
@@ -266,6 +281,7 @@ const MapaFunctionHelpers = {
   changeElementoFoco,
   changeElementosFoco,
   changeTodosElementosFoco,
+  changeTodosElementosFocoPorIds,
   addElementoMarker,
   addElementoCirculo,
   addElementoPolyline,

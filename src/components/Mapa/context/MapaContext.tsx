@@ -8,8 +8,8 @@ const initialMapaContexto: mapaContextSchema = {
   elementoInteracao: elementos.Hand,
   slidePropriedade: false,
   conteudo: {},
-  cenaInicio: 1,
-  cenaFim: 100,
+  cenaInicio: '2023-08-18',
+  cenaFim: '2023-09-30',
 };
 
 const MapaContext = createContext<mapaContextSchema>(initialMapaContexto);
@@ -18,7 +18,7 @@ export function useMapaContext() {
 }
 
 const MapaDispatchContext = createContext<Dispatch<actionContextChange>>(
-  () => {}
+  () => { }
 );
 export function useMapaDispatch() {
   return useContext(MapaDispatchContext);

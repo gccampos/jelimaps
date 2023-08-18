@@ -74,6 +74,7 @@ export type tipoElemento =
 export type actionContextChange = {
   type: string;
   id?: NIL;
+  ids?: NIL[];
   arg?: elementoProto;
   elemento?: tipoElemento;
   elementos?: tipoElemento[];
