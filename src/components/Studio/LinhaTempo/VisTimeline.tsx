@@ -15,7 +15,6 @@ import {
   useMapaDispatch,
 } from "@/components/Mapa/context/MapaContext";
 import {
-  elementoPadrao,
   tipoElemento,
   tipoGenericoElementoTimeline,
 } from "@/components/Mapa/context/mapaContextTypes";
@@ -53,7 +52,7 @@ export default function VisTimeline() {
       else
         item.event.preventDefault()
     },
-    [dispatch, mapaContext]
+    [dispatch]
   );
 
   const handleRemoveConteudo = useCallback(
@@ -64,7 +63,7 @@ export default function VisTimeline() {
       }
       dispatch(dispOpt);
     },
-    [dispatch, mapaContext, mapaContext.elementosFoco, mapaContext.elementoFoco]
+    [dispatch]
   );
   const handleAtualizaConteudo = useCallback(
     (item: TimelineItem) => {
@@ -107,7 +106,7 @@ export default function VisTimeline() {
       tl.on('select', handleSeleciona)
       setVisTimeline(tl);
     }
-  }, [visJsRef, visTimeline, listaMapeada, optionsVisTimeline]);
+  }, [visJsRef, visTimeline, listaMapeada, optionsVisTimeline, handleSeleciona]);
   useEffect(() => {
     if (visTimeline) {
       const scrollTopValue = visJsRef.current.scrollTop
@@ -134,7 +133,7 @@ export default function VisTimeline() {
       }, 10)
 
     }
-  }, [visTimeline, listaMapeada]);
+  }, [visTimeline, listaMapeada, elementosFocados]);
   return (
     <div
       ref={visJsRef}

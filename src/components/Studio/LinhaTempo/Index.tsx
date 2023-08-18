@@ -1,12 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Grid } from "@mui/material";
-import { useMapaContext } from "../../Mapa/context/MapaContext";
-import { elementoPadrao } from "../../Mapa/context/mapaContextTypes";
 import VisTimeline from "./VisTimeline";
 
 export default function LinhaTempo() {
-  const mapaContext = useMapaContext();
-  
+
   return (
     <Grid
       id={"oi"}
