@@ -8,6 +8,8 @@ export type tipoGenericoElementoTimeline = periodoInicioFim & {
   id: NIL;
   nome: string;
   dataRef?: string;
+  type?: string;
+  style?: string;
 };
 export type elementoPadrao = tipoGenericoElementoTimeline & {
   collapse?: boolean;
@@ -54,7 +56,7 @@ export type mapaContextSchema = periodoInicioFim & {
   };
 };
 type conteudoType = {
-  [key: string]: arrayElementoPadrao;
+  [key: string]: arrayElemento;
 };
 
 export type markerType = arrayElementoGenerico<elementoComPosition>;
@@ -63,8 +65,8 @@ export type PolygonType = arrayElementoGenerico<elementoComPositions>;
 export type CircleType = arrayElementoGenerico<elementoCircle>;
 export type RectangleType = arrayElementoGenerico<elementoComBounds>;
 type basePrototypeArray = { collapse?: boolean };
-type arrayElementoPadrao = basePrototypeArray & elementoPadrao[];
 type arrayElementoGenerico<T> = basePrototypeArray & T[];
+type arrayElemento = basePrototypeArray & tipoElemento[]
 export type tipoElemento =
   | elementoPadrao
   | elementoComPosition

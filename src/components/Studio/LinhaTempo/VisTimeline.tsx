@@ -19,6 +19,7 @@ import {
   tipoGenericoElementoTimeline,
 } from "@/components/Mapa/context/mapaContextTypes";
 import useListaElementos from "./useListaElementos";
+import { v4 } from "uuid";
 
 export default function VisTimeline() {
   const listaElementos = useListaElementos();
@@ -32,7 +33,7 @@ export default function VisTimeline() {
       return (lista ?? listaElementos).map((x) => {
         return {
           ...x,
-          group: x.id,
+          group: !x.type ? x.id : null,
           content: x.nome,
           start: x.cenaInicio,
           end: x.cenaFim,
@@ -97,10 +98,12 @@ export default function VisTimeline() {
       multiselect: true,
       orientation: 'top',
       longSelectPressTime: 777,
+      snap: (date) => date
     };
   }, [mapaContext, handleRemoveConteudo, handleAtualizaConteudo]);
   useEffect(() => {
     if (!visTimeline) {
+      console.log('vai configurar o vis timeline')
       const items = listaMapeada();
       const tl =
         visJsRef.current &&
@@ -123,13 +126,21 @@ export default function VisTimeline() {
             );
           })
           .flat()
-          .filter((x) => x)
+          .filter((x) => x).concat([
+            {
+              valor: 1, tipo: '', nome: 's', id: v4(), group: v4(), cenaFim: '2023-08-20', cenaInicio: '2023-08-18',
+              form: null, type: 'background', style: "background-color: red;"
+            }])
       );
+
+      console.log('listaPropriedades', listaPropriedades)
+      const valorItems = listaMapeada().concat(listaPropriedades)
+      console.log('valorItems CONCATENADOS', valorItems)
       visTimeline.setData({
         groups: listaMapeada(),
-        items: listaMapeada().concat(listaPropriedades),
+        items: valorItems,
       });
-      visTimeline.setSelection(elementosFocados)
+      //visTimeline.setSelection(elementosFocados)
       setTimeout(() => {
         visJsRef.current.scrollTop = scrollTopValue
       }, 10)
