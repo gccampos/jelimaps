@@ -3,13 +3,22 @@ import React from "react";
 import { mapaReducer } from "./MapaDispatchEvents";
 import { elementos } from "@/main/constants/elementos";
 import { mapaContextSchema, actionContextChange } from "./mapaContextTypes";
+import { v4 } from "uuid";
 
 const initialMapaContexto: mapaContextSchema = {
   elementoInteracao: elementos.Hand,
   slidePropriedade: false,
   conteudo: {},
-  cenaInicio: '2023-08-18',
-  cenaFim: '2023-09-30',
+  cenaInicio: "2023-08-18",
+  cenaFim: "2023-09-30",
+  cenas: [
+    {
+      cenaInicio: "2023-08-18",
+      cenaFim: "2023-09-30",
+      id: v4(),
+      nome: "Primeira cena",
+    },
+  ],
 };
 
 const MapaContext = createContext<mapaContextSchema>(initialMapaContexto);
@@ -18,7 +27,7 @@ export function useMapaContext() {
 }
 
 const MapaDispatchContext = createContext<Dispatch<actionContextChange>>(
-  () => { }
+  () => {}
 );
 export function useMapaDispatch() {
   return useContext(MapaDispatchContext);

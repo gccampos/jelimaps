@@ -30,10 +30,11 @@ export default function VisTimeline() {
 
   const listaMapeada = useCallback(
     (lista?: (tipoElemento | tipoGenericoElementoTimeline)[]) => {
+      if (lista) console.log("listaMapeada a partir de ", lista);
       return (lista ?? listaElementos).map((x) => {
         return {
           ...x,
-          group: !x.type ? x.id : null,
+          group: !x.type ? x.id : x.type === "box" ? x.group : null,
           content: x.nome,
           start: x.cenaInicio,
           end: x.cenaFim,
@@ -45,14 +46,17 @@ export default function VisTimeline() {
 
   const handleSeleciona = useCallback(
     (item: any) => {
-      if (item.event.srcEvent.type === 'pointerup' ||
-        item.event.srcEvent.type === 'pointerdown')
+      console.log("select", item);
+      if (
+        item.event.srcEvent.type === "pointerup" ||
+        item.event.srcEvent.type === "pointerdown"
+      )
         dispatch({
           type: "selecionarElementosFocoPorId",
           ids: item.items,
         });
       else {
-        item.event.preventDefault()
+        item.event.preventDefault();
       }
     },
     [dispatch]
@@ -62,8 +66,8 @@ export default function VisTimeline() {
     (item: TimelineItem) => {
       const dispOpt = {
         type: "removeElements",
-        id: item.id
-      }
+        id: item.id,
+      };
       dispatch(dispOpt);
     },
     [dispatch]
@@ -71,8 +75,19 @@ export default function VisTimeline() {
   const handleAtualizaConteudo = useCallback(
     (item: TimelineItem) => {
       dispatch({
-        type: "updateTimelineElement",
         ...item,
+        type: "updateTimelineElement",
+      });
+    },
+    [dispatch]
+  );
+  const handleAdicionarPropriedadeConteudo = useCallback(
+    (item: TimelineItem) => {
+      console.log("handleAdicionarPropriedadeConteudo", item);
+
+      dispatch({
+        ...item,
+        type: "adicionarAlteracaoElemento",
       });
     },
     [dispatch]
@@ -80,73 +95,143 @@ export default function VisTimeline() {
 
   const elementosFocados = useMemo(() => {
     if (mapaContext.elementosFoco && mapaContext.elementosFoco.length > 0)
-      return mapaContext.elementosFoco.map(x => x.id)
-    if (mapaContext.elementoFoco)
-      return mapaContext.elementoFoco.id
-  }, [mapaContext])
+      return mapaContext.elementosFoco.map((x) => x.id);
+    if (mapaContext.elementoFoco) return mapaContext.elementoFoco.id;
+  }, [mapaContext]);
   const optionsVisTimeline = useMemo<TimelineOptions>(() => {
     return {
       editable: { remove: true, updateTime: true },
-      groupEditable: true,
       zoomKey: "ctrlKey",
       start: mapaContext.cenaInicio,
       end: mapaContext.cenaFim,
       autoResize: true,
       selectable: true,
+      groupHeightMode: "fixed",
       onRemove: handleRemoveConteudo,
       onMove: handleAtualizaConteudo,
+      onMoving: (item: TimelineItem, cb: any) => {
+        const elemento: tipoElemento = {
+          ...item,
+          bounds: null,
+          cenaInicio: item.start,
+          cenaFim: item.end,
+          nome: "",
+        };
+        const dentroDoRangeCenas =
+          new Date(mapaContext.cenas[0].cenaInicio) < new Date(item.start) &&
+          new Date(mapaContext.cenas[mapaContext.cenas.length - 1].cenaFim) >
+            new Date(item.end);
+        console.log("dentroDoRangeCenas, ", dentroDoRangeCenas);
+        if (dentroDoRangeCenas)
+          if (elemento.alteracoes) {
+            if (
+              elemento.alteracoes.every(
+                (x) =>
+                  new Date(x.cenaInicio) > new Date(item.start) &&
+                  new Date(x.cenaInicio) < new Date(item.end)
+              )
+            )
+              cb(item);
+          } else cb(item);
+      },
       multiselect: true,
-      orientation: 'top',
+      orientation: "top",
       longSelectPressTime: 777,
-      snap: (date) => date
+      snap: (date) => date,
+      rollingMode: { offset: 0, follow: false },
+      showCurrentTime: false,
     };
-  }, [mapaContext, handleRemoveConteudo, handleAtualizaConteudo]);
+  }, [
+    mapaContext,
+    handleRemoveConteudo,
+    handleAtualizaConteudo,
+    //handleAdicionarPropriedadeConteudo,
+  ]);
   useEffect(() => {
     if (!visTimeline) {
-      console.log('vai configurar o vis timeline')
+      console.log("vai configurar o vis timeline");
       const items = listaMapeada();
       const tl =
         visJsRef.current &&
         new Timeline(visJsRef.current, items, optionsVisTimeline);
-      tl.on('select', handleSeleciona)
+      tl.on("select", handleSeleciona);
+      tl.addCustomTime(optionsVisTimeline.start, "currentTime");
+      tl.on("doubleClick", (e: any) => {
+        console.log("clique DUPLO", e);
+        if (e.group)
+          handleAdicionarPropriedadeConteudo({
+            ...e,
+            start: e.snappedTime,
+            content: "",
+            id: v4(),
+          });
+      });
+      tl.on("click", (e: any) => {
+        console.log("clicando", e);
+        //if (e.snappedTime) tl.setCustomTime(e.snappedTime, "currentTime");
+      });
       setVisTimeline(tl);
     }
-  }, [visJsRef, visTimeline, listaMapeada, optionsVisTimeline, handleSeleciona]);
+  }, [
+    visJsRef,
+    visTimeline,
+    listaMapeada,
+    optionsVisTimeline,
+    handleSeleciona,
+    handleAdicionarPropriedadeConteudo,
+  ]);
   useEffect(() => {
     if (visTimeline) {
-      const scrollTopValue = visJsRef.current.scrollTop
+      const scrollTopValue = visJsRef.current.scrollTop;
       const listaPropriedades = listaMapeada(
         listaMapeada()
           .map((x) => {
             return (
-              (x as tipoElemento).propriedades &&
-              (x as tipoElemento).propriedades.map((z) => {
+              (x as tipoElemento).alteracoes &&
+              (x as tipoElemento).alteracoes.map((z) => {
                 return z ? { ...z, group: x.id } : null;
               })
             );
           })
           .flat()
-          .filter((x) => x).concat([
-            {
-              valor: 1, tipo: '', nome: 's', id: v4(), group: v4(), cenaFim: '2023-08-20', cenaInicio: '2023-08-18',
-              form: null, type: 'background', style: "background-color: red;"
-            }])
+          .filter((x) => x)
+          .concat(
+            mapaContext.cenas.map((x) => {
+              return {
+                ...x,
+                valor: 1,
+                tipo: "",
+                group: v4(),
+                form: null,
+                type: "background",
+                style: "background-color: #df000024;",
+              };
+            })
+          )
       );
 
-      console.log('listaPropriedades', listaPropriedades)
-      const valorItems = listaMapeada().concat(listaPropriedades)
-      console.log('valorItems CONCATENADOS', valorItems)
+      console.log("listaPropriedades", listaPropriedades);
+      console.log("listaMapeada()", listaMapeada());
+      const valorItems = listaMapeada().concat(listaPropriedades);
+      console.log("valorItems CONCATENADOS", valorItems);
+      console.log(
+        "visTimeline.getVisibleItems()(FILTRADO)",
+        visTimeline
+          .getVisibleItems()
+          .filter((x) => !valorItems.some((z) => z.id === x))
+      );
       visTimeline.setData({
         groups: listaMapeada(),
         items: valorItems,
       });
-      //visTimeline.setSelection(elementosFocados)
-      setTimeout(() => {
-        visJsRef.current.scrollTop = scrollTopValue
-      }, 10)
-
+      visTimeline.setSelection(elementosFocados);
+      if (scrollTopValue)
+        setTimeout(() => {
+          console.log("mudando scrool", scrollTopValue);
+          visJsRef.current.scrollTop = scrollTopValue;
+        }, 10);
     }
-  }, [visTimeline, listaMapeada, elementosFocados]);
+  }, [visTimeline, listaMapeada, elementosFocados, mapaContext]);
   return (
     <div
       ref={visJsRef}

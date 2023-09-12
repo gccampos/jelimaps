@@ -18,6 +18,10 @@ export function mapaReducer(
     case "adicionarElementoFoco": {
       return MapaFunctionHelpers.changeElementosFoco(oldMapaContext, action);
     }
+    case "adicionarAlteracaoElemento": {
+      console.log("adicionarAlteracaoElemento", action);
+      return MapaFunctionHelpers.addAlteracaoElemento(oldMapaContext, action);
+    }
     case "selecionarElementosFoco": {
       return MapaFunctionHelpers.changeTodosElementosFoco(
         oldMapaContext,
@@ -28,7 +32,10 @@ export function mapaReducer(
       return MapaFunctionHelpers.changeElementoFoco(oldMapaContext, action);
     }
     case "selecionarElementosFocoPorId": {
-      return MapaFunctionHelpers.changeTodosElementosFocoPorIds(oldMapaContext, action);
+      return MapaFunctionHelpers.changeTodosElementosFocoPorIds(
+        oldMapaContext,
+        action
+      );
     }
     case "desativarElementos": {
       return MapaFunctionHelpers.changeElementoInteracao(oldMapaContext, null);

@@ -1,78 +1,64 @@
-import React, { useState } from "react";
-import {
-  Grid,
-  styled,
-  Chip,
-  Typography,
-  Tab,
-  AppBar,
-  Tabs,
-  Box,
-} from "@mui/material";
-import {
-  useMapaContext,
-  //useMapaDispatch,
-} from "@/components/Mapa/context/MapaContext";
+import React, { useEffect, useState } from "react";
+import { Grid, styled, Chip, Tab, AppBar, Tabs, Box } from "@mui/material";
+import { useMapaContext } from "@/components/Mapa/context/MapaContext";
 import { Rnd } from "react-rnd";
 import AlignVerticalCenterIcon from "@mui/icons-material/AlignVerticalCenter";
-import useWindowDimensions from "./useWindowDimensions";
+import useWindowDimensions from "../useWindowDimensions";
+import Cenas from "./cenas";
 
 const Dragger = styled("div")`
   cursor: e-resize;
   height: 100%;
 `;
+
 interface TabPanelProps {
   children?: React.ReactNode;
   dir?: string;
   index: number;
-  value: number;
-}
-
-function TabPanel(props: TabPanelProps) {
-  const { children, value, index, ...other } = props;
-
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`full-width-tabpanel-${index}`}
-      aria-labelledby={`full-width-tab-${index}`}
-      {...other}
-    >
-      {value === index && (
-        <Box sx={{ p: 3 }}>
-          <Typography>{children}</Typography>
-        </Box>
-      )}
-    </div>
-  );
 }
 
 export default function Propriedades(props: { altura: number }) {
   const { width } = useWindowDimensions();
   const mapaContext = useMapaContext();
-  // const dispatch = useMapaDispatch();
   const [rndRef, setRndRef] = useState<Rnd>();
   const [value, setValue] = React.useState(0);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-    handleChangeIndex(newValue);
+    setValue(newValue);
   };
 
-  const handleChangeIndex = (index: number) => {
-    setValue(index);
-  };
+  function TabPanel(props: TabPanelProps) {
+    const { children, index, ...other } = props;
+
+    return (
+      <div
+        role="tabpanel"
+        hidden={value !== index}
+        id={`full-width-tabpanel-${index}`}
+        aria-labelledby={`full-width-tab-${index}`}
+        {...other}
+      >
+        {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
+      </div>
+    );
+  }
 
   const [larguraPropriedades, setLargurasPropriedades] = useState(250);
 
-  function a11yProps(index: number) {
+  function propriedadesTab(index: number) {
     return {
       id: `full-width-tab-${index}`,
       "aria-controls": `full-width-tabpanel-${index}`,
       sx: value === index ? { bgcolor: "#1976d245" } : {},
+      value: index,
     };
   }
   const displaYNoneStyle = { display: "none" };
+
+  useEffect(() => {
+    setValue(mapaContext.elementoFoco || mapaContext.elementosFoco ? 2 : 0);
+  }, [mapaContext.elementoFoco, mapaContext.elementosFoco]);
+
   return (
     mapaContext?.slidePropriedade && (
       <Grid
@@ -145,28 +131,20 @@ export default function Propriedades(props: { altura: number }) {
                 variant="fullWidth"
                 aria-label="full width tabs example"
               >
-                <Tab label="Item One" {...a11yProps(0)} />
                 {(mapaContext.elementoFoco || mapaContext.elementosFoco) && (
-                  <Tab label="Item Two" {...a11yProps(1)} />
+                  <Tab label="Elemento" {...propriedadesTab(2)} />
                 )}
-                {(mapaContext.elementoFoco || mapaContext.elementosFoco) && (
-                  <Tab label="Item Three" {...a11yProps(2)} />
-                )}
+                <Tab label="Geral" {...propriedadesTab(0)} />
+                <Tab label="Cenas" {...propriedadesTab(1)} />
               </Tabs>
             </AppBar>
-            <TabPanel value={value} index={0}>
-              Item One
-            </TabPanel>
             {(mapaContext.elementoFoco || mapaContext.elementosFoco) && (
-              <>
-                <TabPanel value={value} index={1}>
-                  Item Two
-                </TabPanel>
-                <TabPanel value={value} index={2}>
-                  Item Three
-                </TabPanel>
-              </>
+              <TabPanel index={2}>Elemento</TabPanel>
             )}
+            <TabPanel index={0}>Geral</TabPanel>
+            <TabPanel index={1}>
+              <Cenas />
+            </TabPanel>
             {/* {(mapaContext.elementoFoco || mapaContext.elementosFoco) && (
               <Typography>Existe um ou mais elementos selecionados</Typography>
             )} */}

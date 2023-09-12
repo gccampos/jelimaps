@@ -8,6 +8,7 @@ export type tipoGenericoElementoTimeline = periodoInicioFim & {
   id: NIL;
   nome: string;
   dataRef?: string;
+  group?: NIL;
   type?: string;
   style?: string;
 };
@@ -16,13 +17,13 @@ export type elementoPadrao = tipoGenericoElementoTimeline & {
   texto?: string;
   color?: string;
   draggable?: boolean;
-  propriedades?: propriedadeVisual[];
+  alteracoes?: propriedadeVisual[];
 };
 type periodoInicioFim = {
   cenaFim: DateType;
   cenaInicio: DateType;
 };
-type propriedadeVisual = tipoGenericoElementoTimeline & {
+export type propriedadeVisual = tipoGenericoElementoTimeline & {
   nome: string;
   tipo: any;
   valor: any;
@@ -54,6 +55,7 @@ export type mapaContextSchema = periodoInicioFim & {
     Circle?: CircleType;
     Rectangle?: RectangleType;
   };
+  cenas: elementoPadrao[];
 };
 type conteudoType = {
   [key: string]: arrayElemento;
@@ -66,7 +68,7 @@ export type CircleType = arrayElementoGenerico<elementoCircle>;
 export type RectangleType = arrayElementoGenerico<elementoComBounds>;
 type basePrototypeArray = { collapse?: boolean };
 type arrayElementoGenerico<T> = basePrototypeArray & T[];
-type arrayElemento = basePrototypeArray & tipoElemento[]
+type arrayElemento = basePrototypeArray & tipoElemento[];
 export type tipoElemento =
   | elementoPadrao
   | elementoComPosition
@@ -76,6 +78,7 @@ export type tipoElemento =
 export type actionContextChange = {
   type: string;
   id?: NIL;
+  group?: NIL;
   ids?: NIL[];
   arg?: elementoProto;
   elemento?: tipoElemento;
