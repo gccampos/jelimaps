@@ -19,7 +19,6 @@ export function mapaReducer(
       return MapaFunctionHelpers.changeElementosFoco(oldMapaContext, action);
     }
     case "adicionarAlteracaoElemento": {
-      console.log("adicionarAlteracaoElemento", action);
       return MapaFunctionHelpers.addAlteracaoElemento(oldMapaContext, action);
     }
     case "selecionarElementosFoco": {
@@ -82,17 +81,35 @@ export function mapaReducer(
         action.valorPropriedade
       );
     }
-    case "collapse": {
-      console.log("action", action);
-      if (action.indiceElemento != null) {
-        oldMapaContext.conteudo[action.tipo][action.indiceElemento].collapse =
-          action.valorBooleano;
-      } else
-        oldMapaContext.conteudo[action.tipo].collapse =
-          action.valorBooleano ??
-          !oldMapaContext.conteudo[action.tipo].collapse;
+    case "trocaMapaContext": {
+      return {
+        ...(action.mapContext ?? oldMapaContext),
+      };
+    }
+    case "atualizaTempo": {
+      return { ...oldMapaContext, tempo: action.time ?? oldMapaContext.tempo };
+    }
+    case "alteraPropriedadeGeral": {
+      if (action.tipo.includes("cena")) {
+        if (!action.formik.isValid) return oldMapaContext;
+        if (action.tipo === "cenaInicio")
+          oldMapaContext.conteudo.cenas[0].cenaInicio = action.valor;
+        if (action.tipo === "cenaFim")
+          oldMapaContext.conteudo.cenas[
+            oldMapaContext.conteudo.cenas.length - 1
+          ].cenaFim = action.valor;
+      }
+      return { ...oldMapaContext, [action.tipo]: action.valor };
+    }
+    case "alteraPropriedadeTimelineOptions": {
+      if (action.tipo === "showCurrentTime")
+        if (action.valor) oldMapaContext.tempo = oldMapaContext.cenaInicio;
       return {
         ...oldMapaContext,
+        timelineOptions: {
+          ...oldMapaContext.timelineOptions,
+          [action.tipo]: action.valor,
+        },
       };
     }
     default: {

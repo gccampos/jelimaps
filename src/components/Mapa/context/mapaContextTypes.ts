@@ -1,8 +1,8 @@
-import React from "react";
 import { elementoProto } from "@/main/constants/elementos";
-import { LatLng, LatLngBoundsExpression } from "leaflet";
+import { LatLng, LatLngBoundsExpression, MapOptions } from "leaflet";
 import { NIL } from "uuid";
-import { DateType } from "vis-timeline";
+import { DateType, TimelineOptions } from "vis-timeline";
+import { FormikProps } from "formik";
 
 export type tipoGenericoElementoTimeline = periodoInicioFim & {
   id: NIL;
@@ -27,7 +27,6 @@ export type propriedadeVisual = tipoGenericoElementoTimeline & {
   nome: string;
   tipo: any;
   valor: any;
-  form: React.ReactNode;
 };
 export type elementoComPosition = {
   position: LatLng;
@@ -45,7 +44,7 @@ export type elementoComBounds = {
 export type mapaContextSchema = periodoInicioFim & {
   elementoInteracao: elementoProto;
   elementoFoco?: tipoElemento;
-  elementosFoco?: tipoElemento[];
+  elementosFoco?: { id: NIL }[];
   slidePropriedade: boolean;
   modoVisao?: string;
   conteudo: conteudoType & {
@@ -54,8 +53,14 @@ export type mapaContextSchema = periodoInicioFim & {
     Polygon?: PolygonType;
     Circle?: CircleType;
     Rectangle?: RectangleType;
+    cenas: elementoPadrao[];
   };
-  cenas: elementoPadrao[];
+  fit?: boolean;
+  tempo: DateType;
+  mapOptions: MapOptions;
+  timelineOptions: TimelineOptions;
+  reloadTimelineOptions?: boolean;
+  playStatus: number;
 };
 type conteudoType = {
   [key: string]: arrayElemento;
@@ -84,6 +89,7 @@ export type actionContextChange = {
   elemento?: tipoElemento;
   elementos?: tipoElemento[];
   tipo?: string;
+  valor?: any;
   posicao?: LatLng;
   indiceElemento?: number;
   nomeElemento?: string;
@@ -92,4 +98,7 @@ export type actionContextChange = {
   valorBooleano?: boolean;
   start?: DateType;
   end?: DateType;
+  time?: DateType;
+  formik?: FormikProps<mapaContextSchema>;
+  mapContext?: mapaContextSchema;
 };

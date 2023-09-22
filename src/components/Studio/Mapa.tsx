@@ -8,7 +8,7 @@ import {
   Circle,
   Rectangle,
 } from "react-leaflet";
-import { LatLngBounds, LatLng, divIcon } from "leaflet";
+import { LatLngBounds, LatLng, divIcon, Map } from "leaflet";
 import { useEffect, useMemo, useState } from "react";
 import React from "react";
 import CustomControlLeaflet, {
@@ -31,7 +31,7 @@ export const MODO_VISAO = {
 
 export default function Mapa(props: { altura: number }) {
   const [isMounted, setIsMounted] = React.useState(false);
-  const [map, setMap] = useState(null);
+  const [map, setMap] = useState<Map>(null);
   const mapaContext = useMapaContext();
   const dispatch = useMapaDispatch();
   const position = useMemo(
@@ -66,19 +66,30 @@ export default function Mapa(props: { altura: number }) {
   useEffect(() => {
     console.log("contexto do mapa", mapaContext);
   }, [mapaContext]);
+  useEffect(() => {
+    console.log("map", map);
+    console.log("map.options", map?.options);
+  }, [map]);
 
   const corItemSelecionadoFoco = (el) => {
-    return mapaContext.elementosFoco && mapaContext.elementosFoco.length > 0 ?
-      mapaContext.elementosFoco?.some((x) => x.id === el.id) ?
-        "#000000" : el.color ?? "#0d6efd" : mapaContext.elementoFoco?.id === el.id ?
-        "#000000"
-        : el.color ?? "#0d6efd";
+    return mapaContext.elementosFoco && mapaContext.elementosFoco.length > 0
+      ? mapaContext.elementosFoco?.some((x) => x.id === el.id)
+        ? "#000000"
+        : el.color ?? "#0d6efd"
+      : mapaContext.elementoFoco?.id === el.id
+      ? "#000000"
+      : el.color ?? "#0d6efd";
   };
   return (
     isMounted && (
       <Grid item xs>
         <div style={{ height: props.altura, display: "grid" }}>
-          <MapContainer center={center} zoom={zoom} ref={setMap} maxZoom={18}>
+          <MapContainer
+            center={mapaContext.mapOptions.center ?? center}
+            zoom={mapaContext.mapOptions.zoom ?? zoom}
+            ref={setMap}
+            maxZoom={18}
+          >
             {mapaContext.modoVisao === MODO_VISAO.openstreetmap && (
               <TileLayer
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -91,7 +102,11 @@ export default function Mapa(props: { altura: number }) {
             {mapaContext.conteudo &&
               mapaContext.conteudo.Marker &&
               mapaContext.conteudo.Marker.length > 0 &&
-              mapaContext.conteudo.Marker.map((x, i, arr) => {
+              mapaContext.conteudo.Marker.filter(
+                (x) =>
+                  new Date(x.cenaInicio) <= new Date(mapaContext.tempo) &&
+                  new Date(x.cenaFim) >= new Date(mapaContext.tempo)
+              ).map((x, i, arr) => {
                 return (
                   <Marker
                     {...x}
@@ -122,7 +137,11 @@ export default function Mapa(props: { altura: number }) {
             {mapaContext.conteudo &&
               mapaContext.conteudo.Polyline &&
               mapaContext.conteudo.Polyline.length > 0 &&
-              mapaContext.conteudo.Polyline.map((x, i, arr) => {
+              mapaContext.conteudo.Polyline.filter(
+                (x) =>
+                  new Date(x.cenaInicio) <= new Date(mapaContext.tempo) &&
+                  new Date(x.cenaFim) >= new Date(mapaContext.tempo)
+              ).map((x, i, arr) => {
                 return (
                   <Polyline
                     {...x}
@@ -139,7 +158,11 @@ export default function Mapa(props: { altura: number }) {
             {mapaContext.conteudo &&
               mapaContext.conteudo.Polygon &&
               mapaContext.conteudo.Polygon.length > 0 &&
-              mapaContext.conteudo.Polygon.map((x, i, arr) => {
+              mapaContext.conteudo.Polygon.filter(
+                (x) =>
+                  new Date(x.cenaInicio) <= new Date(mapaContext.tempo) &&
+                  new Date(x.cenaFim) >= new Date(mapaContext.tempo)
+              ).map((x, i, arr) => {
                 return x?.positions ? (
                   <Polygon
                     {...x}
@@ -156,7 +179,11 @@ export default function Mapa(props: { altura: number }) {
             {mapaContext.conteudo &&
               mapaContext.conteudo.Circle &&
               mapaContext.conteudo.Circle.length > 0 &&
-              mapaContext.conteudo.Circle.map((x, i) => {
+              mapaContext.conteudo.Circle.filter(
+                (x) =>
+                  new Date(x.cenaInicio) <= new Date(mapaContext.tempo) &&
+                  new Date(x.cenaFim) >= new Date(mapaContext.tempo)
+              ).map((x, i) => {
                 return x?.center ? (
                   <Circle
                     {...x}
@@ -177,7 +204,11 @@ export default function Mapa(props: { altura: number }) {
             {mapaContext.conteudo &&
               mapaContext.conteudo.Rectangle &&
               mapaContext.conteudo.Rectangle.length > 0 &&
-              mapaContext.conteudo.Rectangle.map((x, i) => {
+              mapaContext.conteudo.Rectangle.filter(
+                (x) =>
+                  new Date(x.cenaInicio) <= new Date(mapaContext.tempo) &&
+                  new Date(x.cenaFim) >= new Date(mapaContext.tempo)
+              ).map((x, i) => {
                 return x?.bounds ? (
                   <Rectangle
                     {...x}

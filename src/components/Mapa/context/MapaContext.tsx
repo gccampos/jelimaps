@@ -4,21 +4,45 @@ import { mapaReducer } from "./MapaDispatchEvents";
 import { elementos } from "@/main/constants/elementos";
 import { mapaContextSchema, actionContextChange } from "./mapaContextTypes";
 import { v4 } from "uuid";
+import moment from "moment";
 
 const initialMapaContexto: mapaContextSchema = {
   elementoInteracao: elementos.Hand,
   slidePropriedade: false,
-  conteudo: {},
-  cenaInicio: "2023-08-18",
-  cenaFim: "2023-09-30",
-  cenas: [
-    {
-      cenaInicio: "2023-08-18",
-      cenaFim: "2023-09-30",
-      id: v4(),
-      nome: "Primeira cena",
-    },
-  ],
+  conteudo: {
+    cenas: [
+      {
+        cenaInicio: moment().format("yyyy-MM-DDTHH:mm:ss"),
+        cenaFim: moment().add(10, "minute").format("yyyy-MM-DDTHH:mm:ss"),
+        id: v4(),
+        nome: "Primeira cena",
+        dataRef: "cenas",
+        type: "background",
+        style: "background-color: #df000024;",
+      },
+    ],
+  },
+  cenaInicio: moment().format("yyyy-MM-DDTHH:mm:ss"),
+  cenaFim: moment().add(10, "minutes").format("yyyy-MM-DDTHH:mm:ss"),
+  tempo: moment().add(15, "seconds").format("yyyy-MM-DDTHH:mm:ss"),
+  mapOptions: {
+    center: [0, 0],
+  },
+  playStatus: -1,
+  timelineOptions: {
+    editable: { remove: true, updateTime: true },
+    zoomKey: "ctrlKey",
+    start: moment().format("yyyy-MM-DDTHH:mm:ss"),
+    end: moment().add(10, "minutes").format("yyyy-MM-DDTHH:mm:ss"),
+    autoResize: false,
+    selectable: true,
+    multiselect: true,
+    orientation: "top",
+    longSelectPressTime: 777,
+    snap: (date) => date,
+    rollingMode: { offset: 0, follow: false },
+    showCurrentTime: false,
+  },
 };
 
 const MapaContext = createContext<mapaContextSchema>(initialMapaContexto);

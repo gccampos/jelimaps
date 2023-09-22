@@ -3,7 +3,6 @@ import { elementoPadrao } from "@/components/Mapa/context/mapaContextTypes";
 import { useEffect, useState } from "react";
 
 const useListaElementos = () => {
-  
   const mapaContext = useMapaContext();
   const [listaElementos, setListaElementos] = useState<elementoPadrao[]>(
     Object.keys(mapaContext?.conteudo)
@@ -22,8 +21,8 @@ const useListaElementos = () => {
         .filter((x) => !lista.some((z) => z.id === x.id)),
     ]);
   }, [mapaContext, mapaContext.conteudo]);
-  
-  return listaElementos
-}
 
-export default useListaElementos
+  return listaElementos;
+};
+
+export default useListaElementos;

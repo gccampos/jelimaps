@@ -59,16 +59,12 @@ const changeTodosElementosFocoPorIds = (
   oldMapaContext: mapaContextSchema,
   actionContextChange: actionContextChange
 ) => {
-  const todoConteudo = Object.keys(oldMapaContext?.conteudo)
-    .map((x) => oldMapaContext?.conteudo[x])
-    .flat();
-  const listaNovaElementos = todoConteudo.filter((x) =>
-    actionContextChange.ids.some((z) => z === x.id)
-  );
   oldMapaContext.elementoFoco = null;
   return changeTodosElementosFoco(oldMapaContext, {
     ...actionContextChange,
-    elementos: listaNovaElementos,
+    elementos: actionContextChange.ids.map((x) => {
+      return { id: x } as tipoElemento;
+    }),
   });
 };
 
@@ -83,8 +79,14 @@ const changeTodosElementosFoco = (
 
 const padraoPeriodoMapaContext = (oldMapaContext: mapaContextSchema) => {
   return {
-    cenaInicio: oldMapaContext.cenaInicio,
-    cenaFim: oldMapaContext.cenaFim,
+    cenaInicio:
+      new Date(oldMapaContext.conteudo.cenas[0].cenaInicio).getTime() + 1,
+    cenaFim:
+      new Date(
+        oldMapaContext.conteudo.cenas[
+          oldMapaContext.conteudo.cenas.length - 1
+        ].cenaFim
+      ).getTime() - 1,
   };
 };
 
@@ -234,6 +236,9 @@ const removeElemento = (
   oldMapaContext: mapaContextSchema,
   actionContextChange: actionContextChange
 ): mapaContextSchema => {
+  const listaElementos = Object.keys(oldMapaContext?.conteudo)
+    .map((x) => oldMapaContext?.conteudo[x])
+    .flat();
   const removerUmElemento = (elementos: tipoElemento[], id: NIL) => {
     elementos.splice(
       elementos.findIndex((x) => x.id === id),
@@ -242,7 +247,12 @@ const removeElemento = (
   };
   oldMapaContext.elementosFoco
     ? oldMapaContext.elementosFoco.forEach((element) => {
-        removerUmElemento(oldMapaContext.conteudo[element.dataRef], element.id);
+        removerUmElemento(
+          oldMapaContext.conteudo[
+            listaElementos.find((x) => x.id === element.id).dataRef
+          ],
+          element.id
+        );
       })
     : oldMapaContext.elementoFoco
     ? removerUmElemento(
@@ -252,10 +262,7 @@ const removeElemento = (
     : actionContextChange.id
     ? removerUmElemento(
         oldMapaContext.conteudo[
-          Object.keys(oldMapaContext?.conteudo)
-            .map((x) => oldMapaContext?.conteudo[x])
-            .flat()
-            .find((x) => x.id === actionContextChange.id).dataRef
+          listaElementos.find((x) => x.id === actionContextChange.id).dataRef
         ],
         actionContextChange.id
       )
@@ -270,12 +277,24 @@ const atualizaLinhaTempoElemento = (
   oldMapaContext: mapaContextSchema,
   actionContextChange: actionContextChange
 ): mapaContextSchema => {
-  const elementoAlvo = Object.keys(oldMapaContext?.conteudo)
+  const listaElementos = Object.keys(oldMapaContext?.conteudo)
     .map((x) => oldMapaContext?.conteudo[x])
-    .flat()
-    .find((x) => x.id === actionContextChange.id);
-  elementoAlvo.cenaFim = actionContextChange.end;
-  elementoAlvo.cenaInicio = actionContextChange.start;
+    .flat();
+  const elementoAlvo = listaElementos.find(
+    (x) =>
+      x.id === actionContextChange.id ||
+      x.alteracoes?.some((z) => z.id === actionContextChange.id)
+  );
+  if (elementoAlvo.id === actionContextChange.id) {
+    elementoAlvo.cenaFim = actionContextChange.end;
+    elementoAlvo.cenaInicio = actionContextChange.start;
+  } else {
+    const alteracaoAlvo = elementoAlvo.alteracoes.find(
+      (x) => x.id === actionContextChange.id
+    );
+    alteracaoAlvo.cenaFim = actionContextChange.end;
+    alteracaoAlvo.cenaInicio = actionContextChange.start;
+  }
   return {
     ...oldMapaContext,
   };
@@ -300,7 +319,6 @@ const addAlteracaoElemento = (
   oldMapaContext: mapaContextSchema,
   actionContextChange: actionContextChange
 ): mapaContextSchema => {
-  console.log("funcciotn ||| addAlteracaoElemento", actionContextChange);
   const elemento = Object.keys(oldMapaContext.conteudo)
     .map((x) => oldMapaContext.conteudo[x])
     .flat()
@@ -314,11 +332,10 @@ const addAlteracaoElemento = (
       id: actionContextChange.id ?? v4(),
       cenaInicio: actionContextChange.start,
       cenaFim: actionContextChange.start,
-      nome: `Propriedade #${(elemento.alteracoes?.length ?? 0) + 1} do ${
+      nome: `Alteração #${(elemento.alteracoes?.length ?? 0) + 1} do ${
         elemento.nome
       }`,
       valor: 0,
-      form: null,
       tipo: "",
       type: "box",
     } as propriedadeVisual;

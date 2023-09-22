@@ -7,6 +7,7 @@ import React, {
 } from "react";
 import {
   Timeline,
+  TimelineEventPropertiesResult,
   TimelineItem,
   TimelineOptions,
 } from "vis-timeline/standalone";
@@ -20,6 +21,7 @@ import {
 } from "@/components/Mapa/context/mapaContextTypes";
 import useListaElementos from "./useListaElementos";
 import { v4 } from "uuid";
+import moment from "moment";
 
 export default function VisTimeline() {
   const listaElementos = useListaElementos();
@@ -30,7 +32,6 @@ export default function VisTimeline() {
 
   const listaMapeada = useCallback(
     (lista?: (tipoElemento | tipoGenericoElementoTimeline)[]) => {
-      if (lista) console.log("listaMapeada a partir de ", lista);
       return (lista ?? listaElementos).map((x) => {
         return {
           ...x,
@@ -44,9 +45,24 @@ export default function VisTimeline() {
     [listaElementos]
   );
 
+  const listaMapeadaPropriedades = useCallback(() => {
+    return listaMapeada(
+      listaMapeada()
+        .map((x) => {
+          return (
+            (x as tipoElemento).alteracoes &&
+            (x as tipoElemento).alteracoes.map((z) => {
+              return z ? { ...z, group: x.id } : null;
+            })
+          );
+        })
+        .flat()
+        .filter((x) => x)
+    );
+  }, [listaMapeada]);
+
   const handleSeleciona = useCallback(
     (item: any) => {
-      console.log("select", item);
       if (
         item.event.srcEvent.type === "pointerup" ||
         item.event.srcEvent.type === "pointerdown"
@@ -83,14 +99,92 @@ export default function VisTimeline() {
   );
   const handleAdicionarPropriedadeConteudo = useCallback(
     (item: TimelineItem) => {
-      console.log("handleAdicionarPropriedadeConteudo", item);
-
       dispatch({
         ...item,
         type: "adicionarAlteracaoElemento",
       });
     },
     [dispatch]
+  );
+  const handleDoubleClick = useCallback(
+    (e: TimelineEventPropertiesResult) => {
+      if (e.group)
+        handleAdicionarPropriedadeConteudo({
+          ...e,
+          start: e.snappedTime,
+          content: "",
+          id: v4(),
+        });
+    },
+    [handleAdicionarPropriedadeConteudo]
+  );
+  const handleClick = useCallback(
+    (item: TimelineEventPropertiesResult) => {
+      console.log("click", item, visTimeline);
+      if (!item.what)
+        dispatch({
+          type: "alteraPropriedadeGeral",
+          tipo: "fit",
+          valor: true,
+        });
+      if (item.what === "custom-time")
+        dispatch({ ...item, type: "atualizaTempo" });
+      if (item.what === "axis") dispatch({ ...item, type: "atualizaTempo" });
+      if (item.what === "group-label")
+        dispatch({
+          type: "selecionarElementosFocoPorId",
+          ids: [item.group],
+        });
+    },
+    [dispatch, visTimeline]
+  );
+
+  const handleOnMoving = useCallback(
+    (item: TimelineItem, cb: any) => {
+      const elemento: tipoElemento = {
+        ...item,
+        bounds: null,
+        cenaInicio: item.start,
+        cenaFim: item.end,
+        nome: "",
+      };
+      const dentroDoRangeCenas =
+        new Date(mapaContext.conteudo.cenas[0].cenaInicio) <
+          new Date(item.start) &&
+        new Date(
+          mapaContext.conteudo.cenas[
+            mapaContext.conteudo.cenas.length - 1
+          ].cenaFim
+        ) > new Date(item.end);
+      if (dentroDoRangeCenas)
+        if (elemento.group === elemento.id) {
+          if (
+            !elemento.alteracoes ||
+            elemento.alteracoes.every(
+              (x) =>
+                new Date(x.cenaInicio) > new Date(item.start) &&
+                new Date(x.cenaFim) < new Date(item.end)
+            )
+          )
+            cb(item);
+        } else {
+          const listaElementos = Object.keys(mapaContext?.conteudo)
+            .map((x) => mapaContext?.conteudo[x])
+            .flat();
+
+          const elementoPrincipal = listaElementos.find(
+            (x) => x.id === item.group
+          );
+          if (
+            new Date(elementoPrincipal.cenaInicio) <
+              new Date(elemento.cenaInicio) &&
+            new Date(elementoPrincipal.cenaFim) > new Date(elemento.cenaFim)
+          ) {
+            cb(elemento);
+          }
+        }
+    },
+    [mapaContext]
   );
 
   const elementosFocados = useMemo(() => {
@@ -100,138 +194,101 @@ export default function VisTimeline() {
   }, [mapaContext]);
   const optionsVisTimeline = useMemo<TimelineOptions>(() => {
     return {
-      editable: { remove: true, updateTime: true },
-      zoomKey: "ctrlKey",
-      start: mapaContext.cenaInicio,
-      end: mapaContext.cenaFim,
-      autoResize: true,
-      selectable: true,
-      groupHeightMode: "fixed",
+      ...mapaContext.timelineOptions,
       onRemove: handleRemoveConteudo,
       onMove: handleAtualizaConteudo,
-      onMoving: (item: TimelineItem, cb: any) => {
-        const elemento: tipoElemento = {
-          ...item,
-          bounds: null,
-          cenaInicio: item.start,
-          cenaFim: item.end,
-          nome: "",
-        };
-        const dentroDoRangeCenas =
-          new Date(mapaContext.cenas[0].cenaInicio) < new Date(item.start) &&
-          new Date(mapaContext.cenas[mapaContext.cenas.length - 1].cenaFim) >
-            new Date(item.end);
-        console.log("dentroDoRangeCenas, ", dentroDoRangeCenas);
-        if (dentroDoRangeCenas)
-          if (elemento.alteracoes) {
-            if (
-              elemento.alteracoes.every(
-                (x) =>
-                  new Date(x.cenaInicio) > new Date(item.start) &&
-                  new Date(x.cenaInicio) < new Date(item.end)
-              )
-            )
-              cb(item);
-          } else cb(item);
-      },
-      multiselect: true,
-      orientation: "top",
-      longSelectPressTime: 777,
-      snap: (date) => date,
-      rollingMode: { offset: 0, follow: false },
-      showCurrentTime: false,
+      onMoving: handleOnMoving,
     };
   }, [
     mapaContext,
+    handleOnMoving,
     handleRemoveConteudo,
     handleAtualizaConteudo,
     //handleAdicionarPropriedadeConteudo,
   ]);
   useEffect(() => {
     if (!visTimeline) {
-      console.log("vai configurar o vis timeline");
       const items = listaMapeada();
       const tl =
         visJsRef.current &&
         new Timeline(visJsRef.current, items, optionsVisTimeline);
-      tl.on("select", handleSeleciona);
       tl.addCustomTime(optionsVisTimeline.start, "currentTime");
-      tl.on("doubleClick", (e: any) => {
-        console.log("clique DUPLO", e);
-        if (e.group)
-          handleAdicionarPropriedadeConteudo({
-            ...e,
-            start: e.snappedTime,
-            content: "",
-            id: v4(),
-          });
-      });
-      tl.on("click", (e: any) => {
-        console.log("clicando", e);
-        //if (e.snappedTime) tl.setCustomTime(e.snappedTime, "currentTime");
-      });
       setVisTimeline(tl);
+      tl.on("select", handleSeleciona);
+      tl.on("click", handleClick);
+      tl.on("doubleClick", handleDoubleClick);
+      tl.on("currentTimeTick", () => {
+        // if (new Date(mapaContext.tempo) !== tl.getCurrentTime())
+        //   dispatch({ type: "atualizaTempo", time: tl.getCurrentTime() });
+      });
     }
   }, [
     visJsRef,
     visTimeline,
+    handleClick,
     listaMapeada,
+    handleDoubleClick,
     optionsVisTimeline,
+    dispatch,
+    mapaContext,
     handleSeleciona,
-    handleAdicionarPropriedadeConteudo,
   ]);
+
+  const setOptionsTimeline = useCallback(() => {
+    if (mapaContext.playStatus > -1)
+      dispatch({
+        type: "atualizaTempo",
+        time: mapaContext.playStatus
+          ? moment(mapaContext.tempo)
+              .add(1, "seconds")
+              .format("yyyy-MM-DDTHH:mm:ss")
+          : mapaContext.cenaInicio,
+      });
+    if (mapaContext.playStatus === 0)
+      dispatch({
+        type: "alteraPropriedadeGeral",
+        tipo: "playStatus",
+        valor: -1,
+      });
+    if (mapaContext.reloadTimelineOptions)
+      visTimeline.setOptions(mapaContext.timelineOptions);
+    if (mapaContext.fit) {
+      visTimeline.fit();
+      dispatch({
+        type: "alteraPropriedadeGeral",
+        tipo: "fit",
+        valor: false,
+      });
+    }
+  }, [dispatch, mapaContext, visTimeline]);
   useEffect(() => {
     if (visTimeline) {
       const scrollTopValue = visJsRef.current.scrollTop;
-      const listaPropriedades = listaMapeada(
-        listaMapeada()
-          .map((x) => {
-            return (
-              (x as tipoElemento).alteracoes &&
-              (x as tipoElemento).alteracoes.map((z) => {
-                return z ? { ...z, group: x.id } : null;
-              })
-            );
-          })
-          .flat()
-          .filter((x) => x)
-          .concat(
-            mapaContext.cenas.map((x) => {
-              return {
-                ...x,
-                valor: 1,
-                tipo: "",
-                group: v4(),
-                form: null,
-                type: "background",
-                style: "background-color: #df000024;",
-              };
-            })
-          )
-      );
+      const listaPropriedades = listaMapeadaPropriedades();
 
-      console.log("listaPropriedades", listaPropriedades);
-      console.log("listaMapeada()", listaMapeada());
       const valorItems = listaMapeada().concat(listaPropriedades);
-      console.log("valorItems CONCATENADOS", valorItems);
-      console.log(
-        "visTimeline.getVisibleItems()(FILTRADO)",
-        visTimeline
-          .getVisibleItems()
-          .filter((x) => !valorItems.some((z) => z.id === x))
-      );
       visTimeline.setData({
-        groups: listaMapeada(),
+        groups: listaMapeada().filter((x) => x.type != "background"),
         items: valorItems,
       });
       visTimeline.setSelection(elementosFocados);
+      visTimeline.setCurrentTime(mapaContext.tempo);
+      visTimeline.setCustomTime(mapaContext.tempo, "currentTime");
+      setOptionsTimeline();
       if (scrollTopValue)
         setTimeout(() => {
-          console.log("mudando scrool", scrollTopValue);
+          console.log("vai ajustar scroll do visTimeline", scrollTopValue);
           visJsRef.current.scrollTop = scrollTopValue;
         }, 10);
     }
-  }, [visTimeline, listaMapeada, elementosFocados, mapaContext]);
+  }, [
+    visTimeline,
+    mapaContext,
+    listaMapeada,
+    elementosFocados,
+    listaMapeadaPropriedades,
+    setOptionsTimeline,
+  ]);
   return (
     <div
       ref={visJsRef}

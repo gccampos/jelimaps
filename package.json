@@ -23,6 +23,7 @@
     "eslint-plugin-prettier": "^4.2.1",
     "formik": "^2.4.3",
     "leaflet": "^1.9.3",
+    "moment": "^2.29.4",
     "next": "13.3.2",
     "nextjs-google-analytics": "^2.3.3",
     "postcss": "8.4.23",
@@ -38,7 +39,8 @@
     "tailwindcss": "3.3.2",
     "uuid": "^9.0.0",
     "vis": "^4.21.0-EOL",
-    "vis-timeline": "^7.7.2"
+    "vis-timeline": "^7.7.2",
+    "yup": "^1.2.0"
   },
   "devDependencies": {
     "@svgr/webpack": "^8.0.1",
