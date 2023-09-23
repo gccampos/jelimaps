@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
   Grid,
   styled,
@@ -38,11 +38,14 @@ interface TabPanelProps {
 }
 
 export default function Propriedades(props: { altura: number }) {
+  const { altura } = props;
   const { width } = useWindowDimensions();
   const mapaContext = useMapaContext();
   const dispatch = useMapaDispatch();
   const [rndRef, setRndRef] = useState<Rnd>();
   const [value, setValue] = React.useState(0);
+  const tocadorRef = useRef(null);
+  const headerTabRef = useRef(null);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -50,13 +53,21 @@ export default function Propriedades(props: { altura: number }) {
 
   function TabPanel(props: TabPanelProps) {
     const { children, index, ...other } = props;
-
     return (
       <div
         role="tabpanel"
         hidden={value !== index}
         id={`full-width-tabpanel-${index}`}
         aria-labelledby={`full-width-tab-${index}`}
+        style={{
+          maxHeight:
+            headerTabRef?.current && tocadorRef?.current
+              ? altura -
+                tocadorRef.current.offsetHeight -
+                headerTabRef.current.offsetHeight
+              : altura * 0.75,
+          overflow: "auto",
+        }}
         {...other}
       >
         {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
@@ -95,7 +106,7 @@ export default function Propriedades(props: { altura: number }) {
             width: larguraPropriedades,
             maxWidth: width * 0.6,
             minWidth: width * 0.1,
-            height: props.altura,
+            height: altura,
           }}
           id="foraDIv"
         >
@@ -129,7 +140,7 @@ export default function Propriedades(props: { altura: number }) {
                 </Dragger>
               ),
             }}
-            size={{ height: props.altura, width: larguraPropriedades }}
+            size={{ height: altura, width: larguraPropriedades }}
             disableDragging
             onResize={(e, dir, ref) => {
               if (rndRef && rndRef.updatePosition)
@@ -143,6 +154,7 @@ export default function Propriedades(props: { altura: number }) {
                 borderLeft: 2,
                 borderLeftStyle: "inset",
               }}
+              ref={headerTabRef}
             >
               <Tabs
                 value={value}
@@ -284,6 +296,7 @@ export default function Propriedades(props: { altura: number }) {
             <Paper
               sx={{ position: "fixed", bottom: 0, left: 0, right: 0 }}
               elevation={3}
+              ref={tocadorRef}
             >
               <BottomNavigation
                 onChange={(e, i) => {

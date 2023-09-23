@@ -112,6 +112,35 @@ export function mapaReducer(
         },
       };
     }
+    case "inserindoNovaCena": {
+      const novaCena = MapaFunctionHelpers.novaCena(oldMapaContext);
+      oldMapaContext.conteudo.cenas.push(novaCena);
+      return {
+        ...oldMapaContext,
+        cenaFim: novaCena.cenaFim,
+      };
+    }
+    case "alteraPropriedadeCena": {
+      if (!action.formik.isValid) return oldMapaContext;
+      if (action.tipo.includes("cena"))
+        if (action.tipo === "cenaInicio") {
+          oldMapaContext.conteudo.cenas[action.indiceElemento][action.tipo] =
+            action.valor;
+          if (action.indiceElemento > 0)
+            oldMapaContext.conteudo.cenas[action.indiceElemento - 1].cenaFim =
+              action.valor;
+        } else if (action.tipo === "cenaFim") {
+          oldMapaContext.conteudo.cenas[action.indiceElemento][action.tipo] =
+            action.valor;
+          if (action.indiceElemento < oldMapaContext.conteudo.cenas.length - 2)
+            oldMapaContext.conteudo.cenas[
+              action.indiceElemento + 1
+            ].cenaInicio = action.valor;
+        } else
+          oldMapaContext.conteudo.cenas[action.indiceElemento][action.tipo] =
+            action.valor;
+      return { ...oldMapaContext };
+    }
     default: {
       throw Error("Unknown action: " + action.type);
     }

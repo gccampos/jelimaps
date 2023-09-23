@@ -99,6 +99,6 @@ export type actionContextChange = {
   start?: DateType;
   end?: DateType;
   time?: DateType;
-  formik?: FormikProps<mapaContextSchema>;
+  formik?: FormikProps<any>;
   mapContext?: mapaContextSchema;
 };

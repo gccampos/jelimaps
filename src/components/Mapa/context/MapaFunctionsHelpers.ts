@@ -6,11 +6,13 @@ import {
   actionContextChange,
   elementoComPosition,
   elementoComPositions,
+  elementoPadrao,
   mapaContextSchema,
   propriedadeVisual,
   tipoElemento,
 } from "./mapaContextTypes";
 import { v4, NIL } from "uuid";
+import moment from "moment";
 
 const changeElementoInteracao = (
   oldMapaContext: mapaContextSchema,
@@ -357,6 +359,36 @@ const addAlteracaoElemento = (
   };
 };
 
+const novaCena = (oldMapaContext: mapaContextSchema) => {
+  const cenafim = moment(
+    oldMapaContext.conteudo.cenas[oldMapaContext.conteudo.cenas.length - 1]
+      .cenaFim
+  );
+  const cenainicio = moment(
+    oldMapaContext.conteudo.cenas[oldMapaContext.conteudo.cenas.length - 1]
+      .cenaInicio
+  );
+  const diffCen = cenafim.diff(cenainicio, "seconds");
+  return {
+    id: v4(),
+    cenaInicio: cenafim.format("yyyy-MM-DDTHH:mm:ss"),
+    cenaFim: cenafim.add(diffCen, "seconds").format("yyyy-MM-DDTHH:mm:ss"),
+    nome: `cena #${oldMapaContext.conteudo.cenas.length}`,
+    dataRef: "cenas",
+    style: `background-color: ${getRandomColor()}`,
+    type: "background",
+  } as elementoPadrao;
+};
+
+function getRandomColor() {
+  var letters = "0123456789ABCDEF";
+  var color = "#";
+  for (var i = 0; i < 6; i++) {
+    color += letters[Math.floor(Math.random() * 16)];
+  }
+  return color;
+}
+
 const MapaFunctionHelpers = {
   changeElementoInteracao,
   changeElementoFoco,
@@ -372,5 +404,6 @@ const MapaFunctionHelpers = {
   atualizaLinhaTempoElemento,
   editarPropriedadeElemento,
   addAlteracaoElemento,
+  novaCena,
 };
 export default MapaFunctionHelpers;

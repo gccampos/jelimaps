@@ -29,6 +29,7 @@ export default function VisTimeline() {
   const dispatch = useMapaDispatch();
   const [visTimeline, setVisTimeline] = useState<Timeline>(null);
   const visJsRef = useRef<HTMLDivElement>(null);
+  const divScrollRef = useRef<HTMLDivElement>(null);
 
   const listaMapeada = useCallback(
     (lista?: (tipoElemento | tipoGenericoElementoTimeline)[]) => {
@@ -127,8 +128,6 @@ export default function VisTimeline() {
           tipo: "fit",
           valor: true,
         });
-      if (item.what === "custom-time")
-        dispatch({ ...item, type: "atualizaTempo" });
       if (item.what === "axis") dispatch({ ...item, type: "atualizaTempo" });
       if (item.what === "group-label")
         dispatch({
@@ -217,9 +216,8 @@ export default function VisTimeline() {
       tl.on("select", handleSeleciona);
       tl.on("click", handleClick);
       tl.on("doubleClick", handleDoubleClick);
-      tl.on("currentTimeTick", () => {
-        // if (new Date(mapaContext.tempo) !== tl.getCurrentTime())
-        //   dispatch({ type: "atualizaTempo", time: tl.getCurrentTime() });
+      tl.on("timechanged", (e) => {
+        dispatch({ type: "atualizaTempo", time: e.time });
       });
     }
   }, [
@@ -263,7 +261,7 @@ export default function VisTimeline() {
   }, [dispatch, mapaContext, visTimeline]);
   useEffect(() => {
     if (visTimeline) {
-      const scrollTopValue = visJsRef.current.scrollTop;
+      const scrollTopValue = divScrollRef.current.scrollTop;
       const listaPropriedades = listaMapeadaPropriedades();
 
       const valorItems = listaMapeada().concat(listaPropriedades);
@@ -278,8 +276,8 @@ export default function VisTimeline() {
       if (scrollTopValue)
         setTimeout(() => {
           console.log("vai ajustar scroll do visTimeline", scrollTopValue);
-          visJsRef.current.scrollTop = scrollTopValue;
-        }, 10);
+          divScrollRef.current.scrollTop = scrollTopValue;
+        }, 77);
     }
   }, [
     visTimeline,
@@ -291,9 +289,11 @@ export default function VisTimeline() {
   ]);
   return (
     <div
-      ref={visJsRef}
+      ref={divScrollRef}
       className="personalized-scrollbar"
       style={{ overflowY: "scroll", height: "-webkit-fill-available" }}
-    />
+    >
+      <div ref={visJsRef} />
+    </div>
   );
 }
