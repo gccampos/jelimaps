@@ -7,6 +7,7 @@ import {
   Polygon,
   Circle,
   Rectangle,
+  Popup,
 } from "react-leaflet";
 import { LatLngBounds, LatLng, divIcon, Map } from "leaflet";
 import { useEffect, useMemo, useState } from "react";
@@ -18,7 +19,7 @@ import {
   useMapaContext,
   useMapaDispatch,
 } from "@/components/Mapa/context/MapaContext";
-import { Fab, Grid } from "@mui/material";
+import { Button, ButtonGroup, Fab, Grid } from "@mui/material";
 import Elementos from "./Elementos";
 import AddElementoInteracao from "@/components/Mapa/AddElementoInteracao";
 import { PlaylistPlay, LocationOn } from "@mui/icons-material";
@@ -70,6 +71,14 @@ export default function Mapa(props: { altura: number }) {
     console.log("map", map);
     console.log("map.options", map?.options);
   }, [map]);
+
+  const verificaElementoFocadoPorId = (id) => {
+    return (
+      mapaContext?.elementosFoco
+        ?.concat([mapaContext?.elementoFoco])
+        .filter((x) => x) ?? [mapaContext?.elementoFoco]
+    ).some((x) => x?.id === id);
+  };
 
   const corItemSelecionadoFoco = (el) => {
     return mapaContext.elementosFoco && mapaContext.elementosFoco.length > 0
@@ -126,6 +135,15 @@ export default function Mapa(props: { altura: number }) {
                     key={`marker#${i}`}
                     eventHandlers={{
                       click: (e) => cliqueElementoNoMapa(arr[i], e),
+                      moveend: (e) => {
+                        dispatch({
+                          type: "editarPropriedade",
+                          tipo: x.dataRef,
+                          id: x.id,
+                          nomePropriedade: "position",
+                          valorPropriedade: e.sourceTarget._latlng,
+                        });
+                      },
                     }}
                   >
                     {/* <Popup>
@@ -143,16 +161,63 @@ export default function Mapa(props: { altura: number }) {
                   new Date(x.cenaFim) >= new Date(mapaContext.tempo)
               ).map((x, i, arr) => {
                 return (
-                  <Polyline
-                    {...x}
-                    pathOptions={{
-                      color: corItemSelecionadoFoco(x),
-                    }}
-                    key={`polyline#${i}`}
-                    eventHandlers={{
-                      click: (e) => cliqueElementoNoMapa(arr[i], e),
-                    }}
-                  ></Polyline>
+                  <div key={`polyline#${i}`}>
+                    <Polyline
+                      {...x}
+                      pathOptions={{
+                        color: corItemSelecionadoFoco(x),
+                      }}
+                      eventHandlers={{
+                        click: (e) => cliqueElementoNoMapa(arr[i], e),
+                      }}
+                    ></Polyline>
+                    {x.draggable &&
+                      verificaElementoFocadoPorId(x.id) &&
+                      x.positions.map((latlng, indexPosition, arrPositions) => (
+                        <Marker
+                          {...x}
+                          position={latlng}
+                          eventHandlers={{
+                            moveend: (e) => {
+                              arrPositions[indexPosition] =
+                                e.sourceTarget._latlng;
+                              dispatch({
+                                type: "editarPropriedade",
+                                tipo: x.dataRef,
+                                id: x.id,
+                                nomePropriedade: "positions",
+                                valorPropriedade: [...arrPositions],
+                              });
+                            },
+                          }}
+                          key={`polyline_marker#${indexPosition}`}
+                        >
+                          <Popup>
+                            <ButtonGroup
+                              variant="text"
+                              aria-label="text button group"
+                            >
+                              <Button
+                                onClick={() => {
+                                  arrPositions.splice(indexPosition, 1);
+                                  dispatch({
+                                    type: "editarPropriedade",
+                                    tipo: x.dataRef,
+                                    id: x.id,
+                                    nomePropriedade: "positions",
+                                    valorPropriedade: [...arrPositions],
+                                  });
+                                }}
+                              >
+                                Excluir
+                              </Button>
+                              {/* <Button>Two</Button>
+                              <Button>Three</Button> */}
+                            </ButtonGroup>
+                          </Popup>
+                        </Marker>
+                      ))}
+                  </div>
                 );
               })}
             {mapaContext.conteudo &&
@@ -164,16 +229,63 @@ export default function Mapa(props: { altura: number }) {
                   new Date(x.cenaFim) >= new Date(mapaContext.tempo)
               ).map((x, i, arr) => {
                 return x?.positions ? (
-                  <Polygon
-                    {...x}
-                    pathOptions={{
-                      color: corItemSelecionadoFoco(x),
-                    }}
-                    key={`polygon#${i}`}
-                    eventHandlers={{
-                      click: (e) => cliqueElementoNoMapa(arr[i], e),
-                    }}
-                  ></Polygon>
+                  <div key={`polygon#${i}`}>
+                    <Polygon
+                      {...x}
+                      pathOptions={{
+                        color: corItemSelecionadoFoco(x),
+                      }}
+                      eventHandlers={{
+                        click: (e) => cliqueElementoNoMapa(arr[i], e),
+                      }}
+                    ></Polygon>
+                    {x.draggable &&
+                      verificaElementoFocadoPorId(x.id) &&
+                      x.positions.map((latlng, indexPosition, arrPositions) => (
+                        <Marker
+                          {...x}
+                          position={latlng}
+                          eventHandlers={{
+                            moveend: (e) => {
+                              arrPositions[indexPosition] =
+                                e.sourceTarget._latlng;
+                              dispatch({
+                                type: "editarPropriedade",
+                                tipo: x.dataRef,
+                                id: x.id,
+                                nomePropriedade: "positions",
+                                valorPropriedade: [...arrPositions],
+                              });
+                            },
+                          }}
+                          key={`polygon_marker#${indexPosition}`}
+                        >
+                          <Popup>
+                            <ButtonGroup
+                              variant="text"
+                              aria-label="text button group"
+                            >
+                              <Button
+                                onClick={() => {
+                                  arrPositions.splice(indexPosition, 1);
+                                  dispatch({
+                                    type: "editarPropriedade",
+                                    tipo: x.dataRef,
+                                    id: x.id,
+                                    nomePropriedade: "positions",
+                                    valorPropriedade: [...arrPositions],
+                                  });
+                                }}
+                              >
+                                Excluir
+                              </Button>
+                              {/* <Button>Two</Button>
+                            <Button>Three</Button> */}
+                            </ButtonGroup>
+                          </Popup>
+                        </Marker>
+                      ))}
+                  </div>
                 ) : null;
               })}
             {mapaContext.conteudo &&
@@ -185,20 +297,43 @@ export default function Mapa(props: { altura: number }) {
                   new Date(x.cenaFim) >= new Date(mapaContext.tempo)
               ).map((x, i) => {
                 return x?.center ? (
-                  <Circle
-                    {...x}
-                    pathOptions={{
-                      color: corItemSelecionadoFoco(x),
-                    }}
-                    key={`circle#${i}`}
-                    eventHandlers={{
-                      click: (e) => cliqueElementoNoMapa(x, e),
-                    }}
-                  >
-                    {/* <Popup>
+                  <div key={`circle#${i}`}>
+                    <Circle
+                      {...x}
+                      pathOptions={{
+                        color: corItemSelecionadoFoco(x),
+                      }}
+                      eventHandlers={{
+                        click: (e) => cliqueElementoNoMapa(x, e),
+                      }}
+                    >
+                      {/* <Popup>
                       A pretty CSS3 popup. <br /> Easily customizable.
                     </Popup> */}
-                  </Circle>
+                    </Circle>
+                    {x.draggable && verificaElementoFocadoPorId(x.id) && (
+                      <Marker
+                        {...x}
+                        position={x.center}
+                        eventHandlers={{
+                          moveend: (e) => {
+                            dispatch({
+                              type: "editarPropriedade",
+                              tipo: x.dataRef,
+                              id: x.id,
+                              nomePropriedade: "center",
+                              valorPropriedade: e.sourceTarget._latlng,
+                            });
+                          },
+                        }}
+                        key={`circle_marker#${i}`}
+                      >
+                        {/* <Popup>
+                      A pretty CSS3 popup. <br /> Easily customizable.
+                    </Popup> */}
+                      </Marker>
+                    )}
+                  </div>
                 ) : null;
               })}
             {mapaContext.conteudo &&

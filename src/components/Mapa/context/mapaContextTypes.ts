@@ -11,19 +11,20 @@ export type tipoGenericoElementoTimeline = periodoInicioFim & {
   group?: NIL;
   type?: string;
   style?: string;
+  collapse?: boolean;
+  draggable?: boolean;
+  order?: any;
 };
 export type elementoPadrao = tipoGenericoElementoTimeline & {
-  collapse?: boolean;
   texto?: string;
   color?: string;
-  draggable?: boolean;
-  alteracoes?: propriedadeVisual[];
+  alteracoes?: alteracaoElemento[];
 };
 type periodoInicioFim = {
   cenaFim: DateType;
   cenaInicio: DateType;
 };
-export type propriedadeVisual = tipoGenericoElementoTimeline & {
+export type alteracaoElemento = tipoGenericoElementoTimeline & {
   nome: string;
   tipo: any;
   valor: any;
@@ -94,7 +95,7 @@ export type actionContextChange = {
   indiceElemento?: number;
   nomeElemento?: string;
   nomePropriedade?: string;
-  valorPropriedade?: string;
+  valorPropriedade?: any;
   valorBooleano?: boolean;
   start?: DateType;
   end?: DateType;

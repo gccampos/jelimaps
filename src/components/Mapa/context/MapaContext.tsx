@@ -13,7 +13,7 @@ const initialMapaContexto: mapaContextSchema = {
     cenas: [
       {
         cenaInicio: moment().format("yyyy-MM-DDTHH:mm:ss"),
-        cenaFim: moment().add(10, "minute").format("yyyy-MM-DDTHH:mm:ss"),
+        cenaFim: moment().add(1, "minute").format("yyyy-MM-DDTHH:mm:ss"),
         id: v4(),
         nome: "Primeira cena",
         dataRef: "cenas",
@@ -23,8 +23,8 @@ const initialMapaContexto: mapaContextSchema = {
     ],
   },
   cenaInicio: moment().format("yyyy-MM-DDTHH:mm:ss"),
-  cenaFim: moment().add(10, "minutes").format("yyyy-MM-DDTHH:mm:ss"),
-  tempo: moment().add(15, "seconds").format("yyyy-MM-DDTHH:mm:ss"),
+  cenaFim: moment().add(1, "minutes").format("yyyy-MM-DDTHH:mm:ss"),
+  tempo: moment().add(2, "seconds").format("yyyy-MM-DDTHH:mm:ss"),
   mapOptions: {
     center: [0, 0],
   },
@@ -42,6 +42,8 @@ const initialMapaContexto: mapaContextSchema = {
     snap: (date) => date,
     rollingMode: { offset: 0, follow: false },
     showCurrentTime: false,
+    groupEditable: { order: true },
+    groupHeightMode: "fitItems",
   },
 };
 

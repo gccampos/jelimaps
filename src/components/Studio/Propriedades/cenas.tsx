@@ -41,7 +41,7 @@ export default function Cenas() {
             >
               <ListItemText primary={x.nome} />
 
-              {!mapaContext?.conteudo.cenas[i].collapse ? (
+              {mapaContext?.conteudo.cenas[i].collapse ? (
                 <ExpandLess />
               ) : (
                 <ExpandMore />

@@ -5,6 +5,7 @@ export function mapaReducer(
   oldMapaContext: mapaContextSchema,
   action: actionContextChange
 ): mapaContextSchema {
+  console.log("metodoDispatch disparado", action.type);
   switch (action.type) {
     case "modoVisao": {
       return { ...oldMapaContext, modoVisao: action.tipo };
@@ -76,7 +77,7 @@ export function mapaReducer(
       return MapaFunctionHelpers.editarPropriedadeElemento(
         oldMapaContext,
         action.tipo,
-        action.nomeElemento,
+        action.id,
         action.nomePropriedade,
         action.valorPropriedade
       );

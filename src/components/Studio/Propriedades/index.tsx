@@ -7,9 +7,6 @@ import {
   AppBar,
   Tabs,
   Box,
-  TextField,
-  FormControlLabel,
-  Switch,
   BottomNavigation,
   Paper,
   BottomNavigationAction,
@@ -22,9 +19,11 @@ import { Rnd } from "react-rnd";
 import AlignVerticalCenterIcon from "@mui/icons-material/AlignVerticalCenter";
 import useWindowDimensions from "../useWindowDimensions";
 import Cenas from "./cenas";
-import { Form, Formik } from "formik";
-import * as Yup from "yup";
 import { Pause, PlayArrow, Stop } from "@mui/icons-material";
+import Geral from "./geral";
+import Elemento from "./elemento";
+import moment from "moment";
+import { setInterval, clearInterval } from "timers";
 
 const Dragger = styled("div")`
   cursor: e-resize;
@@ -46,10 +45,25 @@ export default function Propriedades(props: { altura: number }) {
   const [value, setValue] = React.useState(0);
   const tocadorRef = useRef(null);
   const headerTabRef = useRef(null);
+  const [intervalId, setIntervalId] = React.useState(null);
+  const tempoAtual = React.useRef(mapaContext.tempo);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
+
+  tempoAtual.current = mapaContext.tempo;
+
+  const handleIntervaloAtualizaTempo = React.useCallback(() => {
+    dispatch({
+      type: "atualizaTempo",
+      time: mapaContext.playStatus
+        ? moment(tempoAtual.current)
+            .add(1, "seconds")
+            .format("yyyy-MM-DDTHH:mm:ss")
+        : mapaContext.cenaInicio,
+    });
+  }, [mapaContext, dispatch, tempoAtual]);
 
   function TabPanel(props: TabPanelProps) {
     const { children, index, ...other } = props;
@@ -164,128 +178,23 @@ export default function Propriedades(props: { altura: number }) {
                 variant="fullWidth"
                 aria-label="full width tabs example"
               >
-                {(mapaContext.elementoFoco || mapaContext.elementosFoco) && (
-                  <Tab label="Elemento" {...propriedadesTab(2)} />
-                )}
+                {([mapaContext.elementoFoco] || mapaContext.elementosFoco)
+                  .length && <Tab label="Elemento" {...propriedadesTab(2)} />}
                 <Tab label="Geral" {...propriedadesTab(0)} />
                 <Tab label="Cenas" {...propriedadesTab(1)} />
               </Tabs>
             </AppBar>
-            {(mapaContext.elementoFoco || mapaContext.elementosFoco) && (
-              <TabPanel index={2}>Elemento</TabPanel>
+            {(
+              mapaContext.elementosFoco?.concat(mapaContext.elementoFoco) ?? [
+                mapaContext.elementoFoco,
+              ]
+            ).length && (
+              <TabPanel index={2}>
+                <Elemento />
+              </TabPanel>
             )}
             <TabPanel index={0}>
-              <Formik
-                initialValues={mapaContext}
-                onSubmit={() => console.log("submtou")}
-                validateOnBlur={true}
-                validationSchema={Yup.object({
-                  cenaInicio: Yup.date().max(
-                    mapaContext.conteudo.cenas[0].cenaFim,
-                    "O inicio deve ser menor que o final da primeira cena."
-                  ),
-                  cenaFim: Yup.date().min(
-                    mapaContext.conteudo.cenas[
-                      mapaContext.conteudo.cenas.length - 1
-                    ].cenaInicio,
-                    "O final deve ser maior que o inicio da ultima cena."
-                  ),
-                })}
-              >
-                {(formik) => {
-                  return (
-                    <Form
-                      onBlur={(e: any) => {
-                        dispatch({
-                          type: "alteraPropriedadeGeral",
-                          tipo: e.target.name,
-                          valor: e.target.value,
-                          formik: formik,
-                        });
-                      }}
-                    >
-                      <TextField
-                        fullWidth
-                        id="cenaInicio"
-                        name="cenaInicio"
-                        label="Inicio"
-                        type="datetime-local"
-                        value={formik.values.cenaInicio}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        error={
-                          formik.touched.cenaInicio &&
-                          Boolean(formik.errors.cenaInicio)
-                        }
-                        helperText={
-                          formik.touched.cenaInicio && formik.errors.cenaInicio
-                        }
-                      />
-                      <TextField
-                        fullWidth
-                        id="cenaFim"
-                        name="cenaFim"
-                        label="Final"
-                        type="datetime-local"
-                        value={formik.values.cenaFim}
-                        inputProps={{
-                          step: 1,
-                        }}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        error={
-                          formik.touched.cenaFim &&
-                          Boolean(formik.errors.cenaFim)
-                        }
-                        helperText={
-                          formik.touched.cenaFim && formik.errors.cenaFim
-                        }
-                      />
-                      <FormControlLabel
-                        control={
-                          <Switch
-                            checked={formik.values.reloadTimelineOptions}
-                            onChange={(e, c) => {
-                              dispatch({
-                                type: "alteraPropriedadeGeral",
-                                tipo: e.target.name,
-                                valor: c,
-                                formik: formik,
-                              });
-                            }}
-                            name={"reloadTimelineOptions"}
-                          />
-                        }
-                        label={"Recarregar linha do tempo"}
-                      />
-                      {/* <FormControlLabel
-                        control={
-                          <Switch
-                            checked={
-                              formik.values.timelineOptions.showCurrentTime
-                            }
-                            onChange={(e, b) => {
-                              console.log("tentando mudar switch", b);
-                              dispatch({
-                                type: "alteraPropriedadeTimelineOptions",
-                                tipo: e.target.name,
-                                valor: b,
-                                formik: formik,
-                              });
-                            }}
-                            name={"showCurrentTime"}
-                          />
-                        }
-                        label={
-                          formik.values.timelineOptions.showCurrentTime
-                            ? "Stop"
-                            : "Play"
-                        }
-                      /> */}
-                    </Form>
-                  );
-                }}
-              </Formik>
+              <Geral />
             </TabPanel>
             <TabPanel index={1}>
               <Cenas />
@@ -305,6 +214,21 @@ export default function Propriedades(props: { altura: number }) {
                     tipo: "playStatus",
                     valor: i,
                   });
+
+                  if (!intervalId && i > 0) {
+                    const idInterval = setInterval(
+                      handleIntervaloAtualizaTempo,
+                      1000
+                    );
+                    setIntervalId(idInterval);
+                  } else {
+                    clearInterval(intervalId);
+                    setIntervalId(null);
+                    dispatch({
+                      type: "atualizaTempo",
+                      time: i ? tempoAtual.current : mapaContext.cenaInicio,
+                    });
+                  }
                 }}
               >
                 <BottomNavigationAction

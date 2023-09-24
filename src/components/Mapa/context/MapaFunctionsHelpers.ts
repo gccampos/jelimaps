@@ -8,11 +8,38 @@ import {
   elementoComPositions,
   elementoPadrao,
   mapaContextSchema,
-  propriedadeVisual,
+  alteracaoElemento,
   tipoElemento,
 } from "./mapaContextTypes";
 import { v4, NIL } from "uuid";
 import moment from "moment";
+
+const retornaListaElementosConteudo = (oldMapaContext: mapaContextSchema) =>
+  Object.keys(oldMapaContext?.conteudo)
+    .map((x) => oldMapaContext?.conteudo[x])
+    .flat();
+
+const retornaElementoOuAlteracaoPorId = (
+  oldMapaContext: mapaContextSchema,
+  id: NIL
+) => {
+  const elemento = retornaListaElementosConteudo(oldMapaContext);
+  return (
+    elemento.find((x) => x.id === id) ??
+    elemento
+      .map((x) => {
+        return (
+          (x as tipoElemento).alteracoes &&
+          (x as tipoElemento).alteracoes.map((z) => {
+            return z ? { ...z } : null;
+          })
+        );
+      })
+      .flat()
+      .filter((x) => x)
+      .find((x) => x.id === id)
+  );
+};
 
 const changeElementoInteracao = (
   oldMapaContext: mapaContextSchema,
@@ -81,14 +108,15 @@ const changeTodosElementosFoco = (
 
 const padraoPeriodoMapaContext = (oldMapaContext: mapaContextSchema) => {
   return {
-    cenaInicio:
-      new Date(oldMapaContext.conteudo.cenas[0].cenaInicio).getTime() + 1,
-    cenaFim:
-      new Date(
-        oldMapaContext.conteudo.cenas[
-          oldMapaContext.conteudo.cenas.length - 1
-        ].cenaFim
-      ).getTime() - 1,
+    cenaInicio: moment(oldMapaContext.conteudo.cenas[0].cenaInicio)
+      .add(1, "seconds")
+      .format("yyyy-MM-DDTHH:mm:ss"),
+    cenaFim: moment(
+      oldMapaContext.conteudo.cenas[oldMapaContext.conteudo.cenas.length - 1]
+        .cenaFim
+    )
+      .add(-1, "seconds")
+      .format("yyyy-MM-DDTHH:mm:ss"),
   };
 };
 
@@ -102,6 +130,10 @@ const addElementoMarker = (
     nome: `marker#${oldMapaContext.conteudo?.Marker?.length + 1 || 1}`,
     texto: "",
     id: v4(),
+    order:
+      retornaListaElementosConteudo(oldMapaContext).filter(
+        (x) => x.type !== "background"
+      ).length ?? 0,
     ...padraoPeriodoMapaContext(oldMapaContext),
   };
 
@@ -127,6 +159,10 @@ const addElementoPolyline = (
       dataRef: actionContextChange.tipo,
       id: v4(),
       nome: `polyline#${oldMapaContext.conteudo?.Polyline?.length + 1 || 1}`,
+      order:
+        retornaListaElementosConteudo(oldMapaContext).filter(
+          (x) => x.type !== "background"
+        ).length ?? 0,
       ...padraoPeriodoMapaContext(oldMapaContext),
     };
     oldMapaContext = changeElementoFoco(oldMapaContext, {
@@ -163,6 +199,10 @@ const addElementoPolygon = (
       dataRef: actionContextChange.tipo,
       id: v4(),
       nome: `polygon#${oldMapaContext.conteudo?.Polygon?.length + 1 || 1}`,
+      order:
+        retornaListaElementosConteudo(oldMapaContext).filter(
+          (x) => x.type !== "background"
+        ).length ?? 0,
       ...padraoPeriodoMapaContext(oldMapaContext),
     };
     oldMapaContext = changeElementoFoco(oldMapaContext, {
@@ -200,6 +240,10 @@ const addElementoCirculo = (
     dataRef: tipo,
     id: v4(),
     nome: `circle#${oldMapaContext.conteudo?.Circle?.length + 1 || 1}`,
+    order:
+      retornaListaElementosConteudo(oldMapaContext).filter(
+        (x) => x.type !== "background"
+      ).length ?? 0,
     ...padraoPeriodoMapaContext(oldMapaContext),
   };
   oldMapaContext = changeElementoFoco(oldMapaContext, {
@@ -238,9 +282,7 @@ const removeElemento = (
   oldMapaContext: mapaContextSchema,
   actionContextChange: actionContextChange
 ): mapaContextSchema => {
-  const listaElementos = Object.keys(oldMapaContext?.conteudo)
-    .map((x) => oldMapaContext?.conteudo[x])
-    .flat();
+  const listaElementos = retornaListaElementosConteudo(oldMapaContext);
   const removerUmElemento = (elementos: tipoElemento[], id: NIL) => {
     elementos.splice(
       elementos.findIndex((x) => x.id === id),
@@ -279,23 +321,25 @@ const atualizaLinhaTempoElemento = (
   oldMapaContext: mapaContextSchema,
   actionContextChange: actionContextChange
 ): mapaContextSchema => {
-  const listaElementos = Object.keys(oldMapaContext?.conteudo)
-    .map((x) => oldMapaContext?.conteudo[x])
-    .flat();
+  const listaElementos = retornaListaElementosConteudo(oldMapaContext);
   const elementoAlvo = listaElementos.find(
     (x) =>
       x.id === actionContextChange.id ||
       x.alteracoes?.some((z) => z.id === actionContextChange.id)
   );
+  const cenaInicio = moment(actionContextChange.start).format(
+    "yyyy-MM-DDTHH:mm:ss"
+  );
+  const cenaFim = moment(actionContextChange.end).format("yyyy-MM-DDTHH:mm:ss");
   if (elementoAlvo.id === actionContextChange.id) {
-    elementoAlvo.cenaFim = actionContextChange.end;
-    elementoAlvo.cenaInicio = actionContextChange.start;
+    elementoAlvo.cenaFim = cenaFim;
+    elementoAlvo.cenaInicio = cenaInicio;
   } else {
     const alteracaoAlvo = elementoAlvo.alteracoes.find(
       (x) => x.id === actionContextChange.id
     );
-    alteracaoAlvo.cenaFim = actionContextChange.end;
-    alteracaoAlvo.cenaInicio = actionContextChange.start;
+    alteracaoAlvo.cenaFim = cenaFim;
+    alteracaoAlvo.cenaInicio = cenaInicio;
   }
   return {
     ...oldMapaContext,
@@ -305,13 +349,16 @@ const atualizaLinhaTempoElemento = (
 const editarPropriedadeElemento = (
   oldMapaContext: mapaContextSchema,
   tipoElemento: string,
-  nomeElemento: string,
+  id: NIL,
   nomePropriedade: string,
   novoValor: string
 ): mapaContextSchema => {
-  oldMapaContext.conteudo[tipoElemento].find(
-    (elemento) => elemento.nome === nomeElemento
-  )[nomePropriedade] = novoValor;
+  console.log(
+    `Alterando o ${nomePropriedade} de um ${tipoElemento}(${id}) para o valor: ${novoValor}`
+  );
+  oldMapaContext.conteudo[tipoElemento].find((elemento) => elemento.id === id)[
+    nomePropriedade
+  ] = novoValor;
   return {
     ...oldMapaContext,
   };
@@ -321,10 +368,9 @@ const addAlteracaoElemento = (
   oldMapaContext: mapaContextSchema,
   actionContextChange: actionContextChange
 ): mapaContextSchema => {
-  const elemento = Object.keys(oldMapaContext.conteudo)
-    .map((x) => oldMapaContext.conteudo[x])
-    .flat()
-    .find((x) => x.id === actionContextChange.group);
+  const elemento = retornaListaElementosConteudo(oldMapaContext).find(
+    (x) => x.id === actionContextChange.group
+  );
   if (
     elemento &&
     new Date(elemento.cenaInicio) < new Date(actionContextChange.start) &&
@@ -340,7 +386,7 @@ const addAlteracaoElemento = (
       valor: 0,
       tipo: "",
       type: "box",
-    } as propriedadeVisual;
+    } as alteracaoElemento;
     if (
       oldMapaContext.conteudo[elemento.dataRef].find(
         (x) => x.id === elemento.id
@@ -405,5 +451,6 @@ const MapaFunctionHelpers = {
   editarPropriedadeElemento,
   addAlteracaoElemento,
   novaCena,
+  retornaElementoOuAlteracaoPorId,
 };
 export default MapaFunctionHelpers;
