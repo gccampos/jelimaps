@@ -66,11 +66,16 @@ export default function Mapa(props: { altura: number }) {
 
   useEffect(() => {
     console.log("contexto do mapa", mapaContext);
-  }, [mapaContext]);
+  });
   useEffect(() => {
-    console.log("map", map);
-    console.log("map.options", map?.options);
-  }, [map]);
+    if (map) {
+      console.log("map", map);
+      console.log("map.options", map?.options);
+      map.on("moveend", () => {
+        dispatch({ type: "alteraPropriedadesMapa", map: map });
+      });
+    }
+  }, [map, dispatch]);
 
   const verificaElementoFocadoPorId = (id) => {
     return (
@@ -358,6 +363,25 @@ export default function Mapa(props: { altura: number }) {
                   </Rectangle>
                 ) : null;
               })}
+            {mapaContext.conteudo &&
+              mapaContext.conteudo.cenas &&
+              mapaContext.conteudo.cenas.length > 0 &&
+              mapaContext.conteudo.cenas
+                .filter(
+                  (x) =>
+                    !!x.exibirLimite &&
+                    new Date(x.cenaInicio) <= new Date(mapaContext.tempo) &&
+                    new Date(x.cenaFim) >= new Date(mapaContext.tempo)
+                )
+                .map((x, i) => {
+                  return x?.bounds ? (
+                    <Rectangle {...x} bounds={x.bounds} key={`Rectangle#${i}`}>
+                      {/* <Popup>
+                          A pretty CSS3 popup. <br /> Easily customizable.
+                        </Popup> */}
+                    </Rectangle>
+                  ) : null;
+                })}
             <CustomControlLeaflet
               position={POSITION_CLASSES_CUSTOM_CONTROL.bottomright}
             >

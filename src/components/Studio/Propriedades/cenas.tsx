@@ -8,6 +8,9 @@ import {
   ListItemText,
   ListItem,
   TextField,
+  Button,
+  FormControlLabel,
+  Switch,
 } from "@mui/material";
 import {
   useMapaContext,
@@ -125,6 +128,31 @@ export default function Cenas() {
                             formik.touched.cenaFim && formik.errors.cenaFim
                           }
                         />
+                        <FormControlLabel
+                          control={
+                            <Switch
+                              checked={formik.values.exibirLimite}
+                              onChange={(e, checked) => {
+                                dispatch({
+                                  type: "alteraPropriedadeCena",
+                                  tipo: "exibirLimite",
+                                  valor: checked,
+                                  indiceElemento: i,
+                                  formik: formik,
+                                });
+                              }}
+                              name={"exibirLimite"}
+                            />
+                          }
+                          label={"Exibir tamanho da cena"}
+                        />
+                        <Button
+                          onClick={() => {
+                            dispatch({ type: "fixarCena", id: x.id });
+                          }}
+                        >
+                          Fixar tela
+                        </Button>
                       </Form>
                     );
                   }}

@@ -42,10 +42,6 @@ export default function VisTimeline() {
 
   const listaMapeada = useCallback(
     (lista?: (tipoElemento | tipoGenericoElementoTimeline)[]) => {
-      console.log(
-        "vai rodar o metodo da lista mapeada",
-        lista ?? listaElementos
-      );
       return (lista ?? listaElementos).map((x) => {
         return {
           ...x,
@@ -60,7 +56,6 @@ export default function VisTimeline() {
   );
   const listaMapeadaElementos = useMemo(() => {
     const valorItems = listaMapeada().filter((x) => x.type != "background");
-    console.log("todos elementos", valorItems);
     return valorItems;
   }, [listaMapeada]);
 
@@ -82,7 +77,6 @@ export default function VisTimeline() {
 
   const elementosAlteracoesTimeline = useMemo(() => {
     const valorItems = listaMapeada().concat(listaMapeadaPropriedades);
-    console.log("todos elementos e alterações", valorItems);
     return valorItems;
   }, [listaMapeada, listaMapeadaPropriedades]);
 
@@ -93,7 +87,6 @@ export default function VisTimeline() {
   }, [mapaContext.elementosFoco, mapaContext.elementoFoco]);
 
   const setElementosSelecionados = useCallback(() => {
-    console.log("Callback do elementosFocados", elementosFocados);
     if (visTimeline) visTimeline.setSelection(elementosFocados);
   }, [visTimeline, elementosFocados]);
 
@@ -116,11 +109,11 @@ export default function VisTimeline() {
 
   const handleRemoveConteudo = useCallback(
     (item: TimelineItem) => {
-      const dispOpt = {
+      dispatch({
         type: "removeElements",
         id: item.id,
-      };
-      dispatch(dispOpt);
+        group: item.group,
+      });
     },
     [dispatch]
   );
@@ -133,36 +126,29 @@ export default function VisTimeline() {
     },
     [dispatch]
   );
-  const handleAdicionarPropriedadeConteudo = useCallback(
-    (item: TimelineItem) => {
-      dispatch({
-        ...item,
-        type: "adicionarAlteracaoElemento",
-      });
-    },
-    [dispatch]
-  );
+
   const handleDoubleClick = useCallback(
     (e: TimelineEventPropertiesResult) => {
       if (e.group)
-        handleAdicionarPropriedadeConteudo({
+        dispatch({
           ...e,
           start: e.snappedTime,
-          content: "",
           id: v4(),
+          type: "adicionarAlteracaoElemento",
         });
     },
-    [handleAdicionarPropriedadeConteudo]
+    [dispatch]
   );
   const handleClick = useCallback(
     (item: TimelineEventPropertiesResult) => {
-      console.log("click", item, visTimeline);
-      if (!item.what)
+      console.log("click", item.what);
+      if (!item.what) {
         dispatch({
           type: "alteraPropriedadeGeral",
           tipo: "fit",
           valor: true,
         });
+      }
       if (item.what === "axis") dispatch({ ...item, type: "atualizaTempo" });
       if (item.what === "group-label")
         dispatch({
@@ -170,7 +156,7 @@ export default function VisTimeline() {
           ids: [item.group],
         });
     },
-    [dispatch, visTimeline]
+    [dispatch]
   );
   const handleOnMoving = useCallback(
     (item: TimelineItem, cb: any) => {
@@ -201,14 +187,12 @@ export default function VisTimeline() {
           )
             cb(item);
         } else {
-          const listaElementos = Object.keys(mapaContext?.conteudo)
-            .map((x) => mapaContext?.conteudo[x])
-            .flat();
-
-          const elementoPrincipal = listaElementos.find(
+          const _listaElementos = elementosTimelineRef.current?.groups;
+          const elementoPrincipal = _listaElementos.find(
             (x) => x.id === item.group
           );
           if (
+            !!elementoPrincipal &&
             new Date(elementoPrincipal.cenaInicio) <
               new Date(elemento.cenaInicio) &&
             new Date(elementoPrincipal.cenaFim) > new Date(elemento.cenaFim)
@@ -224,8 +208,11 @@ export default function VisTimeline() {
       const targetOrder = to.order;
       to.order = from.order;
       from.order = targetOrder;
-      dataSetRef.current = groups;
-      if (!intervaloRef.current) {
+      if (
+        //!intervaloRef.current &&
+        JSON.stringify(dataSetRef.current) !==
+        JSON.stringify([to.order, from.order].sort((a, b) => a.order - b.order))
+      ) {
         intervaloRef.current = setTimeout(() => {
           groups.forEach((x: any) => {
             if (elementos.current.find((z) => z.id === x.id)?.order !== x.order)
@@ -238,7 +225,10 @@ export default function VisTimeline() {
               });
           });
           intervaloRef.current = null;
-        }, 7000);
+        }, 0);
+        dataSetRef.current = [to.order, from.order].sort(
+          (a, b) => a.order - b.order
+        );
       }
     },
     [dispatch]
@@ -310,43 +300,13 @@ export default function VisTimeline() {
       groups: listaMapeadaElementos,
       items: elementosAlteracoesTimeline,
     };
-    console.log("verificando JSON", dataSetRef.current);
-    atual.groups.forEach((x) =>
-      dataSetRef.current
-        ?.map((x) => x)
-        .forEach((z) => {
-          if (x.id === z.id)
-            console.log(
-              "verificando JSON => dataSetRef.current",
-              JSON.stringify(x) === JSON.stringify(z),
-              "\nvalor atual\n",
-              JSON.stringify(x),
-              "\nvalor dataSet\n",
-              JSON.stringify(z)
-            );
-        })
-    );
-    atual.groups.forEach((x) =>
-      elementosTimelineRef.current?.groups.forEach((z) => {
-        if (x.id === z.id)
-          console.log(
-            "verificando JSON => elementosTimelineRef.current",
-            JSON.stringify(x) === JSON.stringify(z),
-            "\nvalor atual\n",
-            JSON.stringify(x),
-            "\nvalor elementosTimelineRef\n",
-            JSON.stringify(z)
-          );
-      })
-    );
-    if (visTimeline && elementosTimelineRef.current !== atual) {
-      console.log("useEffect do setData", elementosTimelineRef.current, atual);
-      visTimeline.setData({
-        groups: listaMapeadaElementos,
-        items: elementosAlteracoesTimeline,
-      });
-      setElementosSelecionados();
-    }
+    const temDiferencaConteudo =
+      elementosTimelineRef.current?.groups?.length !== atual.groups.length ||
+      elementosTimelineRef.current?.items?.length !== atual.items.length;
+
+    if (visTimeline && temDiferencaConteudo) visTimeline.setData(atual);
+
+    setElementosSelecionados();
     elementosTimelineRef.current = atual;
   }, [
     visTimeline,
@@ -356,13 +316,11 @@ export default function VisTimeline() {
   ]);
 
   useEffect(() => {
-    console.log("useEffect do setCustomTime");
     if (visTimeline)
       visTimeline.setCustomTime(mapaContext.tempo, "currentTime");
   }, [visTimeline, mapaContext.tempo]);
 
   useEffect(() => {
-    console.log("useEffect COMPLETO");
     if (visTimeline) {
       const scrollTopValue = divScrollRef.current.scrollTop;
       setOptionsTimeline();

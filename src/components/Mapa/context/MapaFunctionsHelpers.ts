@@ -19,6 +19,16 @@ const retornaListaElementosConteudo = (oldMapaContext: mapaContextSchema) =>
     .map((x) => oldMapaContext?.conteudo[x])
     .flat();
 
+const retornaListaAlteracoesConteudo = (oldMapaContext: mapaContextSchema) =>
+  Object.keys(oldMapaContext?.conteudo)
+    .map((x) => oldMapaContext?.conteudo[x])
+    .flat()
+    .map((x) => {
+      return (x as tipoElemento).alteracoes;
+    })
+    .flat()
+    .filter((x) => x);
+
 const retornaElementoOuAlteracaoPorId = (
   oldMapaContext: mapaContextSchema,
   id: NIL
@@ -283,20 +293,37 @@ const removeElemento = (
   actionContextChange: actionContextChange
 ): mapaContextSchema => {
   const listaElementos = retornaListaElementosConteudo(oldMapaContext);
-  const removerUmElemento = (elementos: tipoElemento[], id: NIL) => {
+  const removerUmElemento = (elementos: any[], id: NIL) => {
     elementos.splice(
       elementos.findIndex((x) => x.id === id),
       1
     );
   };
+
   oldMapaContext.elementosFoco
     ? oldMapaContext.elementosFoco.forEach((element) => {
-        removerUmElemento(
-          oldMapaContext.conteudo[
-            listaElementos.find((x) => x.id === element.id).dataRef
-          ],
-          element.id
-        );
+        if (listaElementos.some((x) => x.id === element.id))
+          removerUmElemento(
+            oldMapaContext.conteudo[
+              listaElementos.find((x) => x.id === element.id).dataRef
+            ],
+            element.id
+          );
+        else {
+          const listaAlteracoesConteudo =
+            retornaListaAlteracoesConteudo(oldMapaContext);
+          if (listaAlteracoesConteudo.some((x) => x.id === element.id)) {
+            const elementoPai = listaElementos.find((x) =>
+              x.alteracoes?.some((x) => x.id === element.id)
+            );
+            removerUmElemento(
+              oldMapaContext.conteudo[elementoPai.dataRef].find(
+                (x) => x.id === elementoPai.id
+              ).alteracoes,
+              element.id
+            );
+          }
+        }
       })
     : oldMapaContext.elementoFoco
     ? removerUmElemento(
@@ -371,14 +398,17 @@ const addAlteracaoElemento = (
   const elemento = retornaListaElementosConteudo(oldMapaContext).find(
     (x) => x.id === actionContextChange.group
   );
+
   if (
     elemento &&
     new Date(elemento.cenaInicio) < new Date(actionContextChange.start) &&
     new Date(elemento.cenaFim) > new Date(actionContextChange.start)
   ) {
     const conten = {
-      id: actionContextChange.id ?? v4(),
-      cenaInicio: actionContextChange.start,
+      id: v4(),
+      cenaInicio: moment(actionContextChange.start).format(
+        "yyyy-MM-DDTHH:mm:ss"
+      ),
       cenaFim: actionContextChange.start,
       nome: `Alteração #${(elemento.alteracoes?.length ?? 0) + 1} do ${
         elemento.nome

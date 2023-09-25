@@ -5,10 +5,22 @@ export function mapaReducer(
   oldMapaContext: mapaContextSchema,
   action: actionContextChange
 ): mapaContextSchema {
-  console.log("metodoDispatch disparado", action.type);
+  console.log(
+    `metodoDispatch [TYPE:${action.type}] disparado`,
+    oldMapaContext,
+    action
+  );
   switch (action.type) {
     case "modoVisao": {
       return { ...oldMapaContext, modoVisao: action.tipo };
+    }
+    case "alteraPropriedadesMapa": {
+      return {
+        ...oldMapaContext,
+        center: action.map?.getCenter(),
+        zoom: action.map?.getZoom(),
+        bounds: action.map?.getBounds(),
+      };
     }
     case "selecionarElementoInteracao": {
       return MapaFunctionHelpers.changeElementoInteracao(
@@ -140,7 +152,21 @@ export function mapaReducer(
         } else
           oldMapaContext.conteudo.cenas[action.indiceElemento][action.tipo] =
             action.valor;
+      else
+        oldMapaContext.conteudo.cenas[action.indiceElemento][action.tipo] =
+          action.valor;
       return { ...oldMapaContext };
+    }
+    case "fixarCena": {
+      const ctent = oldMapaContext.conteudo.cenas.find(
+        (x) => x.id === action.id
+      );
+      ctent.center = oldMapaContext.center;
+      ctent.zoom = oldMapaContext.zoom;
+      ctent.bounds = oldMapaContext.bounds;
+      return {
+        ...oldMapaContext,
+      };
     }
     default: {
       throw Error("Unknown action: " + action.type);

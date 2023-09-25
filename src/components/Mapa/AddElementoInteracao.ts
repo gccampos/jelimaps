@@ -4,17 +4,19 @@ import { useMapEvents } from "react-leaflet";
 import { LeafletEventHandlerFnMap } from "leaflet";
 
 function isControlLeafLet(node) {
-  return node.tagName === "path" ||
+  const resutl =
+    node.tagName === "path" ||
     node.tagName === "svg" ||
     typeof node.className === "object"
-    ? isControlLeafLet(node.parentElement)
-    : node.className.includes("leaflet-control")
-    ? node.className.includes("leaflet-control")
-    : isLeafletContainer(node)
-    ? !node.className.includes("leaflet-container")
-    : node.parentElement
-    ? isControlLeafLet(node.parentElement)
-    : false;
+      ? isControlLeafLet(node.parentElement)
+      : node.className.includes("leaflet-control")
+      ? node.className.includes("leaflet-control")
+      : isLeafletContainer(node)
+      ? !node.className.includes("leaflet-container")
+      : node.parentElement
+      ? isControlLeafLet(node.parentElement)
+      : false;
+  return resutl;
 }
 
 function isLeafletContainer(node) {

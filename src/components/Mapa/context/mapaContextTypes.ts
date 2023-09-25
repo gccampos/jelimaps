@@ -1,5 +1,5 @@
 import { elementoProto } from "@/main/constants/elementos";
-import { LatLng, LatLngBoundsExpression, MapOptions } from "leaflet";
+import { LatLng, LatLngBoundsExpression, MapOptions, Map } from "leaflet";
 import { NIL } from "uuid";
 import { DateType, TimelineOptions } from "vis-timeline";
 import { FormikProps } from "formik";
@@ -42,26 +42,32 @@ export type elementoComPositions = {
 export type elementoComBounds = {
   bounds: LatLngBoundsExpression;
 } & elementoPadrao;
-export type mapaContextSchema = periodoInicioFim & {
-  elementoInteracao: elementoProto;
-  elementoFoco?: tipoElemento;
-  elementosFoco?: { id: NIL }[];
-  slidePropriedade: boolean;
-  modoVisao?: string;
-  conteudo: conteudoType & {
-    Marker?: markerType;
-    Polyline?: PolylineType;
-    Polygon?: PolygonType;
-    Circle?: CircleType;
-    Rectangle?: RectangleType;
-    cenas: elementoPadrao[];
+export type mapaContextSchema = periodoInicioFim &
+  telaMapa & {
+    elementoInteracao: elementoProto;
+    elementoFoco?: tipoElemento;
+    elementosFoco?: { id: NIL }[];
+    slidePropriedade: boolean;
+    modoVisao?: string;
+    conteudo: conteudoType & {
+      Marker?: markerType;
+      Polyline?: PolylineType;
+      Polygon?: PolygonType;
+      Circle?: CircleType;
+      Rectangle?: RectangleType;
+      cenas: (elementoPadrao & telaMapa & { exibirLimite?: boolean })[];
+    };
+    fit?: boolean;
+    tempo: DateType;
+    mapOptions: MapOptions;
+    timelineOptions: TimelineOptions;
+    reloadTimelineOptions?: boolean;
+    playStatus: number;
   };
-  fit?: boolean;
-  tempo: DateType;
-  mapOptions: MapOptions;
-  timelineOptions: TimelineOptions;
-  reloadTimelineOptions?: boolean;
-  playStatus: number;
+type telaMapa = {
+  center?: LatLng;
+  zoom?: number;
+  bounds?: LatLngBoundsExpression;
 };
 type conteudoType = {
   [key: string]: arrayElemento;
@@ -102,4 +108,5 @@ export type actionContextChange = {
   time?: DateType;
   formik?: FormikProps<any>;
   mapContext?: mapaContextSchema;
+  map?: Map;
 };

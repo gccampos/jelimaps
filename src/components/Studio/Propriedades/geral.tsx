@@ -1,5 +1,8 @@
 import React from "react";
-import { TextField, FormControlLabel, Switch } from "@mui/material";
+import {
+  TextField,
+  // FormControlLabel, Switch
+} from "@mui/material";
 import {
   useMapaContext,
   useMapaDispatch,
@@ -69,7 +72,7 @@ export default function Geral() {
               error={formik.touched.cenaFim && Boolean(formik.errors.cenaFim)}
               helperText={formik.touched.cenaFim && formik.errors.cenaFim}
             />
-            <FormControlLabel
+            {/* <FormControlLabel
               control={
                 <Switch
                   checked={formik.values.reloadTimelineOptions}
@@ -85,30 +88,6 @@ export default function Geral() {
                 />
               }
               label={"Recarregar linha do tempo"}
-            />
-            {/* <FormControlLabel
-              control={
-                <Switch
-                  checked={
-                    formik.values.timelineOptions.showCurrentTime
-                  }
-                  onChange={(e, b) => {
-                    console.log("tentando mudar switch", b);
-                    dispatch({
-                      type: "alteraPropriedadeTimelineOptions",
-                      tipo: e.target.name,
-                      valor: b,
-                      formik: formik,
-                    });
-                  }}
-                  name={"showCurrentTime"}
-                />
-              }
-              label={
-                formik.values.timelineOptions.showCurrentTime
-                  ? "Stop"
-                  : "Play"
-              }
             /> */}
           </Form>
         );
