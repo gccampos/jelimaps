@@ -178,8 +178,13 @@ export default function Propriedades(props: { altura: number }) {
                 variant="fullWidth"
                 aria-label="full width tabs example"
               >
-                {([mapaContext.elementoFoco] || mapaContext.elementosFoco)
-                  .length && <Tab label="Elemento" {...propriedadesTab(2)} />}
+                {(
+                  mapaContext.elementosFoco?.concat(
+                    mapaContext.elementoFoco
+                  ) ?? [mapaContext.elementoFoco]
+                ).filter((x) => !!x).length > 0 && (
+                  <Tab label="Elemento" {...propriedadesTab(2)} />
+                )}
                 <Tab label="Geral" {...propriedadesTab(0)} />
                 <Tab label="Cenas" {...propriedadesTab(1)} />
               </Tabs>
@@ -188,7 +193,7 @@ export default function Propriedades(props: { altura: number }) {
               mapaContext.elementosFoco?.concat(mapaContext.elementoFoco) ?? [
                 mapaContext.elementoFoco,
               ]
-            ).length && (
+            ).filter((x) => !!x).length > 0 && (
               <TabPanel index={2}>
                 <Elemento />
               </TabPanel>
