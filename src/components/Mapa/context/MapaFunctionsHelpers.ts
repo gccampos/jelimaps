@@ -116,7 +116,7 @@ const changeTodosElementosFoco = (
   return { ...oldMapaContext };
 };
 
-const padraoPeriodoMapaContext = (oldMapaContext: mapaContextSchema) => {
+const padraoElementoNovoAdicionado = (oldMapaContext: mapaContextSchema) => {
   return {
     cenaInicio: moment(oldMapaContext.conteudo.cenas[0].cenaInicio)
       .add(1, "seconds")
@@ -127,6 +127,12 @@ const padraoPeriodoMapaContext = (oldMapaContext: mapaContextSchema) => {
     )
       .add(-1, "seconds")
       .format("yyyy-MM-DDTHH:mm:ss"),
+    order:
+      retornaListaElementosConteudo(oldMapaContext).filter(
+        (x) => x.type !== "background"
+      ).length ?? 0,
+    id: v4(),
+    draggable: true,
   };
 };
 
@@ -139,12 +145,7 @@ const addElementoMarker = (
     dataRef: actionContext.tipo,
     nome: `marker#${oldMapaContext.conteudo?.Marker?.length + 1 || 1}`,
     texto: "",
-    id: v4(),
-    order:
-      retornaListaElementosConteudo(oldMapaContext).filter(
-        (x) => x.type !== "background"
-      ).length ?? 0,
-    ...padraoPeriodoMapaContext(oldMapaContext),
+    ...padraoElementoNovoAdicionado(oldMapaContext),
   };
 
   oldMapaContext = changeElementoFoco(oldMapaContext, {
@@ -167,13 +168,8 @@ const addElementoPolyline = (
     const newPolyline: elementoComPositions = {
       positions: [actionContextChange.posicao],
       dataRef: actionContextChange.tipo,
-      id: v4(),
       nome: `polyline#${oldMapaContext.conteudo?.Polyline?.length + 1 || 1}`,
-      order:
-        retornaListaElementosConteudo(oldMapaContext).filter(
-          (x) => x.type !== "background"
-        ).length ?? 0,
-      ...padraoPeriodoMapaContext(oldMapaContext),
+      ...padraoElementoNovoAdicionado(oldMapaContext),
     };
     oldMapaContext = changeElementoFoco(oldMapaContext, {
       ...actionContextChange,
@@ -207,13 +203,8 @@ const addElementoPolygon = (
     const newPolygon: elementoComPositions = {
       positions: [actionContextChange.posicao],
       dataRef: actionContextChange.tipo,
-      id: v4(),
       nome: `polygon#${oldMapaContext.conteudo?.Polygon?.length + 1 || 1}`,
-      order:
-        retornaListaElementosConteudo(oldMapaContext).filter(
-          (x) => x.type !== "background"
-        ).length ?? 0,
-      ...padraoPeriodoMapaContext(oldMapaContext),
+      ...padraoElementoNovoAdicionado(oldMapaContext),
     };
     oldMapaContext = changeElementoFoco(oldMapaContext, {
       ...actionContextChange,
@@ -248,13 +239,8 @@ const addElementoCirculo = (
     center: posicao,
     radius: 100,
     dataRef: tipo,
-    id: v4(),
     nome: `circle#${oldMapaContext.conteudo?.Circle?.length + 1 || 1}`,
-    order:
-      retornaListaElementosConteudo(oldMapaContext).filter(
-        (x) => x.type !== "background"
-      ).length ?? 0,
-    ...padraoPeriodoMapaContext(oldMapaContext),
+    ...padraoElementoNovoAdicionado(oldMapaContext),
   };
   oldMapaContext = changeElementoFoco(oldMapaContext, {
     ...actionContextChange,

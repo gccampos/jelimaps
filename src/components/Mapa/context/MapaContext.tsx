@@ -9,6 +9,13 @@ import moment from "moment";
 const initialMapaContexto: mapaContextSchema = {
   elementoInteracao: elementos.Hand,
   slidePropriedade: false,
+  cenaInicio: moment().format("yyyy-MM-DDTHH:mm:ss"),
+  cenaFim: moment().add(1, "minutes").format("yyyy-MM-DDTHH:mm:ss"),
+  tempo: moment().add(2, "seconds").format("yyyy-MM-DDTHH:mm:ss"),
+  mapOptions: {
+    center: [0, 0],
+  },
+  playStatus: -1,
   conteudo: {
     cenas: [
       {
@@ -22,13 +29,6 @@ const initialMapaContexto: mapaContextSchema = {
       },
     ],
   },
-  cenaInicio: moment().format("yyyy-MM-DDTHH:mm:ss"),
-  cenaFim: moment().add(1, "minutes").format("yyyy-MM-DDTHH:mm:ss"),
-  tempo: moment().add(2, "seconds").format("yyyy-MM-DDTHH:mm:ss"),
-  mapOptions: {
-    center: [0, 0],
-  },
-  playStatus: -1,
   timelineOptions: {
     editable: { remove: true, updateTime: true },
     zoomKey: "ctrlKey",

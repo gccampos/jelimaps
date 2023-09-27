@@ -65,6 +65,13 @@ export default function Mapa(props: { altura: number }) {
   };
 
   useEffect(() => {
+    if (
+      mapaContext.center &&
+      map &&
+      mapaContext.center?.lat !== map.getCenter().lat &&
+      mapaContext.center?.lng !== map.getCenter().lng
+    )
+      map.setView(mapaContext.center, mapaContext.zoom);
     console.log("contexto do mapa", mapaContext);
   });
   useEffect(() => {
@@ -151,9 +158,24 @@ export default function Mapa(props: { altura: number }) {
                       },
                     }}
                   >
-                    {/* <Popup>
-                      A pretty CSS3 popup. <br /> Easily customizable.
-                    </Popup> */}
+                    <Popup>
+                      <ButtonGroup
+                        variant="text"
+                        aria-label="text button group"
+                      >
+                        <Button
+                          onClick={() => {
+                            dispatch({
+                              type: "removeElements",
+                            });
+                          }}
+                        >
+                          Excluir
+                        </Button>
+                        {/* <Button>Two</Button>
+                              <Button>Three</Button> */}
+                      </ButtonGroup>
+                    </Popup>
                   </Marker>
                 );
               })}
@@ -333,9 +355,24 @@ export default function Mapa(props: { altura: number }) {
                         }}
                         key={`circle_marker#${i}`}
                       >
-                        {/* <Popup>
-                      A pretty CSS3 popup. <br /> Easily customizable.
-                    </Popup> */}
+                        <Popup>
+                          <ButtonGroup
+                            variant="text"
+                            aria-label="text button group"
+                          >
+                            <Button
+                              onClick={() => {
+                                dispatch({
+                                  type: "removeElements",
+                                });
+                              }}
+                            >
+                              Excluir
+                            </Button>
+                            {/* <Button>Two</Button>
+                                <Button>Three</Button> */}
+                          </ButtonGroup>
+                        </Popup>
                       </Marker>
                     )}
                   </div>
@@ -375,7 +412,12 @@ export default function Mapa(props: { altura: number }) {
                 )
                 .map((x, i) => {
                   return x?.bounds ? (
-                    <Rectangle {...x} bounds={x.bounds} key={`Rectangle#${i}`}>
+                    <Rectangle
+                      {...x}
+                      bounds={x.bounds}
+                      className="background-scene"
+                      key={`Rectangle#${i}`}
+                    >
                       {/* <Popup>
                           A pretty CSS3 popup. <br /> Easily customizable.
                         </Popup> */}

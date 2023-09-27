@@ -24,6 +24,9 @@ body {
       rgb(var(--background-end-rgb))
     )
     rgb(var(--background-start-rgb)); */
+  overflow: auto;
+}
+body:has(#studioMapa) {
   overflow: hidden;
 }
 

@@ -1,3 +1,4 @@
+import moment from "moment";
 import { actionContextChange, mapaContextSchema } from "./mapaContextTypes";
 import MapaFunctionHelpers from "./MapaFunctionsHelpers";
 
@@ -100,7 +101,20 @@ export function mapaReducer(
       };
     }
     case "atualizaTempo": {
-      return { ...oldMapaContext, tempo: action.time ?? oldMapaContext.tempo };
+      const novoTempo = action.time ?? oldMapaContext.tempo;
+      const cenaNova = oldMapaContext.conteudo.cenas.find(
+        (x) =>
+          moment(x.cenaInicio) <= moment(novoTempo) &&
+          moment(x.cenaFim) >= moment(novoTempo) &&
+          (moment(x.cenaInicio) > moment(oldMapaContext.tempo) ||
+            moment(x.cenaFim) < moment(oldMapaContext.tempo))
+      );
+      if (cenaNova) {
+        oldMapaContext.center = cenaNova.center;
+        oldMapaContext.zoom = cenaNova.zoom;
+        oldMapaContext.bounds = cenaNova.bounds;
+      }
+      return { ...oldMapaContext, tempo: novoTempo };
     }
     case "alteraPropriedadeGeral": {
       if (action.tipo.includes("cena")) {

@@ -3,26 +3,14 @@ import { useMapaContext, useMapaDispatch } from "./context/MapaContext";
 import { useMapEvents } from "react-leaflet";
 import { LeafletEventHandlerFnMap } from "leaflet";
 
-function isControlLeafLet(node) {
+function isControlLeafLetContainer(node) {
+  console.log(node);
   const resutl =
-    node.tagName === "path" ||
-    node.tagName === "svg" ||
-    typeof node.className === "object"
-      ? isControlLeafLet(node.parentElement)
-      : node.className.includes("leaflet-control")
-      ? node.className.includes("leaflet-control")
-      : isLeafletContainer(node)
-      ? !node.className.includes("leaflet-container")
-      : node.parentElement
-      ? isControlLeafLet(node.parentElement)
-      : false;
+    ((!!node.classList &&
+      Array.from(node.classList).some((x) => x === "leaflet-container")) ||
+      Array.from(node.classList).some((x) => x === "background-scene")) ??
+    false;
   return resutl;
-}
-
-function isLeafletContainer(node) {
-  return (
-    node.tagName === "DIV" && node.className?.includes("leaflet-container")
-  );
 }
 
 function AddElementoInteracao() {
@@ -30,18 +18,9 @@ function AddElementoInteracao() {
   const dispatch = useMapaDispatch();
 
   function interagirMapa(nomeElemento: string): LeafletEventHandlerFnMap {
-    if (nomeElemento === elementos.Hand.nome)
-      return {
-        click(e) {
-          if (isLeafletContainer(e.originalEvent.target))
-            dispatch({
-              type: `selecionarElementoFoco`,
-            });
-        },
-      };
     return {
       click(e) {
-        if (!isControlLeafLet(e.originalEvent.target))
+        if (isControlLeafLetContainer(e.originalEvent.target))
           dispatch({
             type: `add${nomeElemento}`,
             tipo: nomeElemento,
@@ -52,7 +31,9 @@ function AddElementoInteracao() {
   }
 
   useMapEvents(
-    mapaContext?.elementoInteracao && mapaContext?.elementoInteracao.nome
+    mapaContext?.elementoInteracao &&
+      mapaContext?.elementoInteracao.nome &&
+      mapaContext?.elementoInteracao.nome !== elementos.Hand.nome
       ? interagirMapa(mapaContext.elementoInteracao.nome)
       : {}
   );
