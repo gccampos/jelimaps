@@ -36,11 +36,13 @@
     "react-rnd": "^10.4.1",
     "react-sortablejs": "^6.1.4",
     "sortablejs": "^1.15.0",
+    "subjx": "^1.1.0",
     "tailwindcss": "3.3.2",
     "uuid": "^9.0.0",
     "vis": "^4.21.0-EOL",
     "vis-timeline": "^7.7.2",
-    "yup": "^1.2.0"
+    "yup": "^1.2.0",
+    "zustand": "^4.4.1"
   },
   "devDependencies": {
     "@svgr/webpack": "^8.0.1",

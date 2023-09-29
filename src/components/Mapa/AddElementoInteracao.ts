@@ -35,7 +35,15 @@ function AddElementoInteracao() {
       mapaContext?.elementoInteracao.nome &&
       mapaContext?.elementoInteracao.nome !== elementos.Hand.nome
       ? interagirMapa(mapaContext.elementoInteracao.nome)
-      : {}
+      : {
+          click(e) {
+            console.log(e);
+            if (isControlLeafLetContainer(e.originalEvent.target))
+              dispatch({
+                type: `selecionarElementoFoco`,
+              });
+          },
+        }
   );
 
   return null;

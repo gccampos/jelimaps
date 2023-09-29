@@ -41,6 +41,7 @@ export type elementoComPositions = {
 } & elementoPadrao;
 export type elementoComBounds = {
   bounds: LatLngBoundsExpression;
+  urlImagem?: string;
 } & elementoPadrao;
 export type mapaContextSchema = periodoInicioFim &
   telaMapa & {
@@ -55,6 +56,7 @@ export type mapaContextSchema = periodoInicioFim &
       Polygon?: PolygonType;
       Circle?: CircleType;
       Rectangle?: RectangleType;
+      ImageOverlay?: RectangleType;
       cenas: (elementoPadrao & telaMapa & { exibirLimite?: boolean })[];
     };
     fit?: boolean;
@@ -63,11 +65,13 @@ export type mapaContextSchema = periodoInicioFim &
     timelineOptions: TimelineOptions;
     reloadTimelineOptions?: boolean;
     playStatus: number;
+    caixaDialogo?: string;
   };
 type telaMapa = {
   center?: LatLng;
   zoom?: number;
   bounds?: LatLngBoundsExpression;
+  urlMapaProprio?: string;
 };
 type conteudoType = {
   [key: string]: arrayElemento;

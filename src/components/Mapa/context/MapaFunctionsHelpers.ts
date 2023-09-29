@@ -10,6 +10,7 @@ import {
   mapaContextSchema,
   alteracaoElemento,
   tipoElemento,
+  RectangleType,
 } from "./mapaContextTypes";
 import { v4, NIL } from "uuid";
 import moment from "moment";
@@ -257,6 +258,33 @@ const addElementoCirculo = (
   };
 };
 
+const addElementoImagem = (
+  oldMapaContext: mapaContextSchema,
+  actionContextChange: actionContextChange
+): mapaContextSchema => {
+  const { tipo } = actionContextChange;
+  const newImageOverlay = {
+    bounds: oldMapaContext.bounds,
+    dataRef: tipo,
+    nome: `imagem#${oldMapaContext.conteudo?.ImageOverlay?.length + 1 || 1}`,
+    urlImagem: actionContextChange.valor,
+    ...padraoElementoNovoAdicionado(oldMapaContext),
+  };
+  oldMapaContext = changeElementoFoco(oldMapaContext, {
+    ...actionContextChange,
+    elemento: newImageOverlay,
+  });
+  return {
+    ...oldMapaContext,
+    conteudo: {
+      ...oldMapaContext.conteudo,
+      ImageOverlay: (oldMapaContext.conteudo?.ImageOverlay
+        ? [...oldMapaContext.conteudo.ImageOverlay, newImageOverlay]
+        : [newImageOverlay]) as RectangleType,
+    },
+  };
+};
+
 // const addElementoQuadrilatero = (
 //   oldMapaContext: mapaContextSchema,
 //   actionContextChange: actionContextChange
@@ -459,6 +487,7 @@ const MapaFunctionHelpers = {
   changeTodosElementosFocoPorIds,
   addElementoMarker,
   addElementoCirculo,
+  addElementoImagem,
   addElementoPolyline,
   addElementoPolygon,
   //addElementoQuadrilatero,

@@ -10,7 +10,7 @@ import {
   Popup,
 } from "react-leaflet";
 import { LatLngBounds, LatLng, divIcon, Map } from "leaflet";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import React from "react";
 import CustomControlLeaflet, {
   POSITION_CLASSES_CUSTOM_CONTROL,
@@ -19,11 +19,24 @@ import {
   useMapaContext,
   useMapaDispatch,
 } from "@/components/Mapa/context/MapaContext";
-import { Button, ButtonGroup, Fab, Grid } from "@mui/material";
+import {
+  Button,
+  ButtonGroup,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Fab,
+  Grid,
+  TextField,
+} from "@mui/material";
 import Elementos from "./Elementos";
 import AddElementoInteracao from "@/components/Mapa/AddElementoInteracao";
 import { PlaylistPlay, LocationOn } from "@mui/icons-material";
 import ReactDOMServer from "react-dom/server";
+import useCaixaDialogo from "../CaixaDialogo/useCaixaDialogo";
+import ImageResolver from "@/components/ImageUrlResolver";
+import subjx from "subjx";
+import { elementos } from "@/main/constants/elementos";
 
 export const MODO_VISAO = {
   openstreetmap: "OpenStreetMap",
@@ -33,6 +46,8 @@ export const MODO_VISAO = {
 export default function Mapa(props: { altura: number }) {
   const [isMounted, setIsMounted] = React.useState(false);
   const [map, setMap] = useState<Map>(null);
+  const [subjxElements, setSubjxElements] = useState(null);
+  const caixaDialogoRef = useRef<String>(null);
   const mapaContext = useMapaContext();
   const dispatch = useMapaDispatch();
   const position = useMemo(
@@ -64,6 +79,71 @@ export default function Mapa(props: { altura: number }) {
     else dispatch({ type: "selecionarElementoFoco", elemento: elemento });
   };
 
+  const urlImageRef = useRef<string>();
+  const { openModalConfirm, closeModalConfirm, onConfirm } = useCaixaDialogo();
+
+  const handleDispatchInserirImageOverlay = React.useCallback(() => {
+    dispatch({
+      type: "adicionarImageOverlay",
+      tipo: "ImageOverlay",
+      valor: ImageResolver.UrlResolver(urlImageRef.current),
+    });
+    closeModalConfirm();
+    caixaDialogoRef.current = urlImageRef.current = null;
+  }, [dispatch, closeModalConfirm]);
+
+  const handleInserirImagem = React.useCallback(() => {
+    openModalConfirm({
+      title: "",
+      onClose: () => {
+        caixaDialogoRef.current = null;
+      },
+      message: "",
+      onConfirm,
+      cancelarNotVisible: true,
+      confirmarNotVisible: true,
+      componentMessage: (
+        <div>
+          <DialogTitle>
+            Por favor, insira a url da imagem do seu mapa!
+          </DialogTitle>
+          <DialogContent dividers>
+            <TextField
+              id="outlined-controlled"
+              label="Controlled"
+              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                urlImageRef.current = event.target.value;
+              }}
+            />
+            {urlImageRef.current &&
+            urlImageRef.current !== "" &&
+            ImageResolver.isValidUrl(urlImageRef.current) ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                alt="MapaProprio"
+                src={ImageResolver.UrlResolver(urlImageRef.current)}
+                width={1250}
+                height={1250}
+              />
+            ) : (
+              <div> Copie um link válido</div>
+            )}
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleInserirImagem}>Atualizar</Button>
+            {urlImageRef.current &&
+              urlImageRef.current !== "" &&
+              ImageResolver.isValidUrl(urlImageRef.current) && (
+                <Button onClick={handleDispatchInserirImageOverlay}>
+                  Salvar
+                </Button>
+              )}
+          </DialogActions>
+        </div>
+      ),
+    });
+  }, [openModalConfirm, onConfirm, handleDispatchInserirImageOverlay]);
+
   useEffect(() => {
     if (
       mapaContext.center &&
@@ -72,8 +152,46 @@ export default function Mapa(props: { altura: number }) {
       mapaContext.center?.lng !== map.getCenter().lng
     )
       map.setView(mapaContext.center, mapaContext.zoom);
+    if (
+      mapaContext.caixaDialogo &&
+      mapaContext.caixaDialogo !== caixaDialogoRef.current &&
+      mapaContext.caixaDialogo !== ""
+    ) {
+      caixaDialogoRef.current = mapaContext.caixaDialogo;
+      dispatch({
+        type: "trocaMapaContext",
+        mapContext: {
+          ...mapaContext,
+          caixaDialogo: "",
+          elementoInteracao: elementos.Hand,
+        },
+      });
+      handleInserirImagem();
+    }
+
     console.log("contexto do mapa", mapaContext);
   });
+
+  useEffect(() => {
+    const elementSubjx: any = subjx(".image-overlay-subjx").drag({}, null);
+    if (elementSubjx) {
+      elementSubjx.on("rotateStart", () => map.dragging.disable());
+      elementSubjx.on("dragStart", () => map.dragging.disable());
+      elementSubjx.on("resizeStart", () => map.dragging.disable());
+      elementSubjx.on("rotateEnd", (e) => {
+        console.log(e);
+        map.dragging.enable();
+      });
+      elementSubjx.on("dragEnd", () => map.dragging.enable());
+      elementSubjx.on("resizeEnd", () => map.dragging.enable());
+    }
+    setSubjxElements(elementSubjx);
+  }, [mapaContext.conteudo.ImageOverlay, map]);
+
+  useEffect(() => {
+    if (subjxElements) subjxElements.fitControlsToSize();
+  }, [mapaContext.center, subjxElements]);
+
   useEffect(() => {
     if (map) {
       console.log("map", map);
@@ -118,7 +236,13 @@ export default function Mapa(props: { altura: number }) {
               />
             )}
             {mapaContext.modoVisao === MODO_VISAO.mapaProprio && (
-              <ImageOverlay bounds={bounds} url="/new-map.jpg" />
+              <ImageOverlay
+                bounds={bounds}
+                url={
+                  mapaContext.urlMapaProprio ??
+                  "https://onedrive.live.com/embed?resid=9337381634E30E6%211127330&authkey=%21ADDU_4ofkVlIREA&width=4096&height=2896"
+                }
+              />
             )}
             {mapaContext.conteudo &&
               mapaContext.conteudo.Marker &&
@@ -424,6 +548,23 @@ export default function Mapa(props: { altura: number }) {
                     </Rectangle>
                   ) : null;
                 })}
+            {mapaContext.conteudo &&
+              mapaContext.conteudo.ImageOverlay &&
+              mapaContext.conteudo.ImageOverlay.length > 0 &&
+              mapaContext.conteudo.ImageOverlay.filter(
+                (x) =>
+                  new Date(x.cenaInicio) <= new Date(mapaContext.tempo) &&
+                  new Date(x.cenaFim) >= new Date(mapaContext.tempo)
+              ).map((x, i) => {
+                return x?.bounds ? (
+                  <ImageOverlay
+                    {...x}
+                    className={x.draggable ? "image-overlay-subjx" : ""}
+                    url={x.urlImagem}
+                    key={`ImageOverlay#${i}`}
+                  />
+                ) : null;
+              })}
             <CustomControlLeaflet
               position={POSITION_CLASSES_CUSTOM_CONTROL.bottomright}
             >

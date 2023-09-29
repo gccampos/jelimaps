@@ -1,11 +1,13 @@
+"use client";
 //import * as L from 'leaflet'
-import { useEffect } from "react";
 import dynamic from "next/dynamic";
 import "leaflet/dist/leaflet.css";
-import React from "react";
-//import DefaultTemplate from "@/main/template/DefaultTemplate";
-import { MapaProvider } from "@/components/Mapa/context/MapaContext";
-// import ModoVisaoDialog from "@/components/Mapa/ModoVisaoDialog/ModoVisaoDialog";
+import React, { useEffect } from "react";
+import {
+  MapaProvider,
+  useMapaContext,
+} from "@/components/Mapa/context/MapaContext";
+import "subjx/dist/style/subjx.css";
 
 const ModoVisaoDialog = dynamic(
   () => import("@/components/Mapa/ModoVisaoDialog/ModoVisaoDialog"),
@@ -16,18 +18,16 @@ const Studio = dynamic(() => import("@/components/Studio"), {
 });
 
 export default function Mapa() {
+  const mapaContext = useMapaContext();
   useEffect(() => {
-    console.log("innerHeight", window.innerHeight);
-    console.log("outerHeight", window.outerHeight);
+    console.log("duvidando de que", mapaContext);
   }, []);
   return (
-    // <DefaultTemplate>
     <main style={{ height: "100%" }}>
       <MapaProvider>
         <ModoVisaoDialog />
         <Studio />
       </MapaProvider>
     </main>
-    // </DefaultTemplate>
   );
 }

@@ -13,7 +13,11 @@ export function mapaReducer(
   );
   switch (action.type) {
     case "modoVisao": {
-      return { ...oldMapaContext, modoVisao: action.tipo };
+      return {
+        ...oldMapaContext,
+        modoVisao: action.tipo,
+        urlMapaProprio: action.valor ?? "",
+      };
     }
     case "alteraPropriedadesMapa": {
       return {
@@ -64,6 +68,9 @@ export function mapaReducer(
     }
     case "addCircle": {
       return MapaFunctionHelpers.addElementoCirculo(oldMapaContext, action);
+    }
+    case "adicionarImageOverlay": {
+      return MapaFunctionHelpers.addElementoImagem(oldMapaContext, action);
     }
     // case "addRectangle": {
     //   return MapaFunctionHelpers.addElementoQuadrilatero(
@@ -180,6 +187,12 @@ export function mapaReducer(
       ctent.bounds = oldMapaContext.bounds;
       return {
         ...oldMapaContext,
+      };
+    }
+    case "addImageOverlay": {
+      return {
+        ...oldMapaContext,
+        caixaDialogo: "imageOverlay",
       };
     }
     default: {

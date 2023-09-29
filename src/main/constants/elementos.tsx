@@ -3,6 +3,7 @@ import {
   PanToolAlt,
   ShowChart,
   RadioButtonUnchecked,
+  AddPhotoAlternate,
 } from "@mui/icons-material";
 import polygonIcon from "public/assets/polygonIcon.svg";
 import SvgIcon, { SvgIconTypeMap } from "@mui/material/SvgIcon";
@@ -54,6 +55,13 @@ export const elementos: { [key: string]: elementoProto } = {
     icon: <RadioButtonUnchecked />,
     iconComponent: RadioButtonUnchecked,
   } as elementoProto,
+  ImageOverlay: {
+    nome: "ImageOverlay",
+    label: "Insira uma imagem no mapa",
+    icon: <AddPhotoAlternate />,
+    iconComponent: AddPhotoAlternate,
+  } as elementoProto,
+
   // Rectangle: {
   //   nome: "Rectangle",
   //   label: "Insira um Retângulo no mapa",
