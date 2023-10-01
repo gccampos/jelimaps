@@ -1,10 +1,11 @@
 import React, { useEffect } from "react";
 import "leaflet-imageoverlay-rotated";
-import L from "leaflet";
+import L, { Bounds, LatLng } from "leaflet";
 import { Marker, useMap } from "react-leaflet";
 import { elementoComBounds } from "./context/mapaContextTypes";
-import "leaflet-imageoverlay-rotated";
 import { useMapaDispatch } from "./context/MapaContext";
+import "leaflet.path.drag";
+import "leaflet-imageoverlay-rotated";
 
 type Props = {
   x: elementoComBounds;
@@ -28,6 +29,31 @@ const ImageOverlayRotated = (props: Props) => {
       valorPropriedade,
     });
   };
+  const repositionCenter = (valorPropriedade: any) => {
+    const diffLat =
+      valorPropriedade.oldLatLng.lat - valorPropriedade.latlng.lat;
+    const diffLng =
+      valorPropriedade.oldLatLng.lng - valorPropriedade.latlng.lng;
+    const diffPositions = {
+      positionTL: new LatLng(
+        (x.positionTL.lat ?? x.positionTL[0]) - diffLat / 10,
+        (x.positionTL.lng ?? x.positionTL[1]) - diffLng / 10
+      ),
+      positionTR: new LatLng(
+        (x.positionTR.lat ?? x.positionTR[0]) - diffLat / 10,
+        (x.positionTR.lng ?? x.positionTR[1]) - diffLng / 10
+      ),
+      positionBL: new LatLng(
+        (x.positionBL.lat ?? x.positionBL[0]) - diffLat / 10,
+        (x.positionBL.lng ?? x.positionBL[1]) - diffLng / 10
+      ),
+    };
+    dispatch({
+      type: "movendoImagem",
+      id: x.id,
+      valor: diffPositions,
+    });
+  };
 
   useEffect(() => {
     if ((L.imageOverlay as any).rotated) {
@@ -38,10 +64,12 @@ const ImageOverlayRotated = (props: Props) => {
         x.positionBL,
         {
           interactive: !!cliqueElementoNoMapa,
+          bubblingMouseEvents: false,
           ...x,
         }
       );
       map.addLayer(im);
+      // else map.addLayer(im);
       if (cliqueElementoNoMapa)
         im.on("click", (e) => cliqueElementoNoMapa(x, e));
       return () => {
@@ -72,6 +100,34 @@ const ImageOverlayRotated = (props: Props) => {
         draggable={x.draggable}
         eventHandlers={{
           move: (e: any) => reposition("positionBL", e.latlng),
+        }}
+      />
+      <Marker
+        position={[
+          new Bounds(
+            [
+              x.positionTL.lng ?? x.positionTL[1],
+              x.positionTL.lat ?? x.positionTL[0],
+            ],
+            [
+              x.positionTR.lng ?? x.positionTR[1],
+              x.positionBL.lat ?? x.positionBL[0],
+            ]
+          ).getCenter().y,
+          new Bounds(
+            [
+              x.positionTL.lng ?? x.positionTL[1],
+              x.positionTL.lat ?? x.positionTL[0],
+            ],
+            [
+              x.positionTR.lng ?? x.positionTR[1],
+              x.positionBL.lat ?? x.positionBL[0],
+            ]
+          ).getCenter().x,
+        ]}
+        draggable={x.draggable}
+        eventHandlers={{
+          move: (e: any) => repositionCenter(e),
         }}
       />
     </>

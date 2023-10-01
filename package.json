@@ -24,6 +24,7 @@
     "formik": "^2.4.3",
     "leaflet": "^1.9.3",
     "leaflet-imageoverlay-rotated": "^0.2.1",
+    "leaflet.path.drag": "^0.0.6",
     "moment": "^2.29.4",
     "next": "13.3.2",
     "nextjs-google-analytics": "^2.3.3",

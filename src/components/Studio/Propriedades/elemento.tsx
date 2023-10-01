@@ -10,6 +10,8 @@ import {
   TextField,
   FormControlLabel,
   Switch,
+  Slider,
+  Typography,
 } from "@mui/material";
 import {
   useMapaContext,
@@ -20,6 +22,7 @@ import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import moment from "moment";
 import MapaFunctionHelpers from "@/components/Mapa/context/MapaFunctionsHelpers";
+import { Button } from "react-bootstrap";
 
 const WrapperStyled = styled("div")``;
 
@@ -181,6 +184,45 @@ export default function Elemento() {
                               formik.touched.cenaFim && formik.errors.cenaFim
                             }
                           />
+                          {(formik.values as any).opacity ? (
+                            <>
+                              <Typography>Opacidade</Typography>
+                              <Slider
+                                value={(formik.values as any).opacity}
+                                name=""
+                                min={0}
+                                step={0.1}
+                                max={1}
+                                onChange={(e, newV) =>
+                                  dispatch({
+                                    type: "editarPropriedade",
+                                    tipo: x.dataRef,
+                                    id: x.id,
+                                    nomePropriedade: "opacity",
+                                    valorPropriedade: newV,
+                                  })
+                                }
+                                valueLabelDisplay="auto"
+                                aria-labelledby="non-linear-slider"
+                              />
+                            </>
+                          ) : (
+                            <Button
+                              onClick={() =>
+                                dispatch({
+                                  type: "editarPropriedade",
+                                  tipo: x.dataRef,
+                                  id: x.id,
+                                  nomePropriedade: "opacity",
+                                  valorPropriedade: 0.9,
+                                })
+                              }
+                            >
+                              {(formik.values as any).opacity === 0
+                                ? "Exibir elemento"
+                                : "Ativar Opacidade"}
+                            </Button>
+                          )}
                         </Form>
                       );
                     }}

@@ -398,7 +398,7 @@ const editarPropriedadeElemento = (
   tipoElemento: string,
   id: NIL,
   nomePropriedade: string,
-  novoValor: string
+  novoValor: any
 ): mapaContextSchema => {
   console.log(
     `Alterando o ${nomePropriedade} de um ${tipoElemento}(${id}) para o valor: ${novoValor}`
@@ -485,6 +485,21 @@ function getRandomColor() {
   return color;
 }
 
+const movendoImagem = (
+  oldMapaContext: mapaContextSchema,
+  actionContextChange: actionContextChange
+): mapaContextSchema => {
+  const elemento = oldMapaContext.conteudo.ImageOverlay.find(
+    (x) => x.id === actionContextChange.id
+  );
+  elemento.positionTL = actionContextChange.valor.positionTL;
+  elemento.positionTR = actionContextChange.valor.positionTR;
+  elemento.positionBL = actionContextChange.valor.positionBL;
+  return {
+    ...oldMapaContext,
+  };
+};
+
 const MapaFunctionHelpers = {
   changeElementoInteracao,
   changeElementoFoco,
@@ -503,5 +518,6 @@ const MapaFunctionHelpers = {
   addAlteracaoElemento,
   novaCena,
   retornaElementoOuAlteracaoPorId,
+  movendoImagem,
 };
 export default MapaFunctionHelpers;

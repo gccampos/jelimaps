@@ -107,6 +107,9 @@ export function mapaReducer(
         ...(action.mapContext ?? oldMapaContext),
       };
     }
+    case "movendoImagem": {
+      return MapaFunctionHelpers.movendoImagem(oldMapaContext, action);
+    }
     case "atualizaTempo": {
       const novoTempo = action.time ?? oldMapaContext.tempo;
       const cenaNova = oldMapaContext.conteudo.cenas.find(
