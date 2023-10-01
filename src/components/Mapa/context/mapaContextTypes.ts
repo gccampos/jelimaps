@@ -18,6 +18,7 @@ export type tipoGenericoElementoTimeline = periodoInicioFim & {
 export type elementoPadrao = tipoGenericoElementoTimeline & {
   texto?: string;
   color?: string;
+  opacity?: number;
   alteracoes?: alteracaoElemento[];
 };
 type periodoInicioFim = {
@@ -42,6 +43,9 @@ export type elementoComPositions = {
 export type elementoComBounds = {
   bounds: LatLngBoundsExpression;
   urlImagem?: string;
+  positionTL?: LatLng;
+  positionBL?: LatLng;
+  positionTR?: LatLng;
 } & elementoPadrao;
 export type mapaContextSchema = periodoInicioFim &
   telaMapa & {

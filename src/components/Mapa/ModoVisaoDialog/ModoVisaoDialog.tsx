@@ -26,7 +26,7 @@ export default function ModoVisaoDialog() {
       type: "modoVisao",
       tipo: MODO_VISAO.openstreetmap,
     });
-    closeModalConfirm();
+    closeModalConfirm(null, null);
   }, [closeModalConfirm, dispatch]);
 
   const handleMapaProprioComImagem = useCallback(() => {
@@ -35,7 +35,7 @@ export default function ModoVisaoDialog() {
       tipo: MODO_VISAO.mapaProprio,
       valor: ImageResolver.UrlResolver(nameRef.current),
     });
-    closeModalConfirm();
+    closeModalConfirm(null, null);
   }, [closeModalConfirm, dispatch]);
 
   const handleMapaProprio = useCallback(() => {
@@ -45,6 +45,7 @@ export default function ModoVisaoDialog() {
       onConfirm,
       cancelarNotVisible: true,
       confirmarNotVisible: true,
+      fecharApenasComEvento: true,
       componentMessage: (
         <div>
           <DialogTitle>
@@ -93,6 +94,7 @@ export default function ModoVisaoDialog() {
         onConfirm,
         cancelarNotVisible: true,
         confirmarNotVisible: true,
+        fecharApenasComEvento: true,
         componentMessage: (
           <div>
             <DialogTitle>

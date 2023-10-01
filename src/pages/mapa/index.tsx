@@ -7,7 +7,6 @@ import {
   MapaProvider,
   useMapaContext,
 } from "@/components/Mapa/context/MapaContext";
-import "subjx/dist/style/subjx.css";
 
 const ModoVisaoDialog = dynamic(
   () => import("@/components/Mapa/ModoVisaoDialog/ModoVisaoDialog"),

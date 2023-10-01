@@ -8,7 +8,6 @@ function UrlResolver(url: string): string {
       }`;
       break;
   }
-  console.log("resolveu URL", url.match(regeXGoogleDrive));
   return url;
 }
 const isValidUrl = (url: string) => {

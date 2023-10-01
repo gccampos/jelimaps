@@ -4,7 +4,6 @@ import { useMapEvents } from "react-leaflet";
 import { LeafletEventHandlerFnMap } from "leaflet";
 
 function isControlLeafLetContainer(node) {
-  console.log(node);
   const resutl =
     ((!!node.classList &&
       Array.from(node.classList).some((x) => x === "leaflet-container")) ||
@@ -37,8 +36,13 @@ function AddElementoInteracao() {
       ? interagirMapa(mapaContext.elementoInteracao.nome)
       : {
           click(e) {
-            console.log(e);
-            if (isControlLeafLetContainer(e.originalEvent.target))
+            console.log("AddElementoInteracao", e);
+            if (
+              (mapaContext.elementoFoco !== null ||
+                mapaContext.elementosFoco !== null) &&
+              isControlLeafLetContainer(e.originalEvent.target) &&
+              !(e.originalEvent.target as any).className.includes("sjx-hdl")
+            )
               dispatch({
                 type: `selecionarElementoFoco`,
               });

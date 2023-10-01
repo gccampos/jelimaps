@@ -265,6 +265,12 @@ const addElementoImagem = (
   const { tipo } = actionContextChange;
   const newImageOverlay = {
     bounds: oldMapaContext.bounds,
+    positionTL: [
+      oldMapaContext.bounds["_northEast"]["lat"],
+      oldMapaContext.bounds["_southWest"]["lng"],
+    ],
+    positionBL: oldMapaContext.bounds["_southWest"],
+    positionTR: oldMapaContext.bounds["_northEast"],
     dataRef: tipo,
     nome: `imagem#${oldMapaContext.conteudo?.ImageOverlay?.length + 1 || 1}`,
     urlImagem: actionContextChange.valor,

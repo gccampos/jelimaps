@@ -33,7 +33,9 @@ export default function CaixaDialogoProvider() {
         </DialogContent>
         <DialogActions>
           {!cancelarNotVisible && (
-            <Button onClick={closeModalConfirm}>Cancelar</Button>
+            <Button onClick={() => closeModalConfirm(null, null)}>
+              Cancelar
+            </Button>
           )}
           {!confirmarNotVisible && (
             <Button onClick={onConfirm}>Confirmar</Button>

@@ -35,8 +35,8 @@ import { PlaylistPlay, LocationOn } from "@mui/icons-material";
 import ReactDOMServer from "react-dom/server";
 import useCaixaDialogo from "../CaixaDialogo/useCaixaDialogo";
 import ImageResolver from "@/components/ImageUrlResolver";
-import subjx from "subjx";
 import { elementos } from "@/main/constants/elementos";
+import ImageOverlayRotated from "../Mapa/ImageOverlayRotated";
 
 export const MODO_VISAO = {
   openstreetmap: "OpenStreetMap",
@@ -46,7 +46,6 @@ export const MODO_VISAO = {
 export default function Mapa(props: { altura: number }) {
   const [isMounted, setIsMounted] = React.useState(false);
   const [map, setMap] = useState<Map>(null);
-  const [subjxElements, setSubjxElements] = useState(null);
   const caixaDialogoRef = useRef<String>(null);
   const mapaContext = useMapaContext();
   const dispatch = useMapaDispatch();
@@ -88,14 +87,14 @@ export default function Mapa(props: { altura: number }) {
       tipo: "ImageOverlay",
       valor: ImageResolver.UrlResolver(urlImageRef.current),
     });
-    closeModalConfirm();
+    closeModalConfirm(null, null);
     caixaDialogoRef.current = urlImageRef.current = null;
   }, [dispatch, closeModalConfirm]);
 
   const handleInserirImagem = React.useCallback(() => {
     openModalConfirm({
       title: "",
-      onClose: () => {
+      onClosed: () => {
         caixaDialogoRef.current = null;
       },
       message: "",
@@ -171,26 +170,6 @@ export default function Mapa(props: { altura: number }) {
 
     console.log("contexto do mapa", mapaContext);
   });
-
-  useEffect(() => {
-    const elementSubjx: any = subjx(".image-overlay-subjx").drag({}, null);
-    if (elementSubjx) {
-      elementSubjx.on("rotateStart", () => map.dragging.disable());
-      elementSubjx.on("dragStart", () => map.dragging.disable());
-      elementSubjx.on("resizeStart", () => map.dragging.disable());
-      elementSubjx.on("rotateEnd", (e) => {
-        console.log(e);
-        map.dragging.enable();
-      });
-      elementSubjx.on("dragEnd", () => map.dragging.enable());
-      elementSubjx.on("resizeEnd", () => map.dragging.enable());
-    }
-    setSubjxElements(elementSubjx);
-  }, [mapaContext.conteudo.ImageOverlay, map]);
-
-  useEffect(() => {
-    if (subjxElements) subjxElements.fitControlsToSize();
-  }, [mapaContext.center, subjxElements]);
 
   useEffect(() => {
     if (map) {
@@ -557,11 +536,10 @@ export default function Mapa(props: { altura: number }) {
                   new Date(x.cenaFim) >= new Date(mapaContext.tempo)
               ).map((x, i) => {
                 return x?.bounds ? (
-                  <ImageOverlay
-                    {...x}
-                    className={x.draggable ? "image-overlay-subjx" : ""}
-                    url={x.urlImagem}
+                  <ImageOverlayRotated
                     key={`ImageOverlay#${i}`}
+                    x={x}
+                    cliqueElementoNoMapa={cliqueElementoNoMapa}
                   />
                 ) : null;
               })}
