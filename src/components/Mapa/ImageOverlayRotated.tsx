@@ -17,6 +17,23 @@ const ImageOverlayRotated = (props: Props) => {
   const map = useMap();
   const dispatch = useMapaDispatch();
 
+  const centerUpdated = new LatLng(
+    new Bounds(
+      [
+        x.positionTR.lng ?? x.positionTR[1],
+        x.positionTR.lat ?? x.positionTR[0],
+      ],
+      [x.positionBL.lng ?? x.positionBL[1], x.positionBL.lat ?? x.positionBL[0]]
+    ).getCenter().y,
+    new Bounds(
+      [
+        x.positionTR.lng ?? x.positionTR[1],
+        x.positionTR.lat ?? x.positionTR[0],
+      ],
+      [x.positionBL.lng ?? x.positionBL[1], x.positionBL.lat ?? x.positionBL[0]]
+    ).getCenter().x
+  );
+
   const reposition = (
     nomePropriedade: "positionTL" | "positionTR" | "positionBL",
     valorPropriedade: any
@@ -31,21 +48,23 @@ const ImageOverlayRotated = (props: Props) => {
   };
   const repositionCenter = (valorPropriedade: any) => {
     const diffLat =
-      valorPropriedade.oldLatLng.lat - valorPropriedade.latlng.lat;
+      (centerUpdated ?? valorPropriedade.oldLatLng).lat -
+      valorPropriedade.latlng.lat;
     const diffLng =
-      valorPropriedade.oldLatLng.lng - valorPropriedade.latlng.lng;
+      (centerUpdated ?? valorPropriedade.oldLatLng).lng -
+      valorPropriedade.latlng.lng;
     const diffPositions = {
       positionTL: new LatLng(
-        (x.positionTL.lat ?? x.positionTL[0]) - diffLat / 10,
-        (x.positionTL.lng ?? x.positionTL[1]) - diffLng / 10
+        (x.positionTL.lat ?? x.positionTL[0]) - diffLat,
+        (x.positionTL.lng ?? x.positionTL[1]) - diffLng
       ),
       positionTR: new LatLng(
-        (x.positionTR.lat ?? x.positionTR[0]) - diffLat / 10,
-        (x.positionTR.lng ?? x.positionTR[1]) - diffLng / 10
+        (x.positionTR.lat ?? x.positionTR[0]) - diffLat,
+        (x.positionTR.lng ?? x.positionTR[1]) - diffLng
       ),
       positionBL: new LatLng(
-        (x.positionBL.lat ?? x.positionBL[0]) - diffLat / 10,
-        (x.positionBL.lng ?? x.positionBL[1]) - diffLng / 10
+        (x.positionBL.lat ?? x.positionBL[0]) - diffLat,
+        (x.positionBL.lng ?? x.positionBL[1]) - diffLng
       ),
     };
     dispatch({
@@ -103,28 +122,7 @@ const ImageOverlayRotated = (props: Props) => {
         }}
       />
       <Marker
-        position={[
-          new Bounds(
-            [
-              x.positionTL.lng ?? x.positionTL[1],
-              x.positionTL.lat ?? x.positionTL[0],
-            ],
-            [
-              x.positionTR.lng ?? x.positionTR[1],
-              x.positionBL.lat ?? x.positionBL[0],
-            ]
-          ).getCenter().y,
-          new Bounds(
-            [
-              x.positionTL.lng ?? x.positionTL[1],
-              x.positionTL.lat ?? x.positionTL[0],
-            ],
-            [
-              x.positionTR.lng ?? x.positionTR[1],
-              x.positionBL.lat ?? x.positionBL[0],
-            ]
-          ).getCenter().x,
-        ]}
+        position={centerUpdated}
         draggable={x.draggable}
         eventHandlers={{
           move: (e: any) => repositionCenter(e),

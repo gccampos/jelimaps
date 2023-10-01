@@ -184,6 +184,26 @@ export default function Elemento() {
                               formik.touched.cenaFim && formik.errors.cenaFim
                             }
                           />
+                          {(formik.values as any).radius && (
+                            <TextField
+                              fullWidth
+                              id="radius"
+                              name="radius"
+                              label="Raio do Circulo"
+                              type="number"
+                              value={(formik.values as any).radius}
+                              onChange={formik.handleChange}
+                              onBlur={formik.handleBlur}
+                              error={
+                                (formik.touched as any).radius &&
+                                Boolean((formik.errors as any).radius)
+                              }
+                              helperText={
+                                (formik.touched as any).radius &&
+                                (formik.errors as any).radius
+                              }
+                            />
+                          )}
                           {(formik.values as any).opacity ? (
                             <>
                               <Typography>Opacidade</Typography>
