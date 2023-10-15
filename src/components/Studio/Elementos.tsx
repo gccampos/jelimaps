@@ -15,11 +15,13 @@ import {
 import { elementos } from "@/main/constants/elementos";
 import useWindowDimensions from "./useWindowDimensions";
 import styled from "@emotion/styled";
+import { TerraDraw } from "terra-draw";
 
-export function ElementosLateral(props: { altura: number }) {
+export function ElementosLateral(props: { altura: number; draw: TerraDraw }) {
   const mapaContext = useMapaContext();
   const dispatch = useMapaDispatch();
   const handleClick = (elemento) => {
+    props.draw.setMode(elemento.nome);
     mapaContext?.elementoInteracao?.nome == elemento.nome
       ? dispatch({ type: "selecionarElementoInteracao", arg: elementos.Hand })
       : dispatch({ type: "selecionarElementoInteracao", arg: elemento });

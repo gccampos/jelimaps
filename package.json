@@ -39,6 +39,7 @@
     "react-sortablejs": "^6.1.4",
     "sortablejs": "^1.15.0",
     "tailwindcss": "3.3.2",
+    "terra-draw": "^0.0.1-alpha.48",
     "uuid": "^9.0.0",
     "vis": "^4.21.0-EOL",
     "vis-timeline": "^7.7.2",

@@ -54,20 +54,12 @@ export function mapaReducer(
         action
       );
     }
-    case "desativarElementos": {
-      return MapaFunctionHelpers.changeElementoInteracao(oldMapaContext, null);
+    case "addElemento": {
+      console.log("add Elemento", action);
+      return MapaFunctionHelpers.addElementoPadrao(oldMapaContext, action);
     }
-    case "addMarker": {
-      return MapaFunctionHelpers.addElementoMarker(oldMapaContext, action);
-    }
-    case "addPolyline": {
-      return MapaFunctionHelpers.addElementoPolyline(oldMapaContext, action);
-    }
-    case "addPolygon": {
-      return MapaFunctionHelpers.addElementoPolygon(oldMapaContext, action);
-    }
-    case "addCircle": {
-      return MapaFunctionHelpers.addElementoCirculo(oldMapaContext, action);
+    case "alteraElemento": {
+      return MapaFunctionHelpers.alteraElemento(oldMapaContext, action);
     }
     case "adicionarImageOverlay": {
       return MapaFunctionHelpers.addElementoImagem(oldMapaContext, action);
@@ -124,7 +116,10 @@ export function mapaReducer(
         oldMapaContext.zoom = cenaNova.zoom;
         oldMapaContext.bounds = cenaNova.bounds;
       }
-      return { ...oldMapaContext, tempo: novoTempo };
+      return {
+        ...oldMapaContext,
+        tempo: moment(novoTempo).format("yyyy-MM-DDTHH:mm:ss"),
+      };
     }
     case "alteraPropriedadeGeral": {
       if (action.tipo.includes("cena")) {

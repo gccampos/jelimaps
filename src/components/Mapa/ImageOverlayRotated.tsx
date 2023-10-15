@@ -3,7 +3,7 @@ import "leaflet-imageoverlay-rotated";
 import L, { Bounds, LatLng } from "leaflet";
 import { Marker, useMap } from "react-leaflet";
 import { elementoComBounds } from "./context/mapaContextTypes";
-import { useMapaDispatch } from "./context/MapaContext";
+import { useMapaContext, useMapaDispatch } from "./context/MapaContext";
 import "leaflet.path.drag";
 import "leaflet-imageoverlay-rotated";
 
@@ -16,21 +16,16 @@ const ImageOverlayRotated = (props: Props) => {
   const { x, cliqueElementoNoMapa } = props;
   const map = useMap();
   const dispatch = useMapaDispatch();
-
+  const mapaContext = useMapaContext();
+  console.log("imageOvecrlaru Rotade", x);
   const centerUpdated = new LatLng(
     new Bounds(
-      [
-        x.positionTR.lng ?? x.positionTR[1],
-        x.positionTR.lat ?? x.positionTR[0],
-      ],
-      [x.positionBL.lng ?? x.positionBL[1], x.positionBL.lat ?? x.positionBL[0]]
+      [x.positionTR[1], x.positionTR[0]],
+      [x.positionBL[1], x.positionBL[0]]
     ).getCenter().y,
     new Bounds(
-      [
-        x.positionTR.lng ?? x.positionTR[1],
-        x.positionTR.lat ?? x.positionTR[0],
-      ],
-      [x.positionBL.lng ?? x.positionBL[1], x.positionBL.lat ?? x.positionBL[0]]
+      [x.positionTR[1], x.positionTR[0]],
+      [x.positionBL[1], x.positionBL[0]]
     ).getCenter().x
   );
 
@@ -43,7 +38,7 @@ const ImageOverlayRotated = (props: Props) => {
       id: x.id,
       tipo: "ImageOverlay",
       nomePropriedade,
-      valorPropriedade,
+      valorPropriedade: [valorPropriedade.lat, valorPropriedade.lng],
     });
   };
   const repositionCenter = (valorPropriedade: any) => {
@@ -54,18 +49,9 @@ const ImageOverlayRotated = (props: Props) => {
       (centerUpdated ?? valorPropriedade.oldLatLng).lng -
       valorPropriedade.latlng.lng;
     const diffPositions = {
-      positionTL: new LatLng(
-        (x.positionTL.lat ?? x.positionTL[0]) - diffLat,
-        (x.positionTL.lng ?? x.positionTL[1]) - diffLng
-      ),
-      positionTR: new LatLng(
-        (x.positionTR.lat ?? x.positionTR[0]) - diffLat,
-        (x.positionTR.lng ?? x.positionTR[1]) - diffLng
-      ),
-      positionBL: new LatLng(
-        (x.positionBL.lat ?? x.positionBL[0]) - diffLat,
-        (x.positionBL.lng ?? x.positionBL[1]) - diffLng
-      ),
+      positionTL: [x.positionTL[0] - diffLat, x.positionTL[1] - diffLng],
+      positionTR: [x.positionTR[0] - diffLat, x.positionTR[1] - diffLng],
+      positionBL: [x.positionBL[0] - diffLat, x.positionBL[1] - diffLng],
     };
     dispatch({
       type: "movendoImagem",
@@ -98,7 +84,11 @@ const ImageOverlayRotated = (props: Props) => {
       };
     }
   });
-  return x.draggable ? (
+  return (x.draggable &&
+    mapaContext.elementosFoco &&
+    mapaContext.elementosFoco.length > 0 &&
+    mapaContext.elementosFoco?.some((z) => z.id === x.id)) ||
+    mapaContext.elementoFoco?.id === x.id ? (
     <>
       <Marker
         position={x.positionTL}

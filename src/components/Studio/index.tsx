@@ -184,19 +184,8 @@ const Studio = () => {
           id: id,
         });
       });
-      // draw.on("finish", (ids: string) =>
-      //   dispatch({
-      //     type: "alteraElemento",
-      //     posicao: draw.getSnapshot().find((x) => ids === x.id).geometry
-      //       .coordinates as
-      //       | [number, number]
-      //       | [number, number][]
-      //       | [number, number][][],
-      //     id: ids,
-      //   })
-      // );
+
       draw.on("deselect", () => {
-        console.log("deselect");
         dispatch({
           type: "selecionarElementoFoco",
         });
@@ -204,7 +193,6 @@ const Studio = () => {
 
       draw.on("change", (e: string[], type: string) => {
         const listaEl = conteudoElementosRef.current;
-        console.log("change event ", type, e, listaEl, tempoAtualRef.current);
         if (listaEl.some((x) => e.some((z) => z === x.id))) {
           switch (type) {
             case "update":
@@ -257,58 +245,6 @@ const Studio = () => {
               }
               break;
 
-            case "delete":
-              {
-                const oldElement = listaEl.find((x) =>
-                  e.some((z) => z === x.id)
-                );
-                // if (
-                //   moment(oldElement.cenaInicio) <=
-                //     moment(tempoAtualRef.current) &&
-                //   moment(oldElement.cenaFim) >= moment(tempoAtualRef.current)
-                // )
-                conteudoElementosRef.current[
-                  conteudoElementosRef.current.findIndex(
-                    (x) => x.id === oldElement.id
-                  )
-                ].eventTimeout = setTimeout(() => {
-                  console.log("elemento é para ser removido");
-                  (draw as any)._mode.deselect &&
-                    (draw as any)._mode.deselect();
-                  draw
-                    .getSnapshot()
-                    .filter((x) =>
-                      Object.keys(x.properties).some(
-                        (z) => x.properties[z] === oldElement.id
-                      )
-                    )
-                    .forEach((x) =>
-                      console.log("draw.removeFeatures", [x.id.toString()])
-                    );
-                  // dispatch({
-                  //   type: "removeElements",
-                  //   id: oldElement.id,
-                  // });
-                }, 1);
-              }
-              break;
-
-            case "create":
-              {
-                const oldElement = listaEl.find((x) =>
-                  e.some((z) => z === x.id)
-                );
-                if (oldElement.eventTimeout) {
-                  console.log("não é para deletar");
-                  clearTimeout(oldElement.eventTimeout);
-                  conteudoElementosRef.current[
-                    conteudoElementosRef.current.findIndex(
-                      (x) => x.id === oldElement.id
-                    )
-                  ].eventTimeout = null;
-                }
-              }
-              break;
             default:
               break;
           }

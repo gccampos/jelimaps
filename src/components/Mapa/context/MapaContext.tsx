@@ -24,7 +24,10 @@ const initialMapaContexto: mapaContextSchema = {
         id: v4(),
         nome: "Primeira cena",
         dataRef: "cenas",
-        type: "background",
+        visTimelineObject: {
+          type: "background",
+        },
+        type: "FeatureCollection",
         style: "background-color: #df000024;",
       },
     ],

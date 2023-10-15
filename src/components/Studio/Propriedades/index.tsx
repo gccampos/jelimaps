@@ -36,8 +36,11 @@ interface TabPanelProps {
   index: number;
 }
 
-export default function Propriedades(props: { altura: number }) {
-  const { altura } = props;
+export default function Propriedades(props: {
+  altura: number;
+  tempoAtualRef: any;
+}) {
+  const { altura, tempoAtualRef } = props;
   const { width } = useWindowDimensions();
   const mapaContext = useMapaContext();
   const dispatch = useMapaDispatch();
@@ -55,15 +58,17 @@ export default function Propriedades(props: { altura: number }) {
   tempoAtual.current = mapaContext.tempo;
 
   const handleIntervaloAtualizaTempo = React.useCallback(() => {
+    const time = mapaContext.playStatus
+      ? moment(tempoAtual.current)
+          .add(1, "seconds")
+          .format("yyyy-MM-DDTHH:mm:ss")
+      : mapaContext.cenaInicio;
     dispatch({
       type: "atualizaTempo",
-      time: mapaContext.playStatus
-        ? moment(tempoAtual.current)
-            .add(1, "seconds")
-            .format("yyyy-MM-DDTHH:mm:ss")
-        : mapaContext.cenaInicio,
+      time,
     });
-  }, [mapaContext, dispatch, tempoAtual]);
+    tempoAtualRef.current = time;
+  }, [mapaContext, tempoAtualRef, dispatch, tempoAtual]);
 
   function TabPanel(props: TabPanelProps) {
     const { children, index, ...other } = props;
@@ -229,9 +234,12 @@ export default function Propriedades(props: { altura: number }) {
                   } else {
                     clearInterval(intervalId);
                     setIntervalId(null);
+                    tempoAtualRef.current = i
+                      ? tempoAtual.current
+                      : mapaContext.cenaInicio;
                     dispatch({
                       type: "atualizaTempo",
-                      time: i ? tempoAtual.current : mapaContext.cenaInicio,
+                      time: tempoAtualRef.current,
                     });
                   }
                 }}

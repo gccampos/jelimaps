@@ -3,13 +3,10 @@ import {
   TileLayer,
   Marker,
   ImageOverlay,
-  Polyline,
-  Polygon,
-  Circle,
   Rectangle,
   Popup,
 } from "react-leaflet";
-import { LatLngBounds, LatLng, divIcon, Map } from "leaflet";
+import L, { LatLngBounds, LatLng, divIcon, Map } from "leaflet";
 import { useEffect, useMemo, useRef, useState } from "react";
 import React from "react";
 import CustomControlLeaflet, {
@@ -30,20 +27,27 @@ import {
   TextField,
 } from "@mui/material";
 import Elementos from "./Elementos";
-import AddElementoInteracao from "@/components/Mapa/AddElementoInteracao";
 import { PlaylistPlay, LocationOn } from "@mui/icons-material";
 import ReactDOMServer from "react-dom/server";
 import useCaixaDialogo from "../CaixaDialogo/useCaixaDialogo";
 import ImageResolver from "@/components/ImageUrlResolver";
-import { elementos } from "@/main/constants/elementos";
 import ImageOverlayRotated from "../Mapa/ImageOverlayRotated";
+import { elementoPadrao, tipoElemento } from "../Mapa/context/mapaContextTypes";
+import { TerraDraw, GeoJSONStoreFeatures } from "terra-draw";
+import MapaFunctionHelpers from "../Mapa/context/MapaFunctionsHelpers";
 
 export const MODO_VISAO = {
   openstreetmap: "OpenStreetMap",
   mapaProprio: "Mapa Próprio",
 };
 
-export default function Mapa(props: { altura: number }) {
+export default function Mapa(props: {
+  altura: number;
+  draw: TerraDraw;
+  setMapa: React.Dispatch<React.SetStateAction<L.Map>>;
+  conteudoElementosRef: React.MutableRefObject<tipoElemento[]>;
+}) {
+  const { setMapa, conteudoElementosRef } = props;
   const [isMounted, setIsMounted] = React.useState(false);
   const [map, setMap] = useState<Map>(null);
   const caixaDialogoRef = useRef<String>(null);
@@ -87,9 +91,10 @@ export default function Mapa(props: { altura: number }) {
       tipo: "ImageOverlay",
       valor: ImageResolver.UrlResolver(urlImageRef.current),
     });
+    props.draw.setMode("select");
     closeModalConfirm(null, null);
     caixaDialogoRef.current = urlImageRef.current = null;
-  }, [dispatch, closeModalConfirm]);
+  }, [dispatch, closeModalConfirm, props.draw]);
 
   const handleInserirImagem = React.useCallback(() => {
     openModalConfirm({
@@ -162,12 +167,16 @@ export default function Mapa(props: { altura: number }) {
         mapContext: {
           ...mapaContext,
           caixaDialogo: "",
-          elementoInteracao: elementos.Hand,
         },
       });
       handleInserirImagem();
     }
 
+    // setConteudoElementos(
+    //   MapaFunctionHelpers.retornaListaElementosConteudo(mapaContext)
+    // );
+    conteudoElementosRef.current =
+      MapaFunctionHelpers.retornaListaElementosConteudoCenaAtual(mapaContext);
     console.log("contexto do mapa", mapaContext);
   });
 
@@ -178,26 +187,87 @@ export default function Mapa(props: { altura: number }) {
       map.on("moveend", () => {
         dispatch({ type: "alteraPropriedadesMapa", map: map });
       });
+      setMapa(map);
     }
-  }, [map, dispatch]);
+  }, [map, dispatch, setMapa]);
 
-  const verificaElementoFocadoPorId = (id) => {
-    return (
-      mapaContext?.elementosFoco
-        ?.concat([mapaContext?.elementoFoco])
-        .filter((x) => x) ?? [mapaContext?.elementoFoco]
-    ).some((x) => x?.id === id);
-  };
+  // const verificaElementoFocadoPorId = (id) => {
+  //   return (
+  //     mapaContext?.elementosFoco
+  //       ?.concat([mapaContext?.elementoFoco])
+  //       .filter((x) => x) ?? [mapaContext?.elementoFoco]
+  //   ).some((x) => x?.id === id);
+  // };
 
   const corItemSelecionadoFoco = (el) => {
-    return mapaContext.elementosFoco && mapaContext.elementosFoco.length > 0
-      ? mapaContext.elementosFoco?.some((x) => x.id === el.id)
-        ? "#000000"
-        : el.color ?? "#0d6efd"
-      : mapaContext.elementoFoco?.id === el.id
+    return (mapaContext.elementosFoco &&
+      mapaContext.elementosFoco.length > 0 &&
+      mapaContext.elementosFoco?.some((x) => x.id === el.id)) ||
+      mapaContext.elementoFoco?.id === el.id
       ? "#000000"
       : el.color ?? "#0d6efd";
   };
+
+  const ConteudoMapa = (p: { el: elementoPadrao }) => {
+    const el = new L.GeoJSON(p.el);
+    useEffect(() => {
+      if (p.el.draggable) {
+        console.log("Construtor DRAW ConteudoMapa");
+        const ds = p.el as GeoJSONStoreFeatures;
+        props.draw.addFeatures([ds]);
+        if (
+          mapaContext.elementoFoco?.id === p.el.id &&
+          !(props.draw as any)._mode.selected?.some((x) => x === p.el.id)
+        )
+          (props.draw as any)._mode.selected = [p.el.id];
+        //(props.draw as any)._mode.onSelect(p.el.id);
+      } else {
+        console.log("Construtor ConteudoMapa");
+        el.on("click", () =>
+          dispatch({
+            type: "selecionarElementoFoco",
+            id: p.el.id,
+          })
+        );
+        map.addLayer(el);
+      }
+      return () => {
+        // console.log("Dispose DRAW ConteudoMapa", props.draw);
+        // props.draw.removeFeatures([p.el.id.toString()]);
+        if (
+          p.el.draggable ||
+          Object.keys((props.draw as any)._store.store).some(
+            (x) => x === p.el.id
+          )
+        ) {
+          // if (mapaContext.elementoFoco?.id === p.el.id)
+          //   (props.draw as any)._mode.deselect();
+          // if (
+          //   MapaFunctionHelpers.retornaListaElementosConteudo(mapaContext).some(
+          //     (x) => x.id === p.el.id
+          //   )
+          // ) {
+          console.log("Dispose DRAW ConteudoMapa");
+          props.draw.removeFeatures([p.el.id.toString()]);
+
+          // (props.draw as any)._store &&
+          // (props.draw as any)._store.store[p.el.id.toString()]
+          //   ? props.draw.removeFeatures([p.el.id.toString()])
+          //   : dispatch({
+          //       type: "removeElements",
+          //       id: p.el.id,
+          //     });
+
+          // }
+        } else {
+          console.log("Dispose ConteudoMapa");
+          map.removeLayer(el);
+        }
+      };
+    });
+    return null;
+  };
+
   return (
     isMounted && (
       <Grid item xs>
@@ -232,191 +302,74 @@ export default function Mapa(props: { altura: number }) {
                   new Date(x.cenaFim) >= new Date(mapaContext.tempo)
               ).map((x, i, arr) => {
                 return (
-                  <Marker
-                    {...x}
-                    icon={divIcon({
-                      className: "",
-                      html: ReactDOMServer.renderToString(
-                        <LocationOn
-                          style={{
-                            color: corItemSelecionadoFoco(x),
-                            position: "absolute",
-                            top: "-150%",
-                            left: "-67%",
-                          }}
-                        />
-                      ),
-                    })}
-                    key={`marker#${i}`}
-                    eventHandlers={{
-                      click: (e) => cliqueElementoNoMapa(arr[i], e),
-                      moveend: (e) => {
-                        dispatch({
-                          type: "editarPropriedade",
-                          tipo: x.dataRef,
-                          id: x.id,
-                          nomePropriedade: "position",
-                          valorPropriedade: e.sourceTarget._latlng,
-                        });
-                      },
-                    }}
-                  >
-                    <Popup>
-                      <ButtonGroup
-                        variant="text"
-                        aria-label="text button group"
-                      >
-                        <Button
-                          onClick={() => {
-                            dispatch({
-                              type: "removeElements",
-                            });
-                          }}
+                  x.geometry?.coordinates && (
+                    <Marker
+                      {...x}
+                      position={x.geometry.coordinates as [number, number]}
+                      icon={divIcon({
+                        className: "",
+                        html: ReactDOMServer.renderToString(
+                          <LocationOn
+                            style={{
+                              color: corItemSelecionadoFoco(x),
+                              position: "absolute",
+                              top: "-150%",
+                              left: "-67%",
+                            }}
+                          />
+                        ),
+                      })}
+                      key={`marker#${i}`}
+                      eventHandlers={{
+                        click: (e) => cliqueElementoNoMapa(arr[i], e),
+                        moveend: (e) => {
+                          dispatch({
+                            type: "editarPropriedade",
+                            tipo: x.dataRef,
+                            id: x.id,
+                            nomePropriedade: "geometry",
+                            valorPropriedade: {
+                              ...x.geometry,
+                              coordinates: [
+                                e.sourceTarget._latlng.lat,
+                                e.sourceTarget._latlng.lng,
+                              ],
+                            },
+                          });
+                        },
+                      }}
+                    >
+                      <Popup>
+                        <ButtonGroup
+                          variant="text"
+                          aria-label="text button group"
                         >
-                          Excluir
-                        </Button>
-                        {/* <Button>Two</Button>
+                          <Button
+                            onClick={() => {
+                              dispatch({
+                                type: "removeElements",
+                              });
+                            }}
+                          >
+                            Excluir
+                          </Button>
+                          {/* <Button>Two</Button>
                               <Button>Three</Button> */}
-                      </ButtonGroup>
-                    </Popup>
-                  </Marker>
+                        </ButtonGroup>
+                      </Popup>
+                    </Marker>
+                  )
                 );
               })}
             {mapaContext.conteudo &&
-              mapaContext.conteudo.Polyline &&
-              mapaContext.conteudo.Polyline.length > 0 &&
-              mapaContext.conteudo.Polyline.filter(
+              mapaContext.conteudo.Point &&
+              mapaContext.conteudo.Point.length > 0 &&
+              mapaContext.conteudo.Point.filter(
                 (x) =>
                   new Date(x.cenaInicio) <= new Date(mapaContext.tempo) &&
                   new Date(x.cenaFim) >= new Date(mapaContext.tempo)
-              ).map((x, i, arr) => {
-                return (
-                  <div key={`polyline#${i}`}>
-                    <Polyline
-                      {...x}
-                      pathOptions={{
-                        color: corItemSelecionadoFoco(x),
-                      }}
-                      eventHandlers={{
-                        click: (e) => cliqueElementoNoMapa(arr[i], e),
-                      }}
-                    ></Polyline>
-                    {x.draggable &&
-                      verificaElementoFocadoPorId(x.id) &&
-                      x.positions.map((latlng, indexPosition, arrPositions) => (
-                        <Marker
-                          {...x}
-                          position={latlng}
-                          eventHandlers={{
-                            moveend: (e) => {
-                              arrPositions[indexPosition] =
-                                e.sourceTarget._latlng;
-                              dispatch({
-                                type: "editarPropriedade",
-                                tipo: x.dataRef,
-                                id: x.id,
-                                nomePropriedade: "positions",
-                                valorPropriedade: [...arrPositions],
-                              });
-                            },
-                          }}
-                          key={`polyline_marker#${indexPosition}`}
-                        >
-                          <Popup>
-                            <ButtonGroup
-                              variant="text"
-                              aria-label="text button group"
-                            >
-                              <Button
-                                onClick={() => {
-                                  arrPositions.splice(indexPosition, 1);
-                                  dispatch({
-                                    type: "editarPropriedade",
-                                    tipo: x.dataRef,
-                                    id: x.id,
-                                    nomePropriedade: "positions",
-                                    valorPropriedade: [...arrPositions],
-                                  });
-                                }}
-                              >
-                                Excluir
-                              </Button>
-                              {/* <Button>Two</Button>
-                              <Button>Three</Button> */}
-                            </ButtonGroup>
-                          </Popup>
-                        </Marker>
-                      ))}
-                  </div>
-                );
-              })}
-            {mapaContext.conteudo &&
-              mapaContext.conteudo.Polygon &&
-              mapaContext.conteudo.Polygon.length > 0 &&
-              mapaContext.conteudo.Polygon.filter(
-                (x) =>
-                  new Date(x.cenaInicio) <= new Date(mapaContext.tempo) &&
-                  new Date(x.cenaFim) >= new Date(mapaContext.tempo)
-              ).map((x, i, arr) => {
-                return x?.positions ? (
-                  <div key={`polygon#${i}`}>
-                    <Polygon
-                      {...x}
-                      pathOptions={{
-                        color: corItemSelecionadoFoco(x),
-                      }}
-                      eventHandlers={{
-                        click: (e) => cliqueElementoNoMapa(arr[i], e),
-                      }}
-                    ></Polygon>
-                    {x.draggable &&
-                      verificaElementoFocadoPorId(x.id) &&
-                      x.positions.map((latlng, indexPosition, arrPositions) => (
-                        <Marker
-                          {...x}
-                          position={latlng}
-                          eventHandlers={{
-                            moveend: (e) => {
-                              arrPositions[indexPosition] =
-                                e.sourceTarget._latlng;
-                              dispatch({
-                                type: "editarPropriedade",
-                                tipo: x.dataRef,
-                                id: x.id,
-                                nomePropriedade: "positions",
-                                valorPropriedade: [...arrPositions],
-                              });
-                            },
-                          }}
-                          key={`polygon_marker#${indexPosition}`}
-                        >
-                          <Popup>
-                            <ButtonGroup
-                              variant="text"
-                              aria-label="text button group"
-                            >
-                              <Button
-                                onClick={() => {
-                                  arrPositions.splice(indexPosition, 1);
-                                  dispatch({
-                                    type: "editarPropriedade",
-                                    tipo: x.dataRef,
-                                    id: x.id,
-                                    nomePropriedade: "positions",
-                                    valorPropriedade: [...arrPositions],
-                                  });
-                                }}
-                              >
-                                Excluir
-                              </Button>
-                              {/* <Button>Two</Button>
-                            <Button>Three</Button> */}
-                            </ButtonGroup>
-                          </Popup>
-                        </Marker>
-                      ))}
-                  </div>
-                ) : null;
+              ).map((x, i) => {
+                return <ConteudoMapa el={x} key={`Pointer#${i}`} />;
               })}
             {mapaContext.conteudo &&
               mapaContext.conteudo.Circle &&
@@ -426,83 +379,43 @@ export default function Mapa(props: { altura: number }) {
                   new Date(x.cenaInicio) <= new Date(mapaContext.tempo) &&
                   new Date(x.cenaFim) >= new Date(mapaContext.tempo)
               ).map((x, i) => {
-                return x?.center ? (
-                  <div key={`circle#${i}`}>
-                    <Circle
-                      {...x}
-                      pathOptions={{
-                        color: corItemSelecionadoFoco(x),
-                      }}
-                      eventHandlers={{
-                        click: (e) => cliqueElementoNoMapa(x, e),
-                      }}
-                    >
-                      {/* <Popup>
-                      A pretty CSS3 popup. <br /> Easily customizable.
-                    </Popup> */}
-                    </Circle>
-                    {x.draggable && verificaElementoFocadoPorId(x.id) && (
-                      <Marker
-                        {...x}
-                        position={x.center}
-                        eventHandlers={{
-                          moveend: (e) => {
-                            dispatch({
-                              type: "editarPropriedade",
-                              tipo: x.dataRef,
-                              id: x.id,
-                              nomePropriedade: "center",
-                              valorPropriedade: e.sourceTarget._latlng,
-                            });
-                          },
-                        }}
-                        key={`circle_marker#${i}`}
-                      >
-                        <Popup>
-                          <ButtonGroup
-                            variant="text"
-                            aria-label="text button group"
-                          >
-                            <Button
-                              onClick={() => {
-                                dispatch({
-                                  type: "removeElements",
-                                });
-                              }}
-                            >
-                              Excluir
-                            </Button>
-                            {/* <Button>Two</Button>
-                                <Button>Three</Button> */}
-                          </ButtonGroup>
-                        </Popup>
-                      </Marker>
-                    )}
-                  </div>
-                ) : null;
+                return <ConteudoMapa el={x} key={`Circle#${i}`} />;
               })}
             {mapaContext.conteudo &&
-              mapaContext.conteudo.Rectangle &&
-              mapaContext.conteudo.Rectangle.length > 0 &&
-              mapaContext.conteudo.Rectangle.filter(
+              mapaContext.conteudo.LineString &&
+              mapaContext.conteudo.LineString.length > 0 &&
+              mapaContext.conteudo.LineString.filter(
                 (x) =>
                   new Date(x.cenaInicio) <= new Date(mapaContext.tempo) &&
                   new Date(x.cenaFim) >= new Date(mapaContext.tempo)
               ).map((x, i) => {
-                return x?.bounds ? (
-                  <Rectangle
-                    {...x}
-                    key={`Rectangle#${i}`}
-                    eventHandlers={{
-                      click: (e) => cliqueElementoNoMapa(x, e),
-                    }}
-                  >
-                    {/* <Popup>
-                        A pretty CSS3 popup. <br /> Easily customizable.
-                      </Popup> */}
-                  </Rectangle>
-                ) : null;
+                return <ConteudoMapa el={x} key={`LineString#${i}`} />;
               })}
+
+            {mapaContext.conteudo &&
+              mapaContext.conteudo.Polygon &&
+              mapaContext.conteudo.Polygon.length > 0 &&
+              mapaContext.conteudo.Polygon.filter(
+                (x) =>
+                  new Date(x.cenaInicio) <= new Date(mapaContext.tempo) &&
+                  new Date(x.cenaFim) >= new Date(mapaContext.tempo)
+              ).map((x, i) => {
+                return <ConteudoMapa el={x} key={`polygon#${i}`} />;
+                // return x?.geometry.coordinates.positions ? (
+                //   <div key={`polygon#${i}`}>
+                //     <Polygon
+                //       {...x}
+                //       pathOptions={{
+                //         color: corItemSelecionadoFoco(x),
+                //       }}
+                //       eventHandlers={{
+                //         click: (e) => cliqueElementoNoMapa(arr[i], e),
+                //       }}
+                //     ></Polygon>
+                //   </div>
+                // ) : null;
+              })}
+
             {mapaContext.conteudo &&
               mapaContext.conteudo.cenas &&
               mapaContext.conteudo.cenas.length > 0 &&
@@ -535,13 +448,13 @@ export default function Mapa(props: { altura: number }) {
                   new Date(x.cenaInicio) <= new Date(mapaContext.tempo) &&
                   new Date(x.cenaFim) >= new Date(mapaContext.tempo)
               ).map((x, i) => {
-                return x?.bounds ? (
+                return (
                   <ImageOverlayRotated
                     key={`ImageOverlay#${i}`}
                     x={x}
                     cliqueElementoNoMapa={cliqueElementoNoMapa}
                   />
-                ) : null;
+                );
               })}
             <CustomControlLeaflet
               position={POSITION_CLASSES_CUSTOM_CONTROL.bottomright}
@@ -564,7 +477,7 @@ export default function Mapa(props: { altura: number }) {
                 />
               </Fab>
             </CustomControlLeaflet>
-            <AddElementoInteracao />
+            {/* <AddElementoInteracao /> */}
           </MapContainer>
         </div>
       </Grid>

@@ -1,19 +1,26 @@
-import { elementoProto } from "@/main/constants/elementos";
+import { elementoProto, elementos } from "@/main/constants/elementos";
 import {
-  CircleType,
-  PolygonType,
-  PolylineType,
   actionContextChange,
-  elementoComPosition,
-  elementoComPositions,
   elementoPadrao,
   mapaContextSchema,
   alteracaoElemento,
   tipoElemento,
-  RectangleType,
+  arrayRectangleType,
 } from "./mapaContextTypes";
 import { v4, NIL } from "uuid";
 import moment from "moment";
+
+const retornaListaElementosConteudoCenaAtual = (
+  oldMapaContext: mapaContextSchema
+) =>
+  Object.keys(oldMapaContext?.conteudo)
+    .map((x) => oldMapaContext?.conteudo[x])
+    .flat()
+    .filter(
+      (x) =>
+        moment(x.cenaInicio) <= moment(oldMapaContext.tempo) &&
+        moment(x.cenaFim) >= moment(oldMapaContext.tempo)
+    );
 
 const retornaListaElementosConteudo = (oldMapaContext: mapaContextSchema) =>
   Object.keys(oldMapaContext?.conteudo)
@@ -69,7 +76,13 @@ const changeElementoFoco = (
   oldMapaContext: mapaContextSchema,
   actionContextChange: actionContextChange
 ): mapaContextSchema => {
-  oldMapaContext.elementoFoco = actionContextChange.elemento;
+  oldMapaContext.elementoFoco =
+    actionContextChange.elemento ??
+    (actionContextChange.id
+      ? retornaListaElementosConteudo(oldMapaContext).find(
+          (x) => x.id === actionContextChange.id
+        )
+      : null);
   oldMapaContext.elementosFoco = null;
   return { ...oldMapaContext };
 };
@@ -130,134 +143,52 @@ const padraoElementoNovoAdicionado = (oldMapaContext: mapaContextSchema) => {
       .format("yyyy-MM-DDTHH:mm:ss"),
     order:
       retornaListaElementosConteudo(oldMapaContext).filter(
-        (x) => x.type !== "background"
+        (x) => !(x.visTimelineObject?.type === "background")
       ).length ?? 0,
-    id: v4(),
     draggable: true,
   };
 };
 
-const addElementoMarker = (
+const addElementoPadrao = (
   oldMapaContext: mapaContextSchema,
   actionContext: actionContextChange
 ): mapaContextSchema => {
-  const newMarker: elementoComPosition = {
-    position: actionContext.posicao,
+  if (
+    actionContext.id &&
+    oldMapaContext.conteudo[actionContext.tipo]?.some(
+      (x) => x.id === actionContext.id
+    )
+  )
+    return {
+      ...oldMapaContext,
+    };
+  console.log("vai tentar inserir o elemento", actionContext);
+  const newMarker: elementoPadrao = {
+    geometry: actionContext.valor?.geometry ?? {
+      coordinates: actionContext.posicao,
+      type: actionContext.tipo,
+    },
     dataRef: actionContext.tipo,
-    nome: `marker#${oldMapaContext.conteudo?.Marker?.length + 1 || 1}`,
+    nome: `${actionContext.tipo}#${
+      oldMapaContext.conteudo?.Marker?.length + 1 || 1
+    }`,
     texto: "",
+    properties: actionContext.valor?.properties,
+    id: actionContext.id ?? v4(),
+    type: "Feature",
     ...padraoElementoNovoAdicionado(oldMapaContext),
   };
 
-  oldMapaContext = changeElementoFoco(oldMapaContext, {
-    ...actionContext,
-    elemento: newMarker,
-  });
-  oldMapaContext.conteudo.Marker = oldMapaContext.conteudo?.Marker
-    ? [...oldMapaContext.conteudo.Marker, newMarker]
+  oldMapaContext.elementoFoco = null;
+  oldMapaContext.conteudo[actionContext.tipo] = oldMapaContext.conteudo[
+    actionContext.tipo
+  ]
+    ? [...oldMapaContext.conteudo[actionContext.tipo], newMarker]
     : [newMarker];
   return {
     ...oldMapaContext,
   };
 };
-
-const addElementoPolyline = (
-  oldMapaContext: mapaContextSchema,
-  actionContextChange: actionContextChange
-): mapaContextSchema => {
-  if (!(oldMapaContext.elementoFoco?.dataRef === actionContextChange.tipo)) {
-    const newPolyline: elementoComPositions = {
-      positions: [actionContextChange.posicao],
-      dataRef: actionContextChange.tipo,
-      nome: `polyline#${oldMapaContext.conteudo?.Polyline?.length + 1 || 1}`,
-      ...padraoElementoNovoAdicionado(oldMapaContext),
-    };
-    oldMapaContext = changeElementoFoco(oldMapaContext, {
-      ...actionContextChange,
-      elemento: newPolyline,
-    });
-    return {
-      ...oldMapaContext,
-      conteudo: {
-        ...oldMapaContext.conteudo,
-        Polyline: (oldMapaContext.conteudo?.Polyline
-          ? [...oldMapaContext.conteudo.Polyline, newPolyline]
-          : [newPolyline]) as PolylineType,
-      },
-    };
-  } else {
-    (oldMapaContext.elementoFoco as elementoComPositions).positions = [
-      ...(oldMapaContext.elementoFoco as elementoComPositions).positions,
-      actionContextChange.posicao,
-    ];
-    return {
-      ...oldMapaContext,
-    };
-  }
-};
-
-const addElementoPolygon = (
-  oldMapaContext: mapaContextSchema,
-  actionContextChange: actionContextChange
-): mapaContextSchema => {
-  if (!(oldMapaContext.elementoFoco?.dataRef === actionContextChange.tipo)) {
-    const newPolygon: elementoComPositions = {
-      positions: [actionContextChange.posicao],
-      dataRef: actionContextChange.tipo,
-      nome: `polygon#${oldMapaContext.conteudo?.Polygon?.length + 1 || 1}`,
-      ...padraoElementoNovoAdicionado(oldMapaContext),
-    };
-    oldMapaContext = changeElementoFoco(oldMapaContext, {
-      ...actionContextChange,
-      elemento: newPolygon,
-    });
-    return {
-      ...oldMapaContext,
-      conteudo: {
-        ...oldMapaContext.conteudo,
-        Polygon: (oldMapaContext.conteudo?.Polygon
-          ? [...oldMapaContext.conteudo.Polygon, newPolygon]
-          : [newPolygon]) as PolygonType,
-      },
-    };
-  } else {
-    (oldMapaContext.elementoFoco as elementoComPositions).positions = [
-      ...(oldMapaContext.elementoFoco as elementoComPositions).positions,
-      actionContextChange.posicao,
-    ];
-    return {
-      ...oldMapaContext,
-    };
-  }
-};
-
-const addElementoCirculo = (
-  oldMapaContext: mapaContextSchema,
-  actionContextChange: actionContextChange
-): mapaContextSchema => {
-  const { tipo, posicao } = actionContextChange;
-  const newCircle = {
-    center: posicao,
-    radius: 100,
-    dataRef: tipo,
-    nome: `circle#${oldMapaContext.conteudo?.Circle?.length + 1 || 1}`,
-    ...padraoElementoNovoAdicionado(oldMapaContext),
-  };
-  oldMapaContext = changeElementoFoco(oldMapaContext, {
-    ...actionContextChange,
-    elemento: newCircle,
-  });
-  return {
-    ...oldMapaContext,
-    conteudo: {
-      ...oldMapaContext.conteudo,
-      Circle: (oldMapaContext.conteudo?.Circle
-        ? [...oldMapaContext.conteudo.Circle, newCircle]
-        : [newCircle]) as CircleType,
-    },
-  };
-};
-
 const addElementoImagem = (
   oldMapaContext: mapaContextSchema,
   actionContextChange: actionContextChange
@@ -268,45 +199,53 @@ const addElementoImagem = (
     positionTL: [
       oldMapaContext.bounds["_northEast"]["lat"],
       oldMapaContext.bounds["_southWest"]["lng"],
-    ],
-    positionBL: oldMapaContext.bounds["_southWest"],
-    positionTR: oldMapaContext.bounds["_northEast"],
+    ] as [number, number],
+    positionBL: [
+      oldMapaContext.bounds["_southWest"]["lat"],
+      oldMapaContext.bounds["_southWest"]["lng"],
+    ] as [number, number],
+    positionTR: [
+      oldMapaContext.bounds["_northEast"]["lat"],
+      oldMapaContext.bounds["_northEast"]["lng"],
+    ] as [number, number],
     dataRef: tipo,
     nome: `imagem#${oldMapaContext.conteudo?.ImageOverlay?.length + 1 || 1}`,
     urlImagem: actionContextChange.valor,
+    id: actionContextChange.id ?? v4(),
+    type: "Feature",
     ...padraoElementoNovoAdicionado(oldMapaContext),
-  };
+  } as tipoElemento;
   oldMapaContext = changeElementoFoco(oldMapaContext, {
     ...actionContextChange,
     elemento: newImageOverlay,
   });
+  console.log("imagem inserida", newImageOverlay);
   return {
     ...oldMapaContext,
     conteudo: {
       ...oldMapaContext.conteudo,
       ImageOverlay: (oldMapaContext.conteudo?.ImageOverlay
         ? [...oldMapaContext.conteudo.ImageOverlay, newImageOverlay]
-        : [newImageOverlay]) as RectangleType,
+        : [newImageOverlay]) as arrayRectangleType,
     },
+    elementoInteracao: elementos.Hand,
   };
 };
 
-// const addElementoQuadrilatero = (
-//   oldMapaContext: mapaContextSchema,
-//   actionContextChange: actionContextChange
-// ): mapaContextSchema => {
-//   const { nomeElemento } = actionContextChange;
-//   const newRectangle: elementoComBounds = {bounds:LatLngBounds()} as elementoComBounds;
-//   return {
-//     ...oldMapaContext,
-//     conteudo: {
-//       ...oldMapaContext.conteudo,
-//       Rectangle: (oldMapaContext.conteudo?.Rectangle
-//         ? [...oldMapaContext.conteudo.Rectangle, newRectangle]
-//         : [newRectangle]) as RectangleType,
-//     },
-//   };
-// };
+const alteraElemento = (
+  oldMapaContext: mapaContextSchema,
+  actionContextChange: actionContextChange
+): mapaContextSchema => {
+  const conteudo = retornaListaElementosConteudo(oldMapaContext);
+  const ds = conteudo.find((x) => x.id === actionContextChange.id);
+  if (ds)
+    oldMapaContext.conteudo[ds.dataRef][
+      oldMapaContext.conteudo[ds.dataRef].findIndex((x) => x.id === ds.id)
+    ].geometry.coordinates = actionContextChange.posicao;
+  return {
+    ...oldMapaContext,
+  };
+};
 
 const removeElemento = (
   oldMapaContext: mapaContextSchema,
@@ -435,7 +374,7 @@ const addAlteracaoElemento = (
       }`,
       valor: 0,
       tipo: "",
-      type: "box",
+      visTimelineObject: { type: "box" },
     } as alteracaoElemento;
     if (
       oldMapaContext.conteudo[elemento.dataRef].find(
@@ -472,7 +411,7 @@ const novaCena = (oldMapaContext: mapaContextSchema) => {
     nome: `cena #${oldMapaContext.conteudo.cenas.length}`,
     dataRef: "cenas",
     style: `background-color: ${getRandomColor()}`,
-    type: "background",
+    visTimelineObject: { type: "background" },
   } as elementoPadrao;
 };
 
@@ -506,12 +445,9 @@ const MapaFunctionHelpers = {
   changeElementosFoco,
   changeTodosElementosFoco,
   changeTodosElementosFocoPorIds,
-  addElementoMarker,
-  addElementoCirculo,
+  addElementoPadrao,
   addElementoImagem,
-  addElementoPolyline,
-  addElementoPolygon,
-  //addElementoQuadrilatero,
+  alteraElemento,
   removeElemento,
   atualizaLinhaTempoElemento,
   editarPropriedadeElemento,
@@ -519,5 +455,7 @@ const MapaFunctionHelpers = {
   novaCena,
   retornaElementoOuAlteracaoPorId,
   movendoImagem,
+  retornaListaElementosConteudo,
+  retornaListaElementosConteudoCenaAtual,
 };
 export default MapaFunctionHelpers;

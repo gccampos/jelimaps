@@ -4,6 +4,7 @@ import {
   ShowChart,
   RadioButtonUnchecked,
   AddPhotoAlternate,
+  RadioButtonChecked,
 } from "@mui/icons-material";
 import polygonIcon from "public/assets/polygonIcon.svg";
 import SvgIcon, { SvgIconTypeMap } from "@mui/material/SvgIcon";
@@ -26,31 +27,37 @@ const IconPersonalizado = () => {
 };
 export const elementos: { [key: string]: elementoProto } = {
   Hand: {
-    nome: "Hand",
+    nome: "select",
     label: "Interagir com elementos",
     icon: <PanToolAlt />,
     iconComponent: PanToolAlt,
   } as elementoProto,
   Marker: {
-    nome: "Marker",
+    nome: "marker",
     label: "Adicionar Pinos no mapa",
     icon: <PinDrop />,
     iconComponent: PinDrop,
   },
+  Point: {
+    nome: "point",
+    label: "Adicionar ponto no mapa",
+    icon: <RadioButtonChecked />,
+    iconComponent: RadioButtonChecked,
+  },
   Polyline: {
-    nome: "Polyline",
+    nome: "linestring",
     label: "Adicionar Linha no mapa",
     icon: <ShowChart />,
     iconComponent: ShowChart,
   } as elementoProto,
   Polygon: {
-    nome: "Polygon",
+    nome: "polygon",
     label: "Adicionar Polígono no mapa",
     icon: <SvgIcon component={polygonIcon} inheritViewBox />,
     iconComponent: IconPersonalizado().withComponent(polygonIcon),
   } as elementoProto,
   Circle: {
-    nome: "Circle",
+    nome: "circle",
     label: "Adicionar um Círculo no mapa",
     icon: <RadioButtonUnchecked />,
     iconComponent: RadioButtonUnchecked,

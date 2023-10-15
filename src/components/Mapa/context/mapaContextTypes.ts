@@ -3,23 +3,41 @@ import { LatLng, LatLngBoundsExpression, MapOptions, Map } from "leaflet";
 import { NIL } from "uuid";
 import { DateType, TimelineOptions } from "vis-timeline";
 import { FormikProps } from "formik";
+// import { GeoJSONStoreFeatures } from "terra-draw";
 
 export type tipoGenericoElementoTimeline = periodoInicioFim & {
   id: NIL;
   nome: string;
+  type:
+    | "Point"
+    | "MultiPoint"
+    | "LineString"
+    | "MultiLineString"
+    | "Polygon"
+    | "MultiPolygon"
+    | "GeometryCollection"
+    | "Feature"
+    | "FeatureCollection";
+  visTimelineObject?: { type: "box" | "background" };
   dataRef?: string;
   group?: NIL;
-  type?: string;
   style?: string;
   collapse?: boolean;
   draggable?: boolean;
   order?: any;
 };
+
 export type elementoPadrao = tipoGenericoElementoTimeline & {
+  geometry?: {
+    type: string;
+    coordinates: [number, number] | [number, number][] | [number, number][][];
+  };
+  properties?: { createdAt: number; updatedAt: number };
   texto?: string;
   color?: string;
   opacity?: number;
   alteracoes?: alteracaoElemento[];
+  eventTimeout?: any;
 };
 type periodoInicioFim = {
   cenaFim: DateType;
@@ -30,22 +48,13 @@ export type alteracaoElemento = tipoGenericoElementoTimeline & {
   tipo: any;
   valor: any;
 };
-export type elementoComPosition = {
-  position: LatLng;
-} & elementoPadrao;
-export type elementoCircle = {
-  center: LatLng;
-  radius: number;
-} & elementoPadrao;
-export type elementoComPositions = {
-  positions: LatLng[];
-} & elementoPadrao;
+
 export type elementoComBounds = {
   bounds: LatLngBoundsExpression;
   urlImagem?: string;
-  positionTL?: LatLng;
-  positionBL?: LatLng;
-  positionTR?: LatLng;
+  positionTL?: [number, number];
+  positionBL?: [number, number];
+  positionTR?: [number, number];
 } & elementoPadrao;
 export type mapaContextSchema = periodoInicioFim &
   telaMapa & {
@@ -55,12 +64,13 @@ export type mapaContextSchema = periodoInicioFim &
     slidePropriedade: boolean;
     modoVisao?: string;
     conteudo: conteudoType & {
-      Marker?: markerType;
-      Polyline?: PolylineType;
-      Polygon?: PolygonType;
-      Circle?: CircleType;
-      Rectangle?: RectangleType;
-      ImageOverlay?: RectangleType;
+      Marker?: arrayPadraoType;
+      Point?: arrayPadraoType;
+      LineString?: arrayPadraoType;
+      Polygon?: arrayPadraoType;
+      Circle?: arrayPadraoType;
+      Rectangle?: arrayRectangleType;
+      ImageOverlay?: arrayRectangleType;
       cenas: (elementoPadrao & telaMapa & { exibirLimite?: boolean })[];
     };
     fit?: boolean;
@@ -81,19 +91,12 @@ type conteudoType = {
   [key: string]: arrayElemento;
 };
 
-export type markerType = arrayElementoGenerico<elementoComPosition>;
-export type PolylineType = arrayElementoGenerico<elementoComPositions>;
-export type PolygonType = arrayElementoGenerico<elementoComPositions>;
-export type CircleType = arrayElementoGenerico<elementoCircle>;
-export type RectangleType = arrayElementoGenerico<elementoComBounds>;
+export type arrayPadraoType = arrayElementoGenerico<elementoPadrao>;
+export type arrayRectangleType = arrayElementoGenerico<elementoComBounds>;
 type basePrototypeArray = { collapse?: boolean };
 type arrayElementoGenerico<T> = basePrototypeArray & T[];
 type arrayElemento = basePrototypeArray & tipoElemento[];
-export type tipoElemento =
-  | elementoPadrao
-  | elementoComPosition
-  | elementoComPositions
-  | elementoComBounds;
+export type tipoElemento = elementoPadrao | elementoComBounds;
 
 export type actionContextChange = {
   type: string;
@@ -105,7 +108,7 @@ export type actionContextChange = {
   elementos?: tipoElemento[];
   tipo?: string;
   valor?: any;
-  posicao?: LatLng;
+  posicao?: [number, number] | [number, number][] | [number, number][][];
   indiceElemento?: number;
   nomeElemento?: string;
   nomePropriedade?: string;

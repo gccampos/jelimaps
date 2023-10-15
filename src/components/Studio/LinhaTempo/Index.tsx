@@ -1,9 +1,12 @@
 import React from "react";
 import { Grid } from "@mui/material";
 import VisTimeline from "./VisTimeline";
+import { TerraDraw } from "terra-draw";
 
-export default function LinhaTempo() {
-
+export default function LinhaTempo(props: {
+  tempoAtualRef: React.MutableRefObject<any>;
+  draw: TerraDraw;
+}) {
   return (
     <Grid
       id={"oi"}
@@ -23,7 +26,7 @@ export default function LinhaTempo() {
         },
       }}
     >
-      <VisTimeline />
+      <VisTimeline tempoAtualRef={props.tempoAtualRef} draw={props.draw} />
     </Grid>
   );
 }
