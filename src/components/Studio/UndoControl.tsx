@@ -3,7 +3,7 @@ import React from "react";
 import { Undo, Redo } from "@mui/icons-material";
 import { useMapaUndo } from "../Mapa/context/MapaContext";
 
-type Props = {};
+// type Props = {};
 
 const DivStil = styled("div")`
   padding-top: 75px;
@@ -23,7 +23,7 @@ const DivStil = styled("div")`
   }
 `;
 
-export default function UndoControl(props: Props) {
+export default function UndoControl() {
   const { undo, redo, canRedo, canUndo } = useMapaUndo();
   return (
     <DivStil>
