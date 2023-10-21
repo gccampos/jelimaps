@@ -174,6 +174,8 @@ const Studio = () => {
                 typeof terraDrawCircleMode === typeof mode.origin &&
                 isMobile()
               ) {
+                (mode.origin as any).clickCount =
+                  (mode.origin as any).clickCount ?? 0;
                 alert(
                   "circulo com clickCount " + (mode.origin as any).clickCount
                 );
