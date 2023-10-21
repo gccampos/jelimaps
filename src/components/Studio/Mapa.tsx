@@ -35,6 +35,7 @@ import ImageOverlayRotated from "../Mapa/ImageOverlayRotated";
 import { elementoPadrao, tipoElemento } from "../Mapa/context/mapaContextTypes";
 import { TerraDraw, GeoJSONStoreFeatures } from "terra-draw";
 import MapaFunctionHelpers from "../Mapa/context/MapaFunctionsHelpers";
+import UndoControl from "./UndoControl";
 
 export const MODO_VISAO = {
   openstreetmap: "OpenStreetMap",
@@ -62,8 +63,17 @@ export default function Mapa(props: {
   );
 
   useEffect(() => {
-    setIsMounted(true);
-  }, []);
+    console.log("useEffect [map]", map);
+    if (map && !isMounted) {
+      console.log("map", map);
+      console.log("map.options", map?.options);
+      // map.on("moveend", () => {
+      //   dispatch({ type: "alteraPropriedadesMapa", map: map });
+      // });
+      setMapa(map);
+      setIsMounted(true);
+    }
+  }, [map, isMounted, dispatch, setMapa]);
 
   const center = useMemo(
     () => new LatLng(position[0], position[1]),
@@ -163,11 +173,7 @@ export default function Mapa(props: {
     ) {
       caixaDialogoRef.current = mapaContext.caixaDialogo;
       dispatch({
-        type: "trocaMapaContext",
-        mapContext: {
-          ...mapaContext,
-          caixaDialogo: "",
-        },
+        type: "limpaCaixaDialogo",
       });
       handleInserirImagem();
     }
@@ -179,17 +185,6 @@ export default function Mapa(props: {
       MapaFunctionHelpers.retornaListaElementosConteudoCenaAtual(mapaContext);
     console.log("contexto do mapa", mapaContext);
   });
-
-  useEffect(() => {
-    if (map) {
-      console.log("map", map);
-      console.log("map.options", map?.options);
-      map.on("moveend", () => {
-        dispatch({ type: "alteraPropriedadesMapa", map: map });
-      });
-      setMapa(map);
-    }
-  }, [map, dispatch, setMapa]);
 
   // const verificaElementoFocadoPorId = (id) => {
   //   return (
@@ -242,23 +237,23 @@ export default function Mapa(props: {
         ) {
           // if (mapaContext.elementoFoco?.id === p.el.id)
           //   (props.draw as any)._mode.deselect();
-          // if (
-          //   MapaFunctionHelpers.retornaListaElementosConteudo(mapaContext).some(
-          //     (x) => x.id === p.el.id
-          //   )
-          // ) {
-          console.log("Dispose DRAW ConteudoMapa");
-          props.draw.removeFeatures([p.el.id.toString()]);
+          if (
+            MapaFunctionHelpers.retornaListaElementosConteudo(mapaContext).some(
+              (x) => x.id === p.el.id
+            )
+          ) {
+            console.log("Dispose DRAW ConteudoMapa");
+            // props.draw.removeFeatures([p.el.id.toString()]);
+            // console.log("Disposed DRAW ConteudoMapa");
 
-          // (props.draw as any)._store &&
-          // (props.draw as any)._store.store[p.el.id.toString()]
-          //   ? props.draw.removeFeatures([p.el.id.toString()])
-          //   : dispatch({
-          //       type: "removeElements",
-          //       id: p.el.id,
-          //     });
-
-          // }
+            (props.draw as any)._store &&
+            (props.draw as any)._store.store[p.el.id.toString()]
+              ? props.draw.removeFeatures([p.el.id.toString()])
+              : dispatch({
+                  type: "removeElements",
+                  id: p.el.id,
+                });
+          }
         } else {
           console.log("Dispose ConteudoMapa");
           map.removeLayer(el);
@@ -269,218 +264,220 @@ export default function Mapa(props: {
   };
 
   return (
-    isMounted && (
-      <Grid item xs>
-        <div style={{ height: props.altura, display: "grid" }}>
-          <MapContainer
-            center={mapaContext.mapOptions.center ?? center}
-            zoom={mapaContext.mapOptions.zoom ?? zoom}
-            ref={setMap}
-            maxZoom={18}
-          >
-            {mapaContext.modoVisao === MODO_VISAO.openstreetmap && (
-              <TileLayer
-                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-              />
-            )}
-            {mapaContext.modoVisao === MODO_VISAO.mapaProprio && (
-              <ImageOverlay
-                bounds={bounds}
-                url={
-                  mapaContext.urlMapaProprio ??
-                  "https://onedrive.live.com/embed?resid=9337381634E30E6%211127330&authkey=%21ADDU_4ofkVlIREA&width=4096&height=2896"
-                }
-              />
-            )}
-            {mapaContext.conteudo &&
-              mapaContext.conteudo.Marker &&
-              mapaContext.conteudo.Marker.length > 0 &&
-              mapaContext.conteudo.Marker.filter(
-                (x) =>
-                  new Date(x.cenaInicio) <= new Date(mapaContext.tempo) &&
-                  new Date(x.cenaFim) >= new Date(mapaContext.tempo)
-              ).map((x, i, arr) => {
-                return (
-                  x.geometry?.coordinates && (
-                    <Marker
-                      {...x}
-                      position={x.geometry.coordinates as [number, number]}
-                      icon={divIcon({
-                        className: "",
-                        html: ReactDOMServer.renderToString(
-                          <LocationOn
-                            style={{
-                              color: corItemSelecionadoFoco(x),
-                              position: "absolute",
-                              top: "-150%",
-                              left: "-67%",
-                            }}
-                          />
-                        ),
-                      })}
-                      key={`marker#${i}`}
-                      eventHandlers={{
-                        click: (e) => cliqueElementoNoMapa(arr[i], e),
-                        moveend: (e) => {
-                          dispatch({
-                            type: "editarPropriedade",
-                            tipo: x.dataRef,
-                            id: x.id,
-                            nomePropriedade: "geometry",
-                            valorPropriedade: {
-                              ...x.geometry,
-                              coordinates: [
-                                e.sourceTarget._latlng.lat,
-                                e.sourceTarget._latlng.lng,
-                              ],
-                            },
-                          });
-                        },
-                      }}
-                    >
-                      <Popup>
-                        <ButtonGroup
-                          variant="text"
-                          aria-label="text button group"
+    <Grid item xs>
+      <div style={{ height: props.altura, display: "grid" }}>
+        <MapContainer
+          center={mapaContext.mapOptions.center ?? center}
+          zoom={mapaContext.mapOptions.zoom ?? zoom}
+          ref={setMap}
+          maxZoom={18}
+        >
+          {mapaContext.modoVisao === MODO_VISAO.openstreetmap && (
+            <TileLayer
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            />
+          )}
+          {mapaContext.modoVisao === MODO_VISAO.mapaProprio && (
+            <ImageOverlay
+              bounds={bounds}
+              url={
+                mapaContext.urlMapaProprio ??
+                "https://onedrive.live.com/embed?resid=9337381634E30E6%211127330&authkey=%21ADDU_4ofkVlIREA&width=4096&height=2896"
+              }
+            />
+          )}
+          {mapaContext.conteudo &&
+            mapaContext.conteudo.Marker &&
+            mapaContext.conteudo.Marker.length > 0 &&
+            mapaContext.conteudo.Marker.filter(
+              (x) =>
+                new Date(x.cenaInicio) <= new Date(mapaContext.tempo) &&
+                new Date(x.cenaFim) >= new Date(mapaContext.tempo)
+            ).map((x, i, arr) => {
+              return (
+                x.geometry?.coordinates && (
+                  <Marker
+                    {...x}
+                    position={x.geometry.coordinates as [number, number]}
+                    icon={divIcon({
+                      className: "",
+                      html: ReactDOMServer.renderToString(
+                        <LocationOn
+                          style={{
+                            color: corItemSelecionadoFoco(x),
+                            position: "absolute",
+                            top: "-150%",
+                            left: "-67%",
+                          }}
+                        />
+                      ),
+                    })}
+                    key={`marker#${i}`}
+                    eventHandlers={{
+                      click: (e) => cliqueElementoNoMapa(arr[i], e),
+                      moveend: (e) => {
+                        dispatch({
+                          type: "editarPropriedade",
+                          tipo: x.dataRef,
+                          id: x.id,
+                          nomePropriedade: "geometry",
+                          valorPropriedade: {
+                            ...x.geometry,
+                            coordinates: [
+                              e.sourceTarget._latlng.lat,
+                              e.sourceTarget._latlng.lng,
+                            ],
+                          },
+                        });
+                      },
+                    }}
+                  >
+                    <Popup>
+                      <ButtonGroup
+                        variant="text"
+                        aria-label="text button group"
+                      >
+                        <Button
+                          onClick={() => {
+                            dispatch({
+                              type: "removeElements",
+                            });
+                          }}
                         >
-                          <Button
-                            onClick={() => {
-                              dispatch({
-                                type: "removeElements",
-                              });
-                            }}
-                          >
-                            Excluir
-                          </Button>
-                          {/* <Button>Two</Button>
+                          Excluir
+                        </Button>
+                        {/* <Button>Two</Button>
                               <Button>Three</Button> */}
-                        </ButtonGroup>
-                      </Popup>
-                    </Marker>
-                  )
-                );
-              })}
-            {mapaContext.conteudo &&
-              mapaContext.conteudo.Point &&
-              mapaContext.conteudo.Point.length > 0 &&
-              mapaContext.conteudo.Point.filter(
-                (x) =>
-                  new Date(x.cenaInicio) <= new Date(mapaContext.tempo) &&
-                  new Date(x.cenaFim) >= new Date(mapaContext.tempo)
-              ).map((x, i) => {
-                return <ConteudoMapa el={x} key={`Pointer#${i}`} />;
-              })}
-            {mapaContext.conteudo &&
-              mapaContext.conteudo.Circle &&
-              mapaContext.conteudo.Circle.length > 0 &&
-              mapaContext.conteudo.Circle.filter(
-                (x) =>
-                  new Date(x.cenaInicio) <= new Date(mapaContext.tempo) &&
-                  new Date(x.cenaFim) >= new Date(mapaContext.tempo)
-              ).map((x, i) => {
-                return <ConteudoMapa el={x} key={`Circle#${i}`} />;
-              })}
-            {mapaContext.conteudo &&
-              mapaContext.conteudo.LineString &&
-              mapaContext.conteudo.LineString.length > 0 &&
-              mapaContext.conteudo.LineString.filter(
-                (x) =>
-                  new Date(x.cenaInicio) <= new Date(mapaContext.tempo) &&
-                  new Date(x.cenaFim) >= new Date(mapaContext.tempo)
-              ).map((x, i) => {
-                return <ConteudoMapa el={x} key={`LineString#${i}`} />;
-              })}
-
-            {mapaContext.conteudo &&
-              mapaContext.conteudo.Polygon &&
-              mapaContext.conteudo.Polygon.length > 0 &&
-              mapaContext.conteudo.Polygon.filter(
-                (x) =>
-                  new Date(x.cenaInicio) <= new Date(mapaContext.tempo) &&
-                  new Date(x.cenaFim) >= new Date(mapaContext.tempo)
-              ).map((x, i) => {
-                return <ConteudoMapa el={x} key={`polygon#${i}`} />;
-                // return x?.geometry.coordinates.positions ? (
-                //   <div key={`polygon#${i}`}>
-                //     <Polygon
-                //       {...x}
-                //       pathOptions={{
-                //         color: corItemSelecionadoFoco(x),
-                //       }}
-                //       eventHandlers={{
-                //         click: (e) => cliqueElementoNoMapa(arr[i], e),
-                //       }}
-                //     ></Polygon>
-                //   </div>
-                // ) : null;
-              })}
-
-            {mapaContext.conteudo &&
-              mapaContext.conteudo.cenas &&
-              mapaContext.conteudo.cenas.length > 0 &&
-              mapaContext.conteudo.cenas
-                .filter(
-                  (x) =>
-                    !!x.exibirLimite &&
-                    new Date(x.cenaInicio) <= new Date(mapaContext.tempo) &&
-                    new Date(x.cenaFim) >= new Date(mapaContext.tempo)
+                      </ButtonGroup>
+                    </Popup>
+                  </Marker>
                 )
-                .map((x, i) => {
-                  return x?.bounds ? (
-                    <Rectangle
-                      {...x}
-                      bounds={x.bounds}
-                      className="background-scene"
-                      key={`Rectangle#${i}`}
-                    >
-                      {/* <Popup>
+              );
+            })}
+          {mapaContext.conteudo &&
+            mapaContext.conteudo.Point &&
+            mapaContext.conteudo.Point.length > 0 &&
+            mapaContext.conteudo.Point.filter(
+              (x) =>
+                new Date(x.cenaInicio) <= new Date(mapaContext.tempo) &&
+                new Date(x.cenaFim) >= new Date(mapaContext.tempo)
+            ).map((x, i) => {
+              return <ConteudoMapa el={x} key={`Pointer#${i}`} />;
+            })}
+          {mapaContext.conteudo &&
+            mapaContext.conteudo.Circle &&
+            mapaContext.conteudo.Circle.length > 0 &&
+            mapaContext.conteudo.Circle.filter(
+              (x) =>
+                new Date(x.cenaInicio) <= new Date(mapaContext.tempo) &&
+                new Date(x.cenaFim) >= new Date(mapaContext.tempo)
+            ).map((x, i) => {
+              return <ConteudoMapa el={x} key={`Circle#${i}`} />;
+            })}
+          {mapaContext.conteudo &&
+            mapaContext.conteudo.LineString &&
+            mapaContext.conteudo.LineString.length > 0 &&
+            mapaContext.conteudo.LineString.filter(
+              (x) =>
+                new Date(x.cenaInicio) <= new Date(mapaContext.tempo) &&
+                new Date(x.cenaFim) >= new Date(mapaContext.tempo)
+            ).map((x, i) => {
+              return <ConteudoMapa el={x} key={`LineString#${i}`} />;
+            })}
+
+          {mapaContext.conteudo &&
+            mapaContext.conteudo.Polygon &&
+            mapaContext.conteudo.Polygon.length > 0 &&
+            mapaContext.conteudo.Polygon.filter(
+              (x) =>
+                new Date(x.cenaInicio) <= new Date(mapaContext.tempo) &&
+                new Date(x.cenaFim) >= new Date(mapaContext.tempo)
+            ).map((x, i) => {
+              return <ConteudoMapa el={x} key={`polygon#${i}`} />;
+              // return x?.geometry.coordinates.positions ? (
+              //   <div key={`polygon#${i}`}>
+              //     <Polygon
+              //       {...x}
+              //       pathOptions={{
+              //         color: corItemSelecionadoFoco(x),
+              //       }}
+              //       eventHandlers={{
+              //         click: (e) => cliqueElementoNoMapa(arr[i], e),
+              //       }}
+              //     ></Polygon>
+              //   </div>
+              // ) : null;
+            })}
+
+          {mapaContext.conteudo &&
+            mapaContext.conteudo.cenas &&
+            mapaContext.conteudo.cenas.length > 0 &&
+            mapaContext.conteudo.cenas
+              .filter(
+                (x) =>
+                  !!x.exibirLimite &&
+                  new Date(x.cenaInicio) <= new Date(mapaContext.tempo) &&
+                  new Date(x.cenaFim) >= new Date(mapaContext.tempo)
+              )
+              .map((x, i) => {
+                return x?.bounds ? (
+                  <Rectangle
+                    {...x}
+                    bounds={x.bounds}
+                    className="background-scene"
+                    key={`Rectangle#${i}`}
+                  >
+                    {/* <Popup>
                           A pretty CSS3 popup. <br /> Easily customizable.
                         </Popup> */}
-                    </Rectangle>
-                  ) : null;
-                })}
-            {mapaContext.conteudo &&
-              mapaContext.conteudo.ImageOverlay &&
-              mapaContext.conteudo.ImageOverlay.length > 0 &&
-              mapaContext.conteudo.ImageOverlay.filter(
-                (x) =>
-                  new Date(x.cenaInicio) <= new Date(mapaContext.tempo) &&
-                  new Date(x.cenaFim) >= new Date(mapaContext.tempo)
-              ).map((x, i) => {
-                return (
-                  <ImageOverlayRotated
-                    key={`ImageOverlay#${i}`}
-                    x={x}
-                    cliqueElementoNoMapa={cliqueElementoNoMapa}
-                  />
-                );
+                  </Rectangle>
+                ) : null;
               })}
-            <CustomControlLeaflet
-              position={POSITION_CLASSES_CUSTOM_CONTROL.bottomright}
-            >
-              <Elementos altura={props.altura} />
-            </CustomControlLeaflet>
-            <CustomControlLeaflet
-              position={POSITION_CLASSES_CUSTOM_CONTROL.topright}
-            >
-              <Fab
-                color="primary"
-                onClick={() => dispatch({ type: "propriedadeToggle" })}
-              >
-                <PlaylistPlay
-                  sx={{
-                    transform: !mapaContext.slidePropriedade
-                      ? "scaleX(-1)"
-                      : "",
-                  }}
+          {mapaContext.conteudo &&
+            mapaContext.conteudo.ImageOverlay &&
+            mapaContext.conteudo.ImageOverlay.length > 0 &&
+            mapaContext.conteudo.ImageOverlay.filter(
+              (x) =>
+                new Date(x.cenaInicio) <= new Date(mapaContext.tempo) &&
+                new Date(x.cenaFim) >= new Date(mapaContext.tempo)
+            ).map((x, i) => {
+              return (
+                <ImageOverlayRotated
+                  key={`ImageOverlay#${i}`}
+                  x={x}
+                  cliqueElementoNoMapa={cliqueElementoNoMapa}
                 />
-              </Fab>
-            </CustomControlLeaflet>
-            {/* <AddElementoInteracao /> */}
-          </MapContainer>
-        </div>
-      </Grid>
-    )
+              );
+            })}
+          <CustomControlLeaflet
+            position={POSITION_CLASSES_CUSTOM_CONTROL.bottomright}
+          >
+            <Elementos altura={props.altura} />
+          </CustomControlLeaflet>
+          <CustomControlLeaflet
+            position={POSITION_CLASSES_CUSTOM_CONTROL.topleft}
+          >
+            <UndoControl />
+          </CustomControlLeaflet>
+          <CustomControlLeaflet
+            position={POSITION_CLASSES_CUSTOM_CONTROL.topright}
+          >
+            <Fab
+              color="primary"
+              onClick={() => dispatch({ type: "propriedadeToggle" })}
+              sx={{ zIndex: 100000 }}
+            >
+              <PlaylistPlay
+                sx={{
+                  transform: !mapaContext.slidePropriedade ? "scaleX(-1)" : "",
+                }}
+              />
+            </Fab>
+          </CustomControlLeaflet>
+          {/* <AddElementoInteracao /> */}
+        </MapContainer>
+      </div>
+    </Grid>
   );
 }

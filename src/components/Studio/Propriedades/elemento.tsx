@@ -121,8 +121,11 @@ export default function Elemento() {
                                     (z) => z.id === x.id
                                   ).draggable = !formik.values.draggable;
                                   dispatch({
-                                    type: "trocaMapaContext",
-                                    mapContext: { ...mapaContext },
+                                    type: "editarPropriedade",
+                                    tipo: x.dataRef,
+                                    id: x.id,
+                                    nomePropriedade: "draggable",
+                                    valorPropriedade: !formik.values.draggable,
                                   });
                                 }}
                                 name={"draggable"}

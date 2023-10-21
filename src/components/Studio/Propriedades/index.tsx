@@ -39,8 +39,15 @@ interface TabPanelProps {
 export default function Propriedades(props: {
   altura: number;
   tempoAtualRef: any;
+  larguraPropriedades: number;
+  setLargurasPropriedades: React.Dispatch<React.SetStateAction<number>>;
 }) {
-  const { altura, tempoAtualRef } = props;
+  const {
+    altura,
+    tempoAtualRef,
+    larguraPropriedades,
+    setLargurasPropriedades,
+  } = props;
   const { width } = useWindowDimensions();
   const mapaContext = useMapaContext();
   const dispatch = useMapaDispatch();
@@ -93,8 +100,6 @@ export default function Propriedades(props: {
       </div>
     );
   }
-
-  const [larguraPropriedades, setLargurasPropriedades] = useState(250);
 
   function propriedadesTab(index: number) {
     return {

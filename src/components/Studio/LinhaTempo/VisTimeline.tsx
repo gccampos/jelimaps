@@ -22,17 +22,13 @@ import {
   tipoElemento,
   tipoGenericoElementoTimeline,
 } from "@/components/Mapa/context/mapaContextTypes";
-import useListaElementos from "./useListaElementos";
 import { v4 } from "uuid";
 import moment from "moment";
-import { TerraDraw } from "terra-draw";
 
 export default function VisTimeline(props: {
   tempoAtualRef: React.MutableRefObject<any>;
-  draw: TerraDraw;
 }) {
   const { tempoAtualRef } = props;
-  const listaElementos = useListaElementos();
   const mapaContext = useMapaContext();
   const dispatch = useMapaDispatch();
   const [visTimeline, setVisTimeline] = useState<Timeline>(null);
@@ -41,16 +37,21 @@ export default function VisTimeline(props: {
   const dataSetRef = useRef(null);
   const visJsRef = useRef<HTMLDivElement>(null);
   const divScrollRef = useRef<HTMLDivElement>(null);
-  const elementos = useRef(
-    useListaElementos().filter((x) => x.visTimelineObject?.type != "background")
-  );
-  elementos.current = useListaElementos().filter(
-    (x) => x.visTimelineObject?.type != "background"
-  );
+  // const elementos = useRef(
+  //   useListaElementos().filter((x) => x.visTimelineObject?.type != "background")
+  // );
+  // elementos.current = useListaElementos().filter(
+  //   (x) => x.visTimelineObject?.type != "background"
+  // );
 
   const listaMapeada = useCallback(
     (lista?: (tipoElemento | tipoGenericoElementoTimeline)[]) => {
-      return (lista ?? listaElementos).map((x) => {
+      return (
+        lista ??
+        Object.keys(mapaContext?.conteudo)
+          .map((x) => mapaContext?.conteudo[x])
+          .flat()
+      ).map((x) => {
         return {
           ...x,
           type: x.visTimelineObject?.type ?? null,
@@ -65,16 +66,10 @@ export default function VisTimeline(props: {
         };
       });
     },
-    [listaElementos]
+    [mapaContext.conteudo]
   );
-  const listaMapeadaElementos = useMemo(() => {
-    const valorItems = listaMapeada().filter(
-      (x) => x.visTimelineObject?.type != "background"
-    );
-    return valorItems;
-  }, [listaMapeada]);
 
-  const listaMapeadaPropriedades = useMemo(() => {
+  const listaMapeadaPropriedades = useCallback(() => {
     return listaMapeada(
       listaMapeada()
         .map((x) => {
@@ -90,8 +85,8 @@ export default function VisTimeline(props: {
     );
   }, [listaMapeada]);
 
-  const elementosAlteracoesTimeline = useMemo(() => {
-    const valorItems = listaMapeada().concat(listaMapeadaPropriedades);
+  const elementosAlteracoesTimeline = useCallback(() => {
+    const valorItems = listaMapeada().concat(listaMapeadaPropriedades());
     return valorItems;
   }, [listaMapeada, listaMapeadaPropriedades]);
 
@@ -102,6 +97,11 @@ export default function VisTimeline(props: {
   }, [mapaContext.elementosFoco, mapaContext.elementoFoco]);
 
   const setElementosSelecionados = useCallback(() => {
+    console.log(
+      "useCallback [visTimeline, elementosFocados] ",
+      visTimeline,
+      elementosFocados
+    );
     if (visTimeline) visTimeline.setSelection(elementosFocados);
   }, [visTimeline, elementosFocados]);
 
@@ -237,7 +237,7 @@ export default function VisTimeline(props: {
       ) {
         intervaloRef.current = setTimeout(() => {
           groups.forEach((x: any) => {
-            if (elementos.current.find((z) => z.id === x.id)?.order !== x.order)
+            if (listaMapeada().find((z) => z.id === x.id)?.order !== x.order)
               dispatch({
                 type: "editarPropriedade",
                 tipo: x.dataRef,
@@ -272,29 +272,70 @@ export default function VisTimeline(props: {
     handleAtualizaConteudo,
     //handleAdicionarPropriedadeConteudo,
   ]);
+
+  const calls = useCallback(() => {
+    const atual = {
+      groups: listaMapeada().filter(
+        (x) => x.visTimelineObject?.type != "background"
+      ),
+      items: elementosAlteracoesTimeline(),
+    };
+    const temDiferencaConteudo =
+      elementosTimelineRef.current?.groups?.length !== atual.groups.length ||
+      elementosTimelineRef.current?.items?.length !== atual.items.length;
+
+    console.log(
+      "useEffect [visTimeline, atual, temDiferencaConteudo] ",
+      visTimeline,
+      atual,
+      temDiferencaConteudo
+    );
+    if (visTimeline && temDiferencaConteudo) visTimeline.setData(atual);
+
+    setElementosSelecionados();
+    elementosTimelineRef.current = atual;
+  }, [
+    visTimeline,
+    elementosAlteracoesTimeline,
+    listaMapeada,
+    setElementosSelecionados,
+  ]);
   useEffect(() => {
-    if (!visTimeline) {
-      const tl =
-        visJsRef.current &&
-        new Timeline(visJsRef.current, null, optionsVisTimeline);
-      tl.addCustomTime(optionsVisTimeline.start, "currentTime");
-      tempoAtualRef.current = moment(optionsVisTimeline.start)
-        .add(1, "seconds")
-        .format("yyyy-MM-DDTHH:mm:ss");
-      setVisTimeline(tl);
-      tl.on("select", handleSeleciona);
-      tl.on("click", handleClick);
-      tl.on("doubleClick", handleDoubleClick);
-      tl.on("timechanged", (e) => {
-        dispatch({ type: "atualizaTempo", time: e.time });
-        tempoAtualRef.current = e.time;
-      });
-    }
+    console.log(
+      "useEffect [visJsRef, visTimeline]",
+      visJsRef.current,
+      visTimeline
+    );
+    if (!visJsRef.current.style.position)
+      if (!visTimeline) {
+        console.log(
+          "useEffect [visJsRef, visTimeline] MONTOU",
+          visJsRef.current.style.position
+        );
+        const tl =
+          visJsRef.current &&
+          new Timeline(visJsRef.current, null, optionsVisTimeline);
+        console.log(">>>timeline montada<<<", tl);
+        tl.addCustomTime(optionsVisTimeline.start, "currentTime");
+        tempoAtualRef.current = moment(optionsVisTimeline.start)
+          .add(1, "seconds")
+          .format("yyyy-MM-DDTHH:mm:ss");
+        setVisTimeline(tl);
+        tl.on("select", handleSeleciona);
+        tl.on("click", handleClick);
+        tl.on("doubleClick", handleDoubleClick);
+        tl.on("timechanged", (e) => {
+          dispatch({ type: "atualizaTempo", time: e.time });
+          tempoAtualRef.current = e.time;
+        });
+      } else calls();
+    else if (visJsRef.current.style.position && visTimeline) calls();
   }, [
     visJsRef,
     visTimeline,
     tempoAtualRef,
     optionsVisTimeline,
+    calls,
     dispatch,
     handleClick,
     listaMapeada,
@@ -323,32 +364,17 @@ export default function VisTimeline(props: {
   }, [dispatch, mapaContext, visTimeline]);
 
   useEffect(() => {
-    const atual = {
-      groups: listaMapeadaElementos,
-      items: elementosAlteracoesTimeline,
-    };
-    const temDiferencaConteudo =
-      elementosTimelineRef.current?.groups?.length !== atual.groups.length ||
-      elementosTimelineRef.current?.items?.length !== atual.items.length;
-
-    console.log("edasdas", atual);
-    if (visTimeline && temDiferencaConteudo) visTimeline.setData(atual);
-
-    setElementosSelecionados();
-    elementosTimelineRef.current = atual;
-  }, [
-    visTimeline,
-    listaMapeadaElementos,
-    elementosAlteracoesTimeline,
-    setElementosSelecionados,
-  ]);
-
-  useEffect(() => {
+    console.log(
+      "useEffect [visTimeline, mapaContext.tempo] ",
+      visTimeline,
+      mapaContext.tempo
+    );
     if (visTimeline)
       visTimeline.setCustomTime(mapaContext.tempo, "currentTime");
   }, [visTimeline, mapaContext.tempo]);
 
   useEffect(() => {
+    console.log("useEffect [setOptionsTimeline] ", visTimeline);
     if (visTimeline) {
       const scrollTopValue = divScrollRef.current.scrollTop;
       setOptionsTimeline();
@@ -368,11 +394,17 @@ export default function VisTimeline(props: {
 
   return (
     <div
-      ref={divScrollRef}
+      ref={(ref) => {
+        divScrollRef.current = ref;
+      }}
       className="personalized-scrollbar"
       style={{ overflowY: "scroll", height: "-webkit-fill-available" }}
     >
-      <div ref={visJsRef} />
+      <div
+        ref={(ref) => {
+          visJsRef.current = ref;
+        }}
+      />
     </div>
   );
 }
