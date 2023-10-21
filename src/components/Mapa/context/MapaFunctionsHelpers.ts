@@ -37,6 +37,25 @@ const retornaListaAlteracoesConteudo = (oldMapaContext: mapaContextSchema) =>
     .flat()
     .filter((x) => x);
 
+const padraoElementoNovoAdicionado = (oldMapaContext: mapaContextSchema) => {
+  return {
+    cenaInicio: moment(oldMapaContext.conteudo.cenas[0].cenaInicio)
+      .add(1, "seconds")
+      .format("yyyy-MM-DDTHH:mm:ss"),
+    cenaFim: moment(
+      oldMapaContext.conteudo.cenas[oldMapaContext.conteudo.cenas.length - 1]
+        .cenaFim
+    )
+      .add(-1, "seconds")
+      .format("yyyy-MM-DDTHH:mm:ss"),
+    order:
+      retornaListaElementosConteudo(oldMapaContext).filter(
+        (x) => !(x.visTimelineObject?.type === "background")
+      ).length ?? 0,
+    draggable: true,
+  };
+};
+
 const retornaElementoOuAlteracaoPorId = (
   oldMapaContext: mapaContextSchema,
   id: NIL
@@ -66,7 +85,6 @@ const changeElementoInteracao = (
   return {
     ...oldMapaContext,
     elementoInteracao: {
-      ...oldMapaContext.elementoInteracao,
       ...elemento,
     },
   };
@@ -76,15 +94,18 @@ const changeElementoFoco = (
   oldMapaContext: mapaContextSchema,
   actionContextChange: actionContextChange
 ): mapaContextSchema => {
-  oldMapaContext.elementoFoco =
+  const newElemntoFoco =
     actionContextChange.elemento ??
     (actionContextChange.id
       ? retornaListaElementosConteudo(oldMapaContext).find(
           (x) => x.id === actionContextChange.id
         )
       : null);
-  oldMapaContext.elementosFoco = null;
-  return { ...oldMapaContext };
+  return {
+    ...oldMapaContext,
+    elementosFoco: null,
+    elementoFoco: newElemntoFoco,
+  };
 };
 
 const changeElementosFoco = (
@@ -94,7 +115,7 @@ const changeElementosFoco = (
   const elementoNaoSelecionado = !oldMapaContext.elementosFoco?.some(
     (x) => x.id === actionContextChange.elemento.id
   );
-  oldMapaContext.elementosFoco = oldMapaContext.elementosFoco
+  const newElementsFoco = oldMapaContext.elementosFoco
     ? elementoNaoSelecionado
       ? // Caso elemento clicado não esteja focado deve adiciona-lo
         [...oldMapaContext.elementosFoco, actionContextChange.elemento]
@@ -104,15 +125,17 @@ const changeElementosFoco = (
         )
     : // Caso exista apenas um elemento focado, adiciona na lista os dois (antigo e novo)
       [oldMapaContext.elementoFoco, actionContextChange.elemento];
-  oldMapaContext.elementoFoco = actionContextChange.elemento;
-  return { ...oldMapaContext };
+  return {
+    ...oldMapaContext,
+    elementoFoco: actionContextChange.elemento,
+    elementosFoco: newElementsFoco,
+  };
 };
 
 const changeTodosElementosFocoPorIds = (
   oldMapaContext: mapaContextSchema,
   actionContextChange: actionContextChange
 ) => {
-  oldMapaContext.elementoFoco = null;
   return changeTodosElementosFoco(oldMapaContext, {
     ...actionContextChange,
     elementos: actionContextChange.ids.map((x) => {
@@ -125,27 +148,10 @@ const changeTodosElementosFoco = (
   oldMapaContext: mapaContextSchema,
   actionContextChange: actionContextChange
 ): mapaContextSchema => {
-  oldMapaContext.elementosFoco = actionContextChange.elementos;
-  //oldMapaContext.elementoFoco = null;
-  return { ...oldMapaContext };
-};
-
-const padraoElementoNovoAdicionado = (oldMapaContext: mapaContextSchema) => {
   return {
-    cenaInicio: moment(oldMapaContext.conteudo.cenas[0].cenaInicio)
-      .add(1, "seconds")
-      .format("yyyy-MM-DDTHH:mm:ss"),
-    cenaFim: moment(
-      oldMapaContext.conteudo.cenas[oldMapaContext.conteudo.cenas.length - 1]
-        .cenaFim
-    )
-      .add(-1, "seconds")
-      .format("yyyy-MM-DDTHH:mm:ss"),
-    order:
-      retornaListaElementosConteudo(oldMapaContext).filter(
-        (x) => !(x.visTimelineObject?.type === "background")
-      ).length ?? 0,
-    draggable: true,
+    ...oldMapaContext,
+    elementoFoco: null,
+    elementosFoco: actionContextChange.elementos,
   };
 };
 
@@ -178,15 +184,17 @@ const addElementoPadrao = (
     type: "Feature",
     ...padraoElementoNovoAdicionado(oldMapaContext),
   };
-
-  oldMapaContext.elementoFoco = null;
-  oldMapaContext.conteudo[actionContext.tipo] = oldMapaContext.conteudo[
-    actionContext.tipo
-  ]
+  //oldMapaContext.conteudo[actionContext.tipo]
+  const newArrayConteudoTipo = oldMapaContext.conteudo[actionContext.tipo]
     ? [...oldMapaContext.conteudo[actionContext.tipo], newMarker]
     : [newMarker];
   return {
     ...oldMapaContext,
+    elementoFoco: newMarker, //null,
+    conteudo: {
+      ...oldMapaContext.conteudo,
+      [actionContext.tipo]: [...newArrayConteudoTipo],
+    },
   };
 };
 const addElementoImagem = (
@@ -215,13 +223,10 @@ const addElementoImagem = (
     type: "Feature",
     ...padraoElementoNovoAdicionado(oldMapaContext),
   } as tipoElemento;
-  oldMapaContext = changeElementoFoco(oldMapaContext, {
-    ...actionContextChange,
-    elemento: newImageOverlay,
-  });
   console.log("imagem inserida", newImageOverlay);
   return {
     ...oldMapaContext,
+    elementoFoco: newImageOverlay,
     conteudo: {
       ...oldMapaContext.conteudo,
       ImageOverlay: (oldMapaContext.conteudo?.ImageOverlay
@@ -232,42 +237,32 @@ const addElementoImagem = (
   };
 };
 
-const alteraElemento = (
-  oldMapaContext: mapaContextSchema,
-  actionContextChange: actionContextChange
-): mapaContextSchema => {
-  const conteudo = retornaListaElementosConteudo(oldMapaContext);
-  const ds = conteudo.find((x) => x.id === actionContextChange.id);
-  if (ds)
-    oldMapaContext.conteudo[ds.dataRef][
-      oldMapaContext.conteudo[ds.dataRef].findIndex((x) => x.id === ds.id)
-    ].geometry.coordinates = actionContextChange.posicao;
-  return {
-    ...oldMapaContext,
-  };
-};
-
 const removeElemento = (
   oldMapaContext: mapaContextSchema,
   actionContextChange: actionContextChange
 ): mapaContextSchema => {
   const listaElementos = retornaListaElementosConteudo(oldMapaContext);
+  console.log("vai remover algo");
+  let newConteudo = { ...oldMapaContext.conteudo };
   const removerUmElemento = (elementos: any[], id: NIL) => {
-    elementos.splice(
+    console.log("vai remover algo - removerUmElemento", id);
+    const newElementos = [...elementos];
+    newElementos.splice(
       elementos.findIndex((x) => x.id === id),
       1
     );
+    return newElementos;
   };
-
   oldMapaContext.elementosFoco
     ? oldMapaContext.elementosFoco.forEach((element) => {
         if (listaElementos.some((x) => x.id === element.id))
-          removerUmElemento(
-            oldMapaContext.conteudo[
-              listaElementos.find((x) => x.id === element.id).dataRef
-            ],
-            element.id
-          );
+          newConteudo[listaElementos.find((x) => x.id === element.id).dataRef] =
+            removerUmElemento(
+              oldMapaContext.conteudo[
+                listaElementos.find((x) => x.id === element.id).dataRef
+              ],
+              element.id
+            );
         else {
           const listaAlteracoesConteudo =
             retornaListaAlteracoesConteudo(oldMapaContext);
@@ -275,7 +270,9 @@ const removeElemento = (
             const elementoPai = listaElementos.find((x) =>
               x.alteracoes?.some((x) => x.id === element.id)
             );
-            removerUmElemento(
+            newConteudo[elementoPai.dataRef].find(
+              (x) => x.id === elementoPai.id
+            ).alteracoes = removerUmElemento(
               oldMapaContext.conteudo[elementoPai.dataRef].find(
                 (x) => x.id === elementoPai.id
               ).alteracoes,
@@ -285,21 +282,24 @@ const removeElemento = (
         }
       })
     : oldMapaContext.elementoFoco
-    ? removerUmElemento(
+    ? (newConteudo[oldMapaContext.elementoFoco.dataRef] = removerUmElemento(
         oldMapaContext.conteudo[oldMapaContext.elementoFoco.dataRef],
         oldMapaContext.elementoFoco.id
-      )
+      ))
     : actionContextChange.id
-    ? removerUmElemento(
+    ? (newConteudo[
+        listaElementos.find((x) => x.id === actionContextChange.id).dataRef
+      ] = removerUmElemento(
         oldMapaContext.conteudo[
           listaElementos.find((x) => x.id === actionContextChange.id).dataRef
         ],
         actionContextChange.id
-      )
+      ))
     : oldMapaContext;
 
   return {
     ...oldMapaContext,
+    conteudo: newConteudo,
   };
 };
 
@@ -332,6 +332,37 @@ const atualizaLinhaTempoElemento = (
   };
 };
 
+const alteraCoordinatesElemento = (
+  oldMapaContext: mapaContextSchema,
+  actionContextChange: actionContextChange
+): mapaContextSchema => {
+  const conteudo = retornaListaElementosConteudo(oldMapaContext);
+  const newElement = conteudo.find((x) => x.id === actionContextChange.id);
+  if (!newElement) return { ...oldMapaContext };
+  // oldMapaContext.conteudo[ds.dataRef][
+  //   oldMapaContext.conteudo[ds.dataRef].findIndex((x) => x.id === ds.id)
+  // ].geometry.coordinates = actionContextChange.posicao;
+  const newListaConteudoTipo = oldMapaContext.conteudo[newElement.dataRef].map(
+    (elemento) =>
+      elemento.id === actionContextChange.id
+        ? {
+            ...elemento,
+            geometry: {
+              ...elemento.geometry,
+              coordinates: actionContextChange.posicao,
+            },
+          }
+        : elemento
+  );
+  return {
+    ...oldMapaContext,
+    conteudo: {
+      ...oldMapaContext.conteudo,
+      [newElement.dataRef]: [...newListaConteudoTipo],
+    },
+  };
+};
+
 const editarPropriedadeElemento = (
   oldMapaContext: mapaContextSchema,
   tipoElemento: string,
@@ -342,11 +373,18 @@ const editarPropriedadeElemento = (
   console.log(
     `Alterando o ${nomePropriedade} de um ${tipoElemento}(${id}) para o valor: ${novoValor}`
   );
-  oldMapaContext.conteudo[tipoElemento].find((elemento) => elemento.id === id)[
-    nomePropriedade
-  ] = novoValor;
+  const newListaConteudoTipo = oldMapaContext.conteudo[tipoElemento].map(
+    (elemento) =>
+      elemento.id === id
+        ? { ...elemento, [nomePropriedade]: novoValor }
+        : elemento
+  );
   return {
     ...oldMapaContext,
+    conteudo: {
+      ...oldMapaContext.conteudo,
+      [tipoElemento]: [...newListaConteudoTipo],
+    },
   };
 };
 
@@ -447,7 +485,7 @@ const MapaFunctionHelpers = {
   changeTodosElementosFocoPorIds,
   addElementoPadrao,
   addElementoImagem,
-  alteraElemento,
+  alteraCoordinatesElemento,
   removeElemento,
   atualizaLinhaTempoElemento,
   editarPropriedadeElemento,

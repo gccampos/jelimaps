@@ -58,8 +58,11 @@ export function mapaReducer(
       console.log("add Elemento", action);
       return MapaFunctionHelpers.addElementoPadrao(oldMapaContext, action);
     }
-    case "alteraElemento": {
-      return MapaFunctionHelpers.alteraElemento(oldMapaContext, action);
+    case "alteraCoordinatesElemento": {
+      return MapaFunctionHelpers.alteraCoordinatesElemento(
+        oldMapaContext,
+        action
+      );
     }
     case "adicionarImageOverlay": {
       return MapaFunctionHelpers.addElementoImagem(oldMapaContext, action);
@@ -97,6 +100,12 @@ export function mapaReducer(
     case "trocaMapaContext": {
       return {
         ...(action.mapContext ?? oldMapaContext),
+      };
+    }
+    case "limpaCaixaDialogo": {
+      return {
+        ...oldMapaContext,
+        caixaDialogo: "",
       };
     }
     case "movendoImagem": {

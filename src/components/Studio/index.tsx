@@ -17,7 +17,7 @@ import {
   TerraDrawCircleMode,
   TerraDrawRenderMode,
 } from "terra-draw";
-import { useMapaDispatch } from "../Mapa/context/MapaContext";
+import { useMapaContext, useMapaDispatch } from "../Mapa/context/MapaContext";
 import { tipoElemento } from "../Mapa/context/mapaContextTypes";
 // import moment from "moment";
 
@@ -30,30 +30,34 @@ const Studio = () => {
   const [rndRef, setRndRef] = useState<Rnd>();
   const [map, setMap] = useState<L.Map>();
   const conteudoElementosRef = useRef<tipoElemento[]>(null);
+  const mapaContext = useMapaContext();
   const tempoAtualRef = useRef(null);
   const [draw, setDraw] = useState<TerraDraw>(null);
   const [altura, setAltura] = useState(height * 0.25);
   const displaYNoneStyle = { display: "none" };
-  const resizeHandleStylesObject = {
-    bottom: displaYNoneStyle,
-    left: displaYNoneStyle,
-    right: displaYNoneStyle,
-    topLeft: displaYNoneStyle,
-    topRight: displaYNoneStyle,
-    bottomLeft: displaYNoneStyle,
-    bottomRight: displaYNoneStyle,
-  };
+  const [larguraPropriedades, setLargurasPropriedades] = useState(250);
   const dispatch = useMapaDispatch();
 
   const deleteItem = React.useCallback(
     (e) => {
-      if (e.key === "Delete")
-        dispatch({
-          type: "removeElements",
-        });
+      if (e.key === "Delete") {
+        console.log("DRAW DELETE KEY EVENT");
+        // e.preventDefault();
+        // dispatch({
+        //   type: "removeElements",
+        // });
+      }
     },
-    [dispatch]
+    [
+      // dispatch
+    ]
   );
+  const isMobile = React.useCallback(() => {
+    return (
+      "ontouchstart" in document.documentElement &&
+      !!navigator.userAgent.match(/Mobi/)
+    );
+  }, []);
 
   useEffect(() => {
     if (map && !draw) {
@@ -147,16 +151,59 @@ const Studio = () => {
           tipo: "Marker",
         });
       };
-
-      terraDrawSelectMode.onFinish = (e: any) => {
-        console.log("finsish select", e);
-      };
-      terraDrawSelectMode.onKeyDown = deleteItem;
       terraDrawImageOverlayMode.onClick = () => {
         dispatch({
           type: "addImageOverlay",
         });
       };
+      (function (modes) {
+        console.log("modes", modes);
+        modes.forEach((mode) => {
+          var oldEvent = mode.onClick;
+          mode.origin.onClick = (e: any) => {
+            console.log("clicou pelo terra draw", isMobile());
+            if (
+              !(
+                e.containerY < 70 &&
+                e.containerX > (map as any)._container.offsetWidth - 75
+              ) &&
+              !(e.containerX < 50 && e.containerY < 155)
+              // e.containerX > (map as any)._container.offsetWidth - 70)
+            ) {
+              if (
+                typeof terraDrawCircleMode === typeof mode.origin &&
+                isMobile()
+              ) {
+                alert(
+                  "circulo com clickCount " + (mode.origin as any).clickCount
+                );
+                if ((mode.origin as any).clickCount === 1)
+                  mode.origin.onMouseMove(e);
+              }
+              oldEvent.apply(mode.origin, [e]);
+            }
+          };
+        });
+      })([
+        { origin: terraDrawCircleMode, onClick: terraDrawCircleMode.onClick },
+        {
+          origin: terraDrawLineStringMode,
+          onClick: terraDrawLineStringMode.onClick,
+        },
+        { origin: terraDrawPointMode, onClick: terraDrawPointMode.onClick },
+        { origin: terraDrawPolygonMode, onClick: terraDrawPolygonMode.onClick },
+        { origin: terraDrawSelectMode, onClick: terraDrawSelectMode.onClick },
+        { origin: terraDrawMarkerMode, onClick: terraDrawMarkerMode.onClick },
+        {
+          origin: terraDrawImageOverlayMode,
+          onClick: terraDrawImageOverlayMode.onClick,
+        },
+      ]);
+
+      terraDrawSelectMode.onFinish = (e: any) => {
+        console.log("finsish select", e);
+      };
+      terraDrawSelectMode.onKeyDown = deleteItem;
 
       const onFinishModesExistents = (e: any) => {
         const element = draw.getSnapshot().find((x) => x.id === e);
@@ -226,7 +273,7 @@ const Studio = () => {
                         ].eventTimeout !== null
                       ) {
                         dispatch({
-                          type: "alteraElemento",
+                          type: "alteraCoordinatesElemento",
                           posicao: element.geometry.coordinates as
                             | [number, number]
                             | [number, number][]
@@ -257,7 +304,12 @@ const Studio = () => {
       // Set the mode to polygon
       draw.setMode("select");
     }
-  }, [map, draw, dispatch, conteudoElementosRef, deleteItem, tempoAtualRef]);
+  }, [altura, deleteItem, dispatch, draw, height, isMobile, map]);
+  useEffect(() => {
+    if (!(mapaContext.elementoFoco && mapaContext.elementosFoco))
+      console.log("useEffect[draw, conteudoElementosRef.current]", draw);
+    //draw.mo
+  }, [draw, mapaContext.elementoFoco, mapaContext.elementosFoco]);
   return (
     <Grid container sx={{ height: "100%" }} id="studioMapa">
       <Grid item container xs={12}>
@@ -268,7 +320,12 @@ const Studio = () => {
           draw={draw}
           conteudoElementosRef={conteudoElementosRef}
         />
-        <Propriedades altura={height - altura} tempoAtualRef={tempoAtualRef} />
+        <Propriedades
+          altura={height - altura}
+          tempoAtualRef={tempoAtualRef}
+          larguraPropriedades={larguraPropriedades}
+          setLargurasPropriedades={setLargurasPropriedades}
+        />
       </Grid>
       <Rnd
         ref={(c) => {
@@ -276,7 +333,16 @@ const Studio = () => {
         }}
         maxHeight={height * 0.9}
         minHeight={height * 0.05}
-        resizeHandleStyles={resizeHandleStylesObject}
+        resizeHandleStyles={{
+          bottom: displaYNoneStyle,
+          left: displaYNoneStyle,
+          right: displaYNoneStyle,
+          topLeft: displaYNoneStyle,
+          topRight: displaYNoneStyle,
+          bottomLeft: displaYNoneStyle,
+          bottomRight: displaYNoneStyle,
+          top: { height: 25 },
+        }}
         size={{ height: altura, width: "100%" }}
         disableDragging
         position={{ y: height - altura, x: 0 }}
@@ -306,7 +372,7 @@ const Studio = () => {
           mt={2.2}
           sx={{ height: "95%", maxHeight: altura }}
         >
-          <LinhaTempo tempoAtualRef={tempoAtualRef} draw={draw} />
+          <LinhaTempo tempoAtualRef={tempoAtualRef} />
         </Grid>
       </Rnd>
     </Grid>
