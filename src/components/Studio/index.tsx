@@ -173,9 +173,13 @@ const Studio = () => {
               if (
                 typeof terraDrawCircleMode === typeof mode.origin &&
                 isMobile()
-              )
+              ) {
+                alert(
+                  "circulo com clickCount " + (mode.origin as any).clickCount
+                );
                 if ((mode.origin as any).clickCount === 1)
                   mode.origin.onMouseMove(e);
+              }
               oldEvent.apply(mode.origin, [e]);
             }
           };
