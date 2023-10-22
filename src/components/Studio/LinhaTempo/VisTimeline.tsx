@@ -6,7 +6,6 @@ import React, {
   useMemo,
 } from "react";
 import {
-  DataInterfaceDataGroup,
   //DataSet,
   Timeline,
   TimelineEventPropertiesResult,
@@ -35,9 +34,9 @@ export default function VisTimeline(props: {
   const mapaContext = useMapaContext();
   const dispatch = useMapaDispatch();
   const [visTimeline, setVisTimeline] = useState<Timeline>(null);
-  const intervaloRef = useRef(null);
+  // const intervaloRef = useRef(null);
   const elementosTimelineRef = useRef(null);
-  const dataSetRef = useRef(null);
+  // const dataSetRef = useRef(null);
   const visJsRef = useRef<HTMLDivElement>(null);
   const divScrollRef = useRef(0);
   // const elementos = useRef(
