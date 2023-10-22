@@ -23,6 +23,7 @@ export type tipoGenericoElementoTimeline = periodoInicioFim & {
   group?: NIL;
   style?: string;
   collapse?: boolean;
+  collapseTimeline?: boolean;
   draggable?: boolean;
   order?: any;
 };

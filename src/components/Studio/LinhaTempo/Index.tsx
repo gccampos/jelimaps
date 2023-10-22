@@ -15,6 +15,12 @@ export default function LinhaTempo(props: {
         height: "100%",
         ".personalized-scrollbar": {
           height: "100%",
+          // "div:first-child": {
+          //   height: "100%",
+          // },
+          ".vis-timeline": {
+            height: "100% !important",
+          },
           ".vis-vertical-scroll": {
             "&::-webkit-scrollbar": {
               width: 7,

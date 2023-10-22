@@ -24,7 +24,7 @@ import {
 import { v4 } from "uuid";
 import moment from "moment";
 import { Dialog, IconButton, Stack } from "@mui/material";
-import { Delete, Edit } from "@mui/icons-material";
+import { Delete, Edit, UnfoldLess, UnfoldMore } from "@mui/icons-material";
 
 export default function VisTimeline(props: {
   tempoAtualRef: React.MutableRefObject<any>;
@@ -39,6 +39,7 @@ export default function VisTimeline(props: {
   // const dataSetRef = useRef(null);
   const visJsRef = useRef<HTMLDivElement>(null);
   const divScrollRef = useRef(0);
+  const deveFazerScrollRef = useRef(false);
   // const elementos = useRef(
   //   useListaElementos().filter((x) => x.visTimelineObject?.type != "background")
   // );
@@ -174,8 +175,11 @@ export default function VisTimeline(props: {
       if (item.what === "group-label") {
         abrirTooltip(item);
         dispatch({
-          type: "selecionarElementosFocoPorId",
-          ids: [item.group],
+          type: "selecionarElementoFoco",
+          id: item.group,
+          //  elementosAlteracoesTimeline().find(
+          //   (x) => x.id === item.group
+          // ),
         });
       }
     },
@@ -286,7 +290,7 @@ export default function VisTimeline(props: {
       groups: listaMapeada().filter(
         (x) => x.visTimelineObject?.type != "background"
       ),
-      items: elementosAlteracoesTimeline(),
+      items: elementosAlteracoesTimeline().filter((x) => !x.collapseTimeline),
     };
     console.log(
       "calls - useCallback [visTimeline, atual, temDiferencaConteudo] ",
@@ -299,7 +303,9 @@ export default function VisTimeline(props: {
       "\nscrollTop: ",
       (visTimeline as any).dom.leftContainer.scrollTop,
       "\nscrollHeight: ",
-      (visTimeline as any).dom.leftContainer.scrollHeight
+      (visTimeline as any).dom.leftContainer.scrollHeight,
+      "\nTamanho do container:",
+      (visTimeline as any).dom.leftContainer.clientHeight
     );
     visTimeline.setData(atual);
     visTimeline.setOptions(optionsVisTimeline());
@@ -335,6 +341,28 @@ export default function VisTimeline(props: {
         setVisTimeline(tl);
         tl.on("select", handleSeleciona);
         tl.on("click", handleClick);
+        tl.on("changed", () => {
+          if (deveFazerScrollRef.current) {
+            console.log(
+              "changed EVENT\n",
+              "\nscrollTop: ",
+              (tl as any).dom.leftContainer.scrollTop,
+              "\nscrollHeight: ",
+              (tl as any).dom.leftContainer.scrollHeight,
+              "\nscrollTop Antigo:",
+              divScrollRef.current,
+              "\nTamanho do container:",
+              (tl as any).dom.leftContainer.clientHeight
+            );
+            (tl as any).dom.leftContainer.scroll(0, divScrollRef.current);
+            deveFazerScrollRef.current = false;
+            console.log(
+              "NEW VALUE",
+              "\nscrollTop: ",
+              (tl as any).dom.leftContainer.scrollTop
+            );
+          }
+        });
         tl.on("doubleClick", handleDoubleClick);
         tl.on("timechanged", (e) => {
           dispatch({ type: "atualizaTempo", time: e.time });
@@ -395,14 +423,13 @@ export default function VisTimeline(props: {
           "\nscrollHeight: ",
           (visTimeline as any).dom.leftContainer.scrollHeight,
           "\nscrollTop Antigo:",
-          divScrollRef.current
+          divScrollRef.current,
+          "\nTamanho do container:",
+          (visTimeline as any).dom.leftContainer.clientHeight
         );
-        (visTimeline as any).dom.leftContainer.scroll &&
-          (visTimeline as any).dom.leftContainer.scroll(
-            0,
-            divScrollRef.current
-          );
-      }, 80);
+        (visTimeline as any).dom.leftContainer.scroll(0, divScrollRef.current);
+        deveFazerScrollRef.current = true;
+      }, 1);
     }
   }, [visTimeline, setOptionsTimeline]);
 
@@ -413,22 +440,31 @@ export default function VisTimeline(props: {
   ]);
 
   const [tooltipOpen, setTooltipOpen] = useState(false);
-  const [tooltipCoordinates, setTooltipCoordinates] = useState({ x: 0, y: 0 });
+  const [tooltipOptions, setTooltipOptions] = useState({
+    x: 0,
+    y: 0,
+    collapseTimeline: false,
+  });
   const tooltipRef = useRef(null);
   const abrirTooltip = (item: TimelineEventPropertiesResult) => {
+    const _listaElementos = elementosTimelineRef.current?.groups;
+    setTooltipOptions({
+      x: item.pageX,
+      y: item.pageY,
+      collapseTimeline:
+        _listaElementos.find((x) => x.id === item.group)?.collapseTimeline ??
+        false,
+    });
     setTooltipOpen(true);
-    setTooltipCoordinates({ x: item.pageX, y: item.pageY });
   };
 
   return (
-    <div
-      className="personalized-scrollbar"
-      // style={{ overflowY: "scroll", height: "-webkit-fill-available" }}
-    >
+    <div className="personalized-scrollbar">
       <div
         ref={(ref) => {
           visJsRef.current = ref;
         }}
+        style={{ height: "100%" }}
       />
       <Dialog
         open={tooltipOpen}
@@ -439,12 +475,12 @@ export default function VisTimeline(props: {
         onMouseLeave={() => {
           tooltipRef.current = setTimeout(() => {
             setTooltipOpen(false);
-          }, 1500);
+          }, 700);
         }}
         sx={{
           position: "absolute",
-          left: tooltipCoordinates.x,
-          top: tooltipCoordinates.y,
+          left: tooltipOptions.x,
+          top: tooltipOptions.y,
           bottom: "auto",
           right: "auto",
           "& .MuiDialog-container": {
@@ -457,7 +493,20 @@ export default function VisTimeline(props: {
       >
         <Stack direction="row" spacing={1}>
           <IconButton
-            aria-label="edit"
+            aria-label={
+              !tooltipOptions.collapseTimeline
+                ? "diminuir visualização"
+                : "aumentar visualização"
+            }
+            onClick={() => {
+              dispatch({ type: "toggleCollapseTimeline" });
+              setTooltipOpen(false);
+            }}
+          >
+            {!tooltipOptions.collapseTimeline ? <UnfoldLess /> : <UnfoldMore />}
+          </IconButton>
+          <IconButton
+            aria-label="editar"
             onClick={() => {
               if (!mapaContext.slidePropriedade)
                 dispatch({ type: "propriedadeToggle" });
@@ -467,7 +516,7 @@ export default function VisTimeline(props: {
             <Edit />
           </IconButton>
           <IconButton
-            aria-label="delete"
+            aria-label="deletar"
             onClick={() => {
               dispatch({ type: "removeElements" });
               setTooltipOpen(false);

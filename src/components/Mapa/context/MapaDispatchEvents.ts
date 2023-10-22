@@ -67,12 +67,15 @@ export function mapaReducer(
     case "adicionarImageOverlay": {
       return MapaFunctionHelpers.addElementoImagem(oldMapaContext, action);
     }
-    // case "addRectangle": {
-    //   return MapaFunctionHelpers.addElementoQuadrilatero(
-    //     oldMapaContext,
-    //     action
-    //   );
-    // }
+    case "toggleCollapseTimeline": {
+      return MapaFunctionHelpers.editarPropriedadeElemento(
+        oldMapaContext,
+        oldMapaContext.elementoFoco.dataRef,
+        oldMapaContext.elementoFoco.id,
+        "collapseTimeline",
+        !oldMapaContext.elementoFoco.collapseTimeline
+      );
+    }
     case "propriedadeToggle": {
       return {
         ...oldMapaContext,

@@ -52,6 +52,7 @@ const initialMapaContexto: mapaContextSchema = {
     verticalScroll: true,
     order: (a, b) => b.order - a.order,
     groupOrder: (a, b) => b.order - a.order,
+    locale: "pt_BR",
   },
 };
 

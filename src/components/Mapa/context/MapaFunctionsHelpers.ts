@@ -246,7 +246,7 @@ const removeElemento = (
   let newConteudo = { ...oldMapaContext.conteudo };
   const removerUmElemento = (elementos: any[], id: NIL) => {
     console.log("vai remover algo - removerUmElemento", id);
-    const newElementos = [...elementos];
+    let newElementos = [...elementos];
     newElementos.splice(
       elementos.findIndex((x) => x.id === id),
       1
@@ -295,7 +295,7 @@ const removeElemento = (
         ],
         actionContextChange.id
       ))
-    : oldMapaContext;
+    : null;
 
   return {
     ...oldMapaContext,
