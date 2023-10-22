@@ -24,11 +24,14 @@ import {
 } from "@/components/Mapa/context/mapaContextTypes";
 import { v4 } from "uuid";
 import moment from "moment";
+import { Dialog, IconButton, Stack } from "@mui/material";
+import { Delete, Edit } from "@mui/icons-material";
 
 export default function VisTimeline(props: {
   tempoAtualRef: React.MutableRefObject<any>;
+  altura: number;
 }) {
-  const { tempoAtualRef } = props;
+  const { tempoAtualRef, altura } = props;
   const mapaContext = useMapaContext();
   const dispatch = useMapaDispatch();
   const [visTimeline, setVisTimeline] = useState<Timeline>(null);
@@ -36,7 +39,7 @@ export default function VisTimeline(props: {
   const elementosTimelineRef = useRef(null);
   const dataSetRef = useRef(null);
   const visJsRef = useRef<HTMLDivElement>(null);
-  const divScrollRef = useRef<HTMLDivElement>(null);
+  const divScrollRef = useRef(0);
   // const elementos = useRef(
   //   useListaElementos().filter((x) => x.visTimelineObject?.type != "background")
   // );
@@ -159,21 +162,23 @@ export default function VisTimeline(props: {
     (item: TimelineEventPropertiesResult) => {
       console.log("click", item.what);
       if (!item.what) {
-        dispatch({
-          type: "alteraPropriedadeGeral",
-          tipo: "fit",
-          valor: true,
-        });
+        // dispatch({
+        //   type: "alteraPropriedadeGeral",
+        //   tipo: "fit",
+        //   valor: true,
+        // });
       }
       if (item.what === "axis") {
         dispatch({ ...item, type: "atualizaTempo" });
         tempoAtualRef.current = item.time;
       }
-      if (item.what === "group-label")
+      if (item.what === "group-label") {
+        abrirTooltip(item);
         dispatch({
           type: "selecionarElementosFocoPorId",
           ids: [item.group],
         });
+      }
     },
     [dispatch, tempoAtualRef]
   );
@@ -225,49 +230,53 @@ export default function VisTimeline(props: {
     },
     [mapaContext]
   );
-  const handleAlterandoOrdem = useCallback(
-    (from: any, to: any, groups: DataInterfaceDataGroup) => {
-      const targetOrder = to.order;
-      to.order = from.order;
-      from.order = targetOrder;
-      if (
-        //!intervaloRef.current &&
-        JSON.stringify(dataSetRef.current) !==
-        JSON.stringify([to.order, from.order].sort((a, b) => a.order - b.order))
-      ) {
-        intervaloRef.current = setTimeout(() => {
-          groups.forEach((x: any) => {
-            if (listaMapeada().find((z) => z.id === x.id)?.order !== x.order)
-              dispatch({
-                type: "editarPropriedade",
-                tipo: x.dataRef,
-                id: x.id,
-                nomePropriedade: "order",
-                valorPropriedade: x.order,
-              });
-          });
-          intervaloRef.current = null;
-        }, 0);
-        dataSetRef.current = [to.order, from.order].sort(
-          (a, b) => a.order - b.order
-        );
-      }
-    },
-    [dispatch]
-  );
+  // const handleAlterandoOrdem = useCallback(
+  //   (from: any, to: any, groups: DataInterfaceDataGroup) => {
+  //     const targetOrder = to.order;
+  //     to.order = from.order;
+  //     from.order = targetOrder;
+  //     if (
+  //       //!intervaloRef.current &&
+  //       JSON.stringify(dataSetRef.current) !==
+  //       JSON.stringify([to.order, from.order].sort((a, b) => a.order - b.order))
+  //     ) {
+  //       intervaloRef.current = setTimeout(() => {
+  //         groups.forEach((x: any) => {
+  //           if (listaMapeada().find((z) => z.id === x.id)?.order !== x.order)
+  //             dispatch({
+  //               type: "editarPropriedade",
+  //               tipo: x.dataRef,
+  //               id: x.id,
+  //               nomePropriedade: "order",
+  //               valorPropriedade: x.order,
+  //             });
+  //         });
+  //         intervaloRef.current = null;
+  //       }, 0);
+  //       dataSetRef.current = [to.order, from.order].sort(
+  //         (a, b) => a.order - b.order
+  //       );
+  //     }
+  //   },
+  //   [dispatch]
+  // );
 
-  const optionsVisTimeline = useMemo<TimelineOptions>(() => {
+  const optionsVisTimeline: () => TimelineOptions = useCallback(() => {
     return {
       ...mapaContext.timelineOptions,
       onRemove: handleRemoveConteudo,
       onMove: handleAtualizaConteudo,
       onMoving: handleOnMoving,
-      groupOrderSwap: handleAlterandoOrdem,
+      // groupOrderSwap: handleAlterandoOrdem,
+      maxHeight: altura,
+      start: moment(mapaContext.cenaInicio).format("yyyy-MM-DDTHH:mm:ss"),
+      end: moment(mapaContext.cenaFim).format("yyyy-MM-DDTHH:mm:ss"),
     };
   }, [
     mapaContext,
+    altura,
     handleOnMoving,
-    handleAlterandoOrdem,
+    // handleAlterandoOrdem,
     handleRemoveConteudo,
     handleAtualizaConteudo,
     //handleAdicionarPropriedadeConteudo,
@@ -280,23 +289,27 @@ export default function VisTimeline(props: {
       ),
       items: elementosAlteracoesTimeline(),
     };
-    const temDiferencaConteudo =
-      elementosTimelineRef.current?.groups?.length !== atual.groups.length ||
-      elementosTimelineRef.current?.items?.length !== atual.items.length;
-
     console.log(
-      "useEffect [visTimeline, atual, temDiferencaConteudo] ",
+      "calls - useCallback [visTimeline, atual, temDiferencaConteudo] ",
       visTimeline,
-      atual,
-      temDiferencaConteudo
+      atual
     );
-    if (visTimeline && temDiferencaConteudo) visTimeline.setData(atual);
-
+    divScrollRef.current = (visTimeline as any).dom.leftContainer.scrollTop;
+    console.log(
+      "SCROLL GET\n",
+      "\nscrollTop: ",
+      (visTimeline as any).dom.leftContainer.scrollTop,
+      "\nscrollHeight: ",
+      (visTimeline as any).dom.leftContainer.scrollHeight
+    );
+    visTimeline.setData(atual);
+    visTimeline.setOptions(optionsVisTimeline());
     setElementosSelecionados();
     elementosTimelineRef.current = atual;
   }, [
     visTimeline,
     elementosAlteracoesTimeline,
+    optionsVisTimeline,
     listaMapeada,
     setElementosSelecionados,
   ]);
@@ -314,10 +327,10 @@ export default function VisTimeline(props: {
         );
         const tl =
           visJsRef.current &&
-          new Timeline(visJsRef.current, null, optionsVisTimeline);
+          new Timeline(visJsRef.current, null, optionsVisTimeline());
         console.log(">>>timeline montada<<<", tl);
-        tl.addCustomTime(optionsVisTimeline.start, "currentTime");
-        tempoAtualRef.current = moment(optionsVisTimeline.start)
+        tl.addCustomTime(optionsVisTimeline().start, "currentTime");
+        tempoAtualRef.current = moment(optionsVisTimeline().start)
           .add(1, "seconds")
           .format("yyyy-MM-DDTHH:mm:ss");
         setVisTimeline(tl);
@@ -351,8 +364,6 @@ export default function VisTimeline(props: {
         tipo: "playStatus",
         valor: -1,
       });
-    if (mapaContext.reloadTimelineOptions)
-      visTimeline.setOptions(mapaContext.timelineOptions);
     if (mapaContext.fit) {
       visTimeline.fit();
       dispatch({
@@ -376,13 +387,23 @@ export default function VisTimeline(props: {
   useEffect(() => {
     console.log("useEffect [setOptionsTimeline] ", visTimeline);
     if (visTimeline) {
-      const scrollTopValue = divScrollRef.current.scrollTop;
       setOptionsTimeline();
-      if (scrollTopValue)
-        setTimeout(() => {
-          console.log("vai ajustar scroll do visTimeline", scrollTopValue);
-          divScrollRef.current.scrollTop = scrollTopValue;
-        }, 77);
+      setTimeout(() => {
+        console.log(
+          "SCROLL SET\n",
+          "\nscrollTop: ",
+          (visTimeline as any).dom.leftContainer.scrollTop,
+          "\nscrollHeight: ",
+          (visTimeline as any).dom.leftContainer.scrollHeight,
+          "\nscrollTop Antigo:",
+          divScrollRef.current
+        );
+        (visTimeline as any).dom.leftContainer.scroll &&
+          (visTimeline as any).dom.leftContainer.scroll(
+            0,
+            divScrollRef.current
+          );
+      }, 80);
     }
   }, [visTimeline, setOptionsTimeline]);
 
@@ -392,19 +413,71 @@ export default function VisTimeline(props: {
     setElementosSelecionados,
   ]);
 
+  const [tooltipOpen, setTooltipOpen] = useState(false);
+  const [tooltipCoordinates, setTooltipCoordinates] = useState({ x: 0, y: 0 });
+  const tooltipRef = useRef(null);
+  const abrirTooltip = (item: TimelineEventPropertiesResult) => {
+    setTooltipOpen(true);
+    setTooltipCoordinates({ x: item.pageX, y: item.pageY });
+  };
+
   return (
     <div
-      ref={(ref) => {
-        divScrollRef.current = ref;
-      }}
       className="personalized-scrollbar"
-      style={{ overflowY: "scroll", height: "-webkit-fill-available" }}
+      // style={{ overflowY: "scroll", height: "-webkit-fill-available" }}
     >
       <div
         ref={(ref) => {
           visJsRef.current = ref;
         }}
       />
+      <Dialog
+        open={tooltipOpen}
+        hideBackdrop={true}
+        onMouseEnter={() => {
+          if (tooltipRef.current) clearTimeout(tooltipRef.current);
+        }}
+        onMouseLeave={() => {
+          tooltipRef.current = setTimeout(() => {
+            setTooltipOpen(false);
+          }, 1500);
+        }}
+        sx={{
+          position: "absolute",
+          left: tooltipCoordinates.x,
+          top: tooltipCoordinates.y,
+          bottom: "auto",
+          right: "auto",
+          "& .MuiDialog-container": {
+            height: "auto",
+            "& .MuiPaper-root": {
+              margin: 0,
+            },
+          },
+        }}
+      >
+        <Stack direction="row" spacing={1}>
+          <IconButton
+            aria-label="edit"
+            onClick={() => {
+              if (!mapaContext.slidePropriedade)
+                dispatch({ type: "propriedadeToggle" });
+              setTooltipOpen(false);
+            }}
+          >
+            <Edit />
+          </IconButton>
+          <IconButton
+            aria-label="delete"
+            onClick={() => {
+              dispatch({ type: "removeElements" });
+              setTooltipOpen(false);
+            }}
+          >
+            <Delete />
+          </IconButton>
+        </Stack>
+      </Dialog>
     </div>
   );
 }

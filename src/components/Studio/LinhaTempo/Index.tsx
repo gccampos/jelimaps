@@ -4,6 +4,7 @@ import VisTimeline from "./VisTimeline";
 
 export default function LinhaTempo(props: {
   tempoAtualRef: React.MutableRefObject<any>;
+  altura: number;
 }) {
   return (
     <Grid
@@ -13,18 +14,20 @@ export default function LinhaTempo(props: {
       sx={{
         height: "100%",
         ".personalized-scrollbar": {
-          overflowY: "scroll",
-          "&::-webkit-scrollbar": {
-            width: 7,
-          },
-          "&::-webkit-scrollbar-thumb": {
-            backgroundColor: "darkgrey",
-            outline: `1px solid slategrey`,
+          height: "100%",
+          ".vis-vertical-scroll": {
+            "&::-webkit-scrollbar": {
+              width: 7,
+            },
+            "&::-webkit-scrollbar-thumb": {
+              backgroundColor: "darkgrey",
+              outline: `1px solid slategrey`,
+            },
           },
         },
       }}
     >
-      <VisTimeline tempoAtualRef={props.tempoAtualRef} />
+      <VisTimeline tempoAtualRef={props.tempoAtualRef} altura={props.altura} />
     </Grid>
   );
 }

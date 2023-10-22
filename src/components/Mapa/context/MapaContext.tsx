@@ -47,8 +47,11 @@ const initialMapaContexto: mapaContextSchema = {
     snap: (date) => date,
     rollingMode: { offset: 0, follow: false },
     showCurrentTime: false,
-    groupEditable: { order: true },
+    // groupEditable: { order: true },
     groupHeightMode: "fitItems",
+    verticalScroll: true,
+    order: (a, b) => b.order - a.order,
+    groupOrder: (a, b) => b.order - a.order,
   },
 };
 

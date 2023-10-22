@@ -164,10 +164,10 @@ const Studio = () => {
             console.log("clicou pelo terra draw", isMobile());
             if (
               !(
-                e.containerY < 70 &&
-                e.containerX > (map as any)._container.offsetWidth - 75
+                e.containerY < 90 &&
+                e.containerX > (map as any)._container.offsetWidth - 90
               ) &&
-              !(e.containerX < 50 && e.containerY < 155)
+              !(e.containerX < 60 && e.containerY < 160)
               // e.containerX > (map as any)._container.offsetWidth - 70)
             ) {
               if (
@@ -176,9 +176,6 @@ const Studio = () => {
               ) {
                 (mode.origin as any).clickCount =
                   (mode.origin as any).clickCount ?? 0;
-                alert(
-                  "circulo com clickCount " + (mode.origin as any).clickCount
-                );
                 if ((mode.origin as any).clickCount === 1)
                   mode.origin.onMouseMove(e);
               }
@@ -374,7 +371,7 @@ const Studio = () => {
           mt={2.2}
           sx={{ height: "95%", maxHeight: altura }}
         >
-          <LinhaTempo tempoAtualRef={tempoAtualRef} />
+          <LinhaTempo tempoAtualRef={tempoAtualRef} altura={altura} />
         </Grid>
       </Rnd>
     </Grid>
