@@ -6,11 +6,6 @@ export function mapaReducer(
   oldMapaContext: mapaContextSchema,
   action: actionContextChange
 ): mapaContextSchema {
-  console.log(
-    `metodoDispatch [TYPE:${action.type}] disparado`,
-    oldMapaContext,
-    action
-  );
   switch (action.type) {
     case "modoVisao": {
       return {
@@ -55,7 +50,6 @@ export function mapaReducer(
       );
     }
     case "addElemento": {
-      console.log("add Elemento", action);
       return MapaFunctionHelpers.addElementoPadrao(oldMapaContext, action);
     }
     case "alteraCoordinatesElemento": {

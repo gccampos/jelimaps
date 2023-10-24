@@ -89,14 +89,6 @@ export function MapaProvider({ children }) {
         old,
         e.type === "use-undo" ? { ...e, type: "trocaMapaContext" } : e
       );
-      console.log(
-        "handleDispatch \n newCotext: ",
-        newContext,
-        "old: ",
-        old,
-        "e :",
-        e
-      );
       if (e.type !== "use-undo") set(newContext, false);
       return newContext;
     },
@@ -108,14 +100,6 @@ export function MapaProvider({ children }) {
       value={{
         reset,
         undo: () => {
-          console.log("undo function", context.past);
-          console.log(
-            "context.past va\n",
-            "\n\npassado\n",
-            context.past,
-            "futuro\n",
-            context.future
-          );
           dispatch({
             type: "use-undo",
             mapContext: context.past[context.past.length - 1],
@@ -123,7 +107,6 @@ export function MapaProvider({ children }) {
           undo();
         },
         redo: () => {
-          console.log("redo function");
           dispatch({
             type: "use-undo",
             mapContext: context.future[context.future.length - 1],

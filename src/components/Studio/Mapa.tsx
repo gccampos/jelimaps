@@ -63,13 +63,10 @@ export default function Mapa(props: {
   );
 
   useEffect(() => {
-    console.log("useEffect [map]", map);
     if (map && !isMounted) {
-      console.log("map", map);
-      console.log("map.options", map?.options);
-      // map.on("moveend", () => {
-      //   dispatch({ type: "alteraPropriedadesMapa", map: map });
-      // });
+      map.on("moveend", () => {
+        dispatch({ type: "alteraPropriedadesMapa", map: map });
+      });
       setMapa(map);
       setIsMounted(true);
     }
@@ -183,7 +180,6 @@ export default function Mapa(props: {
     // );
     conteudoElementosRef.current =
       MapaFunctionHelpers.retornaListaElementosConteudoCenaAtual(mapaContext);
-    console.log("contexto do mapa", mapaContext);
   });
 
   // const verificaElementoFocadoPorId = (id) => {
@@ -207,7 +203,6 @@ export default function Mapa(props: {
     const el = new L.GeoJSON(p.el);
     useEffect(() => {
       if (p.el.draggable) {
-        console.log("Construtor DRAW ConteudoMapa");
         const ds = p.el as GeoJSONStoreFeatures;
         props.draw.addFeatures([ds]);
         if (
@@ -217,7 +212,6 @@ export default function Mapa(props: {
           (props.draw as any)._mode.selected = [p.el.id];
         //(props.draw as any)._mode.onSelect(p.el.id);
       } else {
-        console.log("Construtor ConteudoMapa");
         el.on("click", () =>
           dispatch({
             type: "selecionarElementoFoco",
@@ -227,7 +221,6 @@ export default function Mapa(props: {
         map.addLayer(el);
       }
       return () => {
-        // console.log("Dispose DRAW ConteudoMapa", props.draw);
         // props.draw.removeFeatures([p.el.id.toString()]);
         if (
           p.el.draggable ||
@@ -242,9 +235,7 @@ export default function Mapa(props: {
               (x) => x.id === p.el.id
             )
           ) {
-            console.log("Dispose DRAW ConteudoMapa");
             // props.draw.removeFeatures([p.el.id.toString()]);
-            // console.log("Disposed DRAW ConteudoMapa");
 
             (props.draw as any)._store &&
             (props.draw as any)._store.store[p.el.id.toString()]
@@ -255,7 +246,6 @@ export default function Mapa(props: {
                 });
           }
         } else {
-          console.log("Dispose ConteudoMapa");
           map.removeLayer(el);
         }
       };

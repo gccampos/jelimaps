@@ -40,13 +40,6 @@ export default function Elemento() {
     ]
   );
 
-  // React.useEffect(() => {
-  //   console.log("elemento Focado", mapaContext.elementoFoco);
-  // }, [mapaContext.elementoFoco]);
-  // React.useEffect(() => {
-  //   console.log("elementos Focados", value);
-  // }, [setValue, value]);
-
   return (
     <List sx={{ height: "100%", pt: 0 }} key={"lista"}>
       {value &&
@@ -101,8 +94,6 @@ export default function Elemento() {
                       return (
                         <Form
                           onBlur={(e: any) => {
-                            console.log("algum elemento alterado", e);
-
                             dispatch({
                               type: "editarPropriedade",
                               tipo: x.dataRef,

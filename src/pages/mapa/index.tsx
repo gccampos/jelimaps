@@ -19,7 +19,7 @@ const Studio = dynamic(() => import("@/components/Studio"), {
 export default function Mapa() {
   const mapaContext = useMapaContext();
   useEffect(() => {
-    console.log("duvidando de que", mapaContext);
+    console.log(mapaContext);
   }, []);
   return (
     <main style={{ height: "100%" }}>

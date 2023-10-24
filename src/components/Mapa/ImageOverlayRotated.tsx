@@ -17,7 +17,6 @@ const ImageOverlayRotated = (props: Props) => {
   const map = useMap();
   const dispatch = useMapaDispatch();
   const mapaContext = useMapaContext();
-  console.log("imageOvecrlaru Rotade", x);
   const centerUpdated = new LatLng(
     new Bounds(
       [x.positionTR[1], x.positionTR[0]],

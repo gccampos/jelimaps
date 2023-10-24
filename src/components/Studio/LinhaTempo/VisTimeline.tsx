@@ -100,11 +100,6 @@ export default function VisTimeline(props: {
   }, [mapaContext.elementosFoco, mapaContext.elementoFoco]);
 
   const setElementosSelecionados = useCallback(() => {
-    console.log(
-      "useCallback [visTimeline, elementosFocados] ",
-      visTimeline,
-      elementosFocados
-    );
     if (visTimeline) visTimeline.setSelection(elementosFocados);
   }, [visTimeline, elementosFocados]);
 
@@ -160,7 +155,6 @@ export default function VisTimeline(props: {
   );
   const handleClick = useCallback(
     (item: TimelineEventPropertiesResult) => {
-      console.log("click", item.what);
       if (!item.what) {
         // dispatch({
         //   type: "alteraPropriedadeGeral",
@@ -292,21 +286,7 @@ export default function VisTimeline(props: {
       ),
       items: elementosAlteracoesTimeline().filter((x) => !x.collapseTimeline),
     };
-    console.log(
-      "calls - useCallback [visTimeline, atual, temDiferencaConteudo] ",
-      visTimeline,
-      atual
-    );
     divScrollRef.current = (visTimeline as any).dom.leftContainer.scrollTop;
-    console.log(
-      "SCROLL GET\n",
-      "\nscrollTop: ",
-      (visTimeline as any).dom.leftContainer.scrollTop,
-      "\nscrollHeight: ",
-      (visTimeline as any).dom.leftContainer.scrollHeight,
-      "\nTamanho do container:",
-      (visTimeline as any).dom.leftContainer.clientHeight
-    );
     visTimeline.setData(atual);
     visTimeline.setOptions(optionsVisTimeline());
     setElementosSelecionados();
@@ -319,21 +299,11 @@ export default function VisTimeline(props: {
     setElementosSelecionados,
   ]);
   useEffect(() => {
-    console.log(
-      "useEffect [visJsRef, visTimeline]",
-      visJsRef.current,
-      visTimeline
-    );
     if (!visJsRef.current.style.position)
       if (!visTimeline) {
-        console.log(
-          "useEffect [visJsRef, visTimeline] MONTOU",
-          visJsRef.current.style.position
-        );
         const tl =
           visJsRef.current &&
           new Timeline(visJsRef.current, null, optionsVisTimeline());
-        console.log(">>>timeline montada<<<", tl);
         tl.addCustomTime(optionsVisTimeline().start, "currentTime");
         tempoAtualRef.current = moment(optionsVisTimeline().start)
           .add(1, "seconds")
@@ -343,24 +313,8 @@ export default function VisTimeline(props: {
         tl.on("click", handleClick);
         tl.on("changed", () => {
           if (deveFazerScrollRef.current) {
-            console.log(
-              "changed EVENT\n",
-              "\nscrollTop: ",
-              (tl as any).dom.leftContainer.scrollTop,
-              "\nscrollHeight: ",
-              (tl as any).dom.leftContainer.scrollHeight,
-              "\nscrollTop Antigo:",
-              divScrollRef.current,
-              "\nTamanho do container:",
-              (tl as any).dom.leftContainer.clientHeight
-            );
             (tl as any).dom.leftContainer.scroll(0, divScrollRef.current);
             deveFazerScrollRef.current = false;
-            console.log(
-              "NEW VALUE",
-              "\nscrollTop: ",
-              (tl as any).dom.leftContainer.scrollTop
-            );
           }
         });
         tl.on("doubleClick", handleDoubleClick);
@@ -402,31 +356,14 @@ export default function VisTimeline(props: {
   }, [dispatch, mapaContext, visTimeline]);
 
   useEffect(() => {
-    console.log(
-      "useEffect [visTimeline, mapaContext.tempo] ",
-      visTimeline,
-      mapaContext.tempo
-    );
     if (visTimeline)
       visTimeline.setCustomTime(mapaContext.tempo, "currentTime");
   }, [visTimeline, mapaContext.tempo]);
 
   useEffect(() => {
-    console.log("useEffect [setOptionsTimeline] ", visTimeline);
     if (visTimeline) {
       setOptionsTimeline();
       setTimeout(() => {
-        console.log(
-          "SCROLL SET\n",
-          "\nscrollTop: ",
-          (visTimeline as any).dom.leftContainer.scrollTop,
-          "\nscrollHeight: ",
-          (visTimeline as any).dom.leftContainer.scrollHeight,
-          "\nscrollTop Antigo:",
-          divScrollRef.current,
-          "\nTamanho do container:",
-          (visTimeline as any).dom.leftContainer.clientHeight
-        );
         (visTimeline as any).dom.leftContainer.scroll(0, divScrollRef.current);
         deveFazerScrollRef.current = true;
       }, 1);

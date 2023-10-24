@@ -168,7 +168,6 @@ const addElementoPadrao = (
     return {
       ...oldMapaContext,
     };
-  console.log("vai tentar inserir o elemento", actionContext);
   const newMarker: elementoPadrao = {
     geometry: actionContext.valor?.geometry ?? {
       coordinates: actionContext.posicao,
@@ -223,7 +222,6 @@ const addElementoImagem = (
     type: "Feature",
     ...padraoElementoNovoAdicionado(oldMapaContext),
   } as tipoElemento;
-  console.log("imagem inserida", newImageOverlay);
   return {
     ...oldMapaContext,
     elementoFoco: newImageOverlay,
@@ -242,10 +240,8 @@ const removeElemento = (
   actionContextChange: actionContextChange
 ): mapaContextSchema => {
   const listaElementos = retornaListaElementosConteudo(oldMapaContext);
-  console.log("vai remover algo");
   let newConteudo = { ...oldMapaContext.conteudo };
   const removerUmElemento = (elementos: any[], id: NIL) => {
-    console.log("vai remover algo - removerUmElemento", id);
     let newElementos = [...elementos];
     newElementos.splice(
       elementos.findIndex((x) => x.id === id),
@@ -370,9 +366,6 @@ const editarPropriedadeElemento = (
   nomePropriedade: string,
   novoValor: any
 ): mapaContextSchema => {
-  console.log(
-    `Alterando o ${nomePropriedade} de um ${tipoElemento}(${id}) para o valor: ${novoValor}`
-  );
   const newListaConteudoTipo = oldMapaContext.conteudo[tipoElemento].map(
     (elemento) =>
       elemento.id === id

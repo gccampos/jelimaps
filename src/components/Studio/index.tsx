@@ -38,20 +38,6 @@ const Studio = () => {
   const [larguraPropriedades, setLargurasPropriedades] = useState(250);
   const dispatch = useMapaDispatch();
 
-  const deleteItem = React.useCallback(
-    (e) => {
-      if (e.key === "Delete") {
-        console.log("DRAW DELETE KEY EVENT");
-        // e.preventDefault();
-        // dispatch({
-        //   type: "removeElements",
-        // });
-      }
-    },
-    [
-      // dispatch
-    ]
-  );
   const isMobile = React.useCallback(() => {
     return (
       "ontouchstart" in document.documentElement &&
@@ -61,10 +47,6 @@ const Studio = () => {
 
   useEffect(() => {
     if (map && !draw) {
-      map.on("keypress", (e) => {
-        console.log(e.type);
-      });
-      console.log("draw começou");
       const terraDrawPolygonMode = new TerraDrawPolygonMode({
         allowSelfIntersections: false,
         pointerDistance: 30,
@@ -157,11 +139,9 @@ const Studio = () => {
         });
       };
       (function (modes) {
-        console.log("modes", modes);
         modes.forEach((mode) => {
           var oldEvent = mode.onClick;
           mode.origin.onClick = (e: any) => {
-            console.log("clicou pelo terra draw", isMobile());
             if (
               !(
                 e.containerY < 90 &&
@@ -198,11 +178,6 @@ const Studio = () => {
           onClick: terraDrawImageOverlayMode.onClick,
         },
       ]);
-
-      terraDrawSelectMode.onFinish = (e: any) => {
-        console.log("finsish select", e);
-      };
-      terraDrawSelectMode.onKeyDown = deleteItem;
 
       const onFinishModesExistents = (e: any) => {
         const element = draw.getSnapshot().find((x) => x.id === e);
@@ -303,11 +278,11 @@ const Studio = () => {
       // Set the mode to polygon
       draw.setMode("select");
     }
-  }, [altura, deleteItem, dispatch, draw, height, isMobile, map]);
+  }, [altura, dispatch, draw, height, isMobile, map]);
   useEffect(() => {
     if (!(mapaContext.elementoFoco && mapaContext.elementosFoco))
       console.log("useEffect[draw, conteudoElementosRef.current]", draw);
-    //draw.mo
+    //TODO:selecionar elemento no draw
   }, [draw, mapaContext.elementoFoco, mapaContext.elementosFoco]);
   return (
     <Grid container sx={{ height: "100%" }} id="studioMapa">
