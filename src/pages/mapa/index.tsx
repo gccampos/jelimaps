@@ -2,11 +2,8 @@
 //import * as L from 'leaflet'
 import dynamic from "next/dynamic";
 import "leaflet/dist/leaflet.css";
-import React, { useEffect } from "react";
-import {
-  MapaProvider,
-  useMapaContext,
-} from "@/components/Mapa/context/MapaContext";
+import React from "react";
+import { MapaProvider } from "@/components/Mapa/context/MapaContext";
 
 const ModoVisaoDialog = dynamic(
   () => import("@/components/Mapa/ModoVisaoDialog/ModoVisaoDialog"),
@@ -15,17 +12,17 @@ const ModoVisaoDialog = dynamic(
 const Studio = dynamic(() => import("@/components/Studio"), {
   ssr: false,
 });
+type playerOpt = {
+  name: string;
+  stargazers_count: number;
+};
 
-export default function Mapa() {
-  const mapaContext = useMapaContext();
-  useEffect(() => {
-    console.log(mapaContext);
-  }, []);
+export default function Mapa({ repo }: { repo?: playerOpt }) {
   return (
     <main style={{ height: "100%" }}>
       <MapaProvider>
         <ModoVisaoDialog />
-        <Studio />
+        {repo == null && <Studio />}
       </MapaProvider>
     </main>
   );

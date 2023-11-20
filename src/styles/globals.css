@@ -45,3 +45,8 @@ body:has(#studioMapa) {
 #studioMapa .MuiSpeedDialAction-staticTooltipLabel {
   width: max-content;
 }
+
+.currentTime {
+  background-color: red !important;
+  width: 3px !important;
+}

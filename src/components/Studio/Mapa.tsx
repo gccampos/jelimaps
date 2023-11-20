@@ -26,7 +26,7 @@ import {
   Grid,
   TextField,
 } from "@mui/material";
-import Elementos from "./Elementos";
+// import Elementos from "./Elementos";
 import { PlaylistPlay, LocationOn } from "@mui/icons-material";
 import ReactDOMServer from "react-dom/server";
 import useCaixaDialogo from "../CaixaDialogo/useCaixaDialogo";
@@ -202,53 +202,61 @@ export default function Mapa(props: {
   const ConteudoMapa = (p: { el: elementoPadrao }) => {
     const el = new L.GeoJSON(p.el);
     useEffect(() => {
-      if (p.el.draggable) {
-        const ds = p.el as GeoJSONStoreFeatures;
-        props.draw.addFeatures([ds]);
-        if (
-          mapaContext.elementoFoco?.id === p.el.id &&
-          !(props.draw as any)._mode.selected?.some((x) => x === p.el.id)
-        )
-          (props.draw as any)._mode.selected = [p.el.id];
-        //(props.draw as any)._mode.onSelect(p.el.id);
-      } else {
-        el.on("click", () =>
-          dispatch({
-            type: "selecionarElementoFoco",
-            id: p.el.id,
-          })
-        );
-        map.addLayer(el);
-      }
-      return () => {
-        // props.draw.removeFeatures([p.el.id.toString()]);
-        if (
-          p.el.draggable ||
-          Object.keys((props.draw as any)._store.store).some(
-            (x) => x === p.el.id
-          )
-        ) {
-          // if (mapaContext.elementoFoco?.id === p.el.id)
-          //   (props.draw as any)._mode.deselect();
+      if (map && props.draw) {
+        if (p.el.draggable) {
+          const ds = p.el as GeoJSONStoreFeatures;
+          props.draw?.addFeatures([ds]);
           if (
-            MapaFunctionHelpers.retornaListaElementosConteudo(mapaContext).some(
-              (x) => x.id === p.el.id
+            mapaContext.elementoFoco?.id === p.el.id &&
+            !(props.draw as any)._mode.selected?.some((x) => x === p.el.id)
+          )
+            (props.draw as any)._mode.selected = [p.el.id];
+          //(props.draw as any)._mode.onSelect(p.el.id);
+        } else {
+          el.on("click", () =>
+            dispatch({
+              type: "selecionarElementoFoco",
+              id: p.el.id,
+            })
+          );
+          map.addLayer(el);
+        }
+        return () => {
+          // props.draw.removeFeatures([p.el.id.toString()]);
+          if (
+            p.el.draggable ||
+            Object.keys((props.draw as any)._store.store).some(
+              (x) => x === p.el.id
             )
           ) {
-            // props.draw.removeFeatures([p.el.id.toString()]);
+            // if (mapaContext.elementoFoco?.id === p.el.id)
+            //   (props.draw as any)._mode.deselect();
+            if (
+              MapaFunctionHelpers.retornaListaElementosConteudo(
+                mapaContext
+              ).some((x) => x.id === p.el.id)
+            ) {
+              // props.draw.removeFeatures([p.el.id.toString()]);
 
-            (props.draw as any)._store &&
-            (props.draw as any)._store.store[p.el.id.toString()]
-              ? props.draw.removeFeatures([p.el.id.toString()])
-              : dispatch({
-                  type: "removeElements",
-                  id: p.el.id,
-                });
+              (props.draw as any)._store &&
+              (props.draw as any)._store.store[p.el.id.toString()]
+                ? props.draw.removeFeatures([p.el.id.toString()])
+                : openModalConfirm({
+                    title: "Deletar item",
+                    message: "Você tem certeza disso?",
+                    onConfirm: () => {
+                      dispatch({
+                        type: "removeElements",
+                        id: p.el.id,
+                      });
+                    },
+                  });
+            }
+          } else {
+            map.removeLayer(el);
           }
-        } else {
-          map.removeLayer(el);
-        }
-      };
+        };
+      }
     });
     return null;
   };
@@ -257,8 +265,8 @@ export default function Mapa(props: {
     <Grid item xs>
       <div style={{ height: props.altura, display: "grid" }}>
         <MapContainer
-          center={mapaContext.mapOptions.center ?? center}
-          zoom={mapaContext.mapOptions.zoom ?? zoom}
+          center={mapaContext.mapOptions?.center ?? center}
+          zoom={mapaContext.mapOptions?.zoom ?? zoom}
           ref={setMap}
           maxZoom={18}
         >
@@ -330,8 +338,14 @@ export default function Mapa(props: {
                       >
                         <Button
                           onClick={() => {
-                            dispatch({
-                              type: "removeElements",
+                            openModalConfirm({
+                              title: "Deletar item",
+                              message: "Você tem certeza disso?",
+                              onConfirm: () => {
+                                dispatch({
+                                  type: "removeElements",
+                                });
+                              },
                             });
                           }}
                         >
@@ -440,11 +454,11 @@ export default function Mapa(props: {
                 />
               );
             })}
-          <CustomControlLeaflet
+          {/* <CustomControlLeaflet
             position={POSITION_CLASSES_CUSTOM_CONTROL.bottomright}
           >
             <Elementos altura={props.altura} />
-          </CustomControlLeaflet>
+          </CustomControlLeaflet> */}
           <CustomControlLeaflet
             position={POSITION_CLASSES_CUSTOM_CONTROL.topleft}
           >

@@ -6,6 +6,11 @@ export function mapaReducer(
   oldMapaContext: mapaContextSchema,
   action: actionContextChange
 ): mapaContextSchema {
+  console.log(
+    `metodoDispatch [TYPE:${action.type}] disparado`,
+    oldMapaContext,
+    action
+  );
   switch (action.type) {
     case "modoVisao": {
       return {
@@ -127,6 +132,13 @@ export function mapaReducer(
         tempo: moment(novoTempo).format("yyyy-MM-DDTHH:mm:ss"),
       };
     }
+    case "alteraTempoInicioFim": {
+      return {
+        ...oldMapaContext,
+        cenaInicio: action.start,
+        cenaFim: action.end,
+      };
+    }
     case "alteraPropriedadeGeral": {
       if (action.tipo.includes("cena")) {
         if (!action.formik.isValid) return oldMapaContext;
@@ -156,6 +168,15 @@ export function mapaReducer(
       return {
         ...oldMapaContext,
         cenaFim: novaCena.cenaFim,
+      };
+    }
+    case "deletarCena": {
+      const novasCenas = oldMapaContext.conteudo.cenas.filter(
+        (x) => x.id !== action.id
+      );
+      return {
+        ...oldMapaContext,
+        conteudo: { ...oldMapaContext.conteudo, cenas: novasCenas },
       };
     }
     case "alteraPropriedadeCena": {

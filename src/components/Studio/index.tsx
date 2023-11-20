@@ -46,6 +46,7 @@ const Studio = () => {
   }, []);
 
   useEffect(() => {
+    console.log("useEffect do Studio", map);
     if (map && !draw) {
       const terraDrawPolygonMode = new TerraDrawPolygonMode({
         allowSelfIntersections: false,
@@ -126,6 +127,11 @@ const Studio = () => {
           terraDrawImageOverlayMode,
         ],
       });
+
+      // var oldEvent = terraDrawLeafletAdapter.render;
+      // terraDrawLeafletAdapter.render = (e, c) => {
+      //   oldEvent.apply(terraDrawLeafletAdapter, [e, c]);
+      // };
       (terraDrawMarkerMode.onClick as any) = (e: any) => {
         dispatch({
           type: "addElemento",
@@ -280,8 +286,9 @@ const Studio = () => {
     }
   }, [altura, dispatch, draw, height, isMobile, map]);
   useEffect(() => {
-    if (!(mapaContext.elementoFoco && mapaContext.elementosFoco))
+    if (!(mapaContext.elementoFoco && mapaContext.elementosFoco)) {
       console.log("useEffect[draw, conteudoElementosRef.current]", draw);
+    }
     //TODO:selecionar elemento no draw
   }, [draw, mapaContext.elementoFoco, mapaContext.elementosFoco]);
   return (

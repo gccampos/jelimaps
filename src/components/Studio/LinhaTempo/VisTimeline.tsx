@@ -25,6 +25,7 @@ import { v4 } from "uuid";
 import moment from "moment";
 import { Dialog, IconButton, Stack } from "@mui/material";
 import { Delete, Edit, UnfoldLess, UnfoldMore } from "@mui/icons-material";
+import useCaixaDialogo from "@/components/CaixaDialogo/useCaixaDialogo";
 
 export default function VisTimeline(props: {
   tempoAtualRef: React.MutableRefObject<any>;
@@ -40,6 +41,10 @@ export default function VisTimeline(props: {
   const visJsRef = useRef<HTMLDivElement>(null);
   const divScrollRef = useRef(0);
   const deveFazerScrollRef = useRef(false);
+  const eventRef = useRef(null);
+  const { openModalConfirm } = useCaixaDialogo();
+  const startMapaContextRef = useRef(mapaContext.cenaInicio);
+  const endMapaContextRef = useRef(mapaContext.cenaFim);
   // const elementos = useRef(
   //   useListaElementos().filter((x) => x.visTimelineObject?.type != "background")
   // );
@@ -47,13 +52,19 @@ export default function VisTimeline(props: {
   //   (x) => x.visTimelineObject?.type != "background"
   // );
 
+  useEffect(() => {
+    startMapaContextRef.current = mapaContext.cenaInicio;
+    endMapaContextRef.current = mapaContext.cenaFim;
+  }, [mapaContext.cenaInicio, mapaContext.cenaFim]);
+
   const listaMapeada = useCallback(
     (lista?: (tipoElemento | tipoGenericoElementoTimeline)[]) => {
       return (
-        lista ??
-        Object.keys(mapaContext?.conteudo)
-          .map((x) => mapaContext?.conteudo[x])
-          .flat()
+        lista ?? mapaContext?.conteudo
+          ? Object.keys(mapaContext?.conteudo)
+              .map((x) => mapaContext?.conteudo[x])
+              .flat()
+          : []
       ).map((x) => {
         return {
           ...x,
@@ -63,6 +74,10 @@ export default function VisTimeline(props: {
             : x.visTimelineObject.type === "box"
             ? x.group
             : null,
+          style:
+            x.visTimelineObject?.type == "background"
+              ? `background-color: ${x.color}`
+              : x.style,
           content: x.nome,
           start: x.cenaInicio,
           end: x.cenaFim,
@@ -89,7 +104,12 @@ export default function VisTimeline(props: {
   }, [listaMapeada]);
 
   const elementosAlteracoesTimeline = useCallback(() => {
-    const valorItems = listaMapeada().concat(listaMapeadaPropriedades());
+    const valorItems = listaMapeada()
+      .concat(listaMapeadaPropriedades())
+      .filter(
+        (value, index, self) =>
+          self.findIndex((x) => x.id === value.id) === index
+      );
     return valorItems;
   }, [listaMapeada, listaMapeadaPropriedades]);
 
@@ -123,13 +143,19 @@ export default function VisTimeline(props: {
   const handleRemoveConteudo = useCallback(
     (item: TimelineItem) => {
       // draw.removeFeatures([item.id.toString()]);
-      dispatch({
-        type: "removeElements",
-        id: item.id,
-        group: item.group,
+      openModalConfirm({
+        title: "Deletar item",
+        message: "Você tem certeza disso?",
+        onConfirm: () => {
+          dispatch({
+            type: "removeElements",
+            id: item.id,
+            group: item.group,
+          });
+        },
       });
     },
-    [dispatch]
+    [dispatch, openModalConfirm]
   );
   const handleAtualizaConteudo = useCallback(
     (item: TimelineItem) => {
@@ -257,6 +283,27 @@ export default function VisTimeline(props: {
   //   },
   //   [dispatch]
   // );
+  const handleChange = useCallback(
+    (tl: any) => {
+      if (
+        startMapaContextRef.current !==
+          moment(tl.range.start).format("yyyy-MM-DDTHH:mm:ss") ||
+        endMapaContextRef.current !==
+          moment(tl.range.end).format("yyyy-MM-DDTHH:mm:ss")
+      ) {
+        clearTimeout(eventRef.current);
+        eventRef.current = setTimeout(() => {
+          dispatch({
+            type: "alteraTempoInicioFim",
+            start: moment(tl.range.start).format("yyyy-MM-DDTHH:mm:ss"),
+            end: moment(tl.range.end).format("yyyy-MM-DDTHH:mm:ss"),
+          });
+          eventRef.current = null;
+        }, 100);
+      }
+    },
+    [dispatch, startMapaContextRef, endMapaContextRef]
+  );
 
   const optionsVisTimeline: () => TimelineOptions = useCallback(() => {
     return {
@@ -279,6 +326,39 @@ export default function VisTimeline(props: {
     //handleAdicionarPropriedadeConteudo,
   ]);
 
+  const mudaScroll = useCallback(() => {
+    if (visTimeline) {
+      console.log("mudando valor de scroll", divScrollRef.current);
+      console.log(
+        "offsetHeight",
+        (visTimeline as any).dom.leftContainer.offsetHeight
+      );
+      console.log(
+        "clientHeight",
+        (visTimeline as any).dom.leftContainer.offsetHeight
+      );
+      setTimeout(() => {
+        (visTimeline as any).dom.leftContainer.scroll(0, 0);
+        console.log("mudando valor de scroll 1", divScrollRef.current);
+        deveFazerScrollRef.current = true;
+        setTimeout(() => {
+          (visTimeline as any).dom.leftContainer.scroll(
+            0,
+            (visTimeline as any).dom.leftContainer.offsetHeight
+          );
+          console.log("mudando valor de scroll 2", divScrollRef.current);
+          setTimeout(() => {
+            (visTimeline as any).dom.leftContainer.scroll(
+              0,
+              divScrollRef.current
+            );
+            console.log("mudando valor de scroll 3", divScrollRef.current);
+          }, 1);
+        }, 1);
+      }, 1);
+    }
+  }, [visTimeline]);
+
   const calls = useCallback(() => {
     const atual = {
       groups: listaMapeada().filter(
@@ -286,13 +366,16 @@ export default function VisTimeline(props: {
       ),
       items: elementosAlteracoesTimeline().filter((x) => !x.collapseTimeline),
     };
-    divScrollRef.current = (visTimeline as any).dom.leftContainer.scrollTop;
     visTimeline.setData(atual);
     visTimeline.setOptions(optionsVisTimeline());
     setElementosSelecionados();
     elementosTimelineRef.current = atual;
+    setTimeout(() => {
+      mudaScroll();
+    }, 100);
   }, [
     visTimeline,
+    mudaScroll,
     elementosAlteracoesTimeline,
     optionsVisTimeline,
     listaMapeada,
@@ -311,12 +394,18 @@ export default function VisTimeline(props: {
         setVisTimeline(tl);
         tl.on("select", handleSeleciona);
         tl.on("click", handleClick);
-        tl.on("changed", () => {
-          if (deveFazerScrollRef.current) {
-            (tl as any).dom.leftContainer.scroll(0, divScrollRef.current);
-            deveFazerScrollRef.current = false;
-          }
-        });
+        tl.on("changed", () => handleChange(tl));
+        (tl as any).dom.leftContainer.onscroll = () => {
+          clearTimeout(eventRef.current);
+          eventRef.current = setTimeout(() => {
+            console.log(
+              "atualizando valor de scroll",
+              (tl as any).dom.leftContainer.scrollTop
+            );
+            divScrollRef.current = (tl as any).dom.leftContainer.scrollTop;
+            eventRef.current = null;
+          }, 100);
+        };
         tl.on("doubleClick", handleDoubleClick);
         tl.on("timechanged", (e) => {
           dispatch({ type: "atualizaTempo", time: e.time });
@@ -332,6 +421,7 @@ export default function VisTimeline(props: {
     calls,
     dispatch,
     handleClick,
+    handleChange,
     listaMapeada,
     setVisTimeline,
     handleSeleciona,
@@ -363,10 +453,6 @@ export default function VisTimeline(props: {
   useEffect(() => {
     if (visTimeline) {
       setOptionsTimeline();
-      setTimeout(() => {
-        (visTimeline as any).dom.leftContainer.scroll(0, divScrollRef.current);
-        deveFazerScrollRef.current = true;
-      }, 1);
     }
   }, [visTimeline, setOptionsTimeline]);
 
@@ -455,7 +541,15 @@ export default function VisTimeline(props: {
           <IconButton
             aria-label="deletar"
             onClick={() => {
-              dispatch({ type: "removeElements" });
+              openModalConfirm({
+                title: "Deletar item",
+                message: "Você tem certeza disso?",
+                onConfirm: () => {
+                  dispatch({
+                    type: "removeElements",
+                  });
+                },
+              });
               setTooltipOpen(false);
             }}
           >

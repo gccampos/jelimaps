@@ -112,7 +112,12 @@ export default function Propriedades(props: {
   const displaYNoneStyle = { display: "none" };
 
   useEffect(() => {
-    setValue(mapaContext.elementoFoco || mapaContext.elementosFoco ? 2 : 0);
+    setValue(
+      mapaContext.elementoFoco ||
+        (mapaContext.elementosFoco && mapaContext.elementosFoco.length)
+        ? 2
+        : 0
+    );
   }, [mapaContext.elementoFoco, mapaContext.elementosFoco]);
 
   return (
@@ -241,7 +246,7 @@ export default function Propriedades(props: {
                     setIntervalId(null);
                     tempoAtualRef.current = i
                       ? tempoAtual.current
-                      : mapaContext.cenaInicio;
+                      : mapaContext.conteudo.cenas[0].cenaInicio;
                     dispatch({
                       type: "atualizaTempo",
                       time: tempoAtualRef.current,

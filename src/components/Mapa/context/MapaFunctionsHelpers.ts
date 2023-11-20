@@ -13,6 +13,7 @@ import moment from "moment";
 const retornaListaElementosConteudoCenaAtual = (
   oldMapaContext: mapaContextSchema
 ) =>
+  oldMapaContext?.conteudo &&
   Object.keys(oldMapaContext?.conteudo)
     .map((x) => oldMapaContext?.conteudo[x])
     .flat()
@@ -86,6 +87,7 @@ const changeElementoInteracao = (
     ...oldMapaContext,
     elementoInteracao: {
       ...elemento,
+      iconComponent: null,
     },
   };
 };
@@ -441,18 +443,84 @@ const novaCena = (oldMapaContext: mapaContextSchema) => {
     cenaFim: cenafim.add(diffCen, "seconds").format("yyyy-MM-DDTHH:mm:ss"),
     nome: `cena #${oldMapaContext.conteudo.cenas.length}`,
     dataRef: "cenas",
-    style: `background-color: ${getRandomColor()}`,
+    color: getRandomColor(oldMapaContext),
+    // style: `background-color: ${getRandomColor(oldMapaContext)}`,
     visTimelineObject: { type: "background" },
   } as elementoPadrao;
 };
 
-function getRandomColor() {
+function getRandomColor(oldMapaContext: mapaContextSchema) {
   var letters = "0123456789ABCDEF";
   var color = "#";
   for (var i = 0; i < 6; i++) {
     color += letters[Math.floor(Math.random() * 16)];
   }
-  return color;
+  const cenafim =
+    oldMapaContext.conteudo.cenas[oldMapaContext.conteudo.cenas.length - 1];
+  console.log("gertRandoCOmlor", cenafim.color, color);
+  if (isPastel(color) && !similarColors(cenafim.color, color)) return color;
+  else return getRandomColor(oldMapaContext);
+}
+function isPastel(color) {
+  // Converte a cor hexadecimal em RGB
+  var r = parseInt(color.slice(1, 3), 16);
+  var g = parseInt(color.slice(3, 5), 16);
+  var b = parseInt(color.slice(5, 7), 16);
+  // Calcula a luminosidade da cor
+  var luminosity = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+  // Retorna verdadeiro se a luminosidade for maior que 0.8, falso caso contrário
+  return luminosity > 0.8;
+}
+// Função para calcular a distância euclidiana entre dois pontos
+function distance(x1, y1, x2, y2) {
+  return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+}
+
+// Função para converter uma cor hexadecimal em HSV
+function hexToHSV(color) {
+  // Converte a cor hexadecimal em RGB
+  var r = parseInt(color.slice(1, 3), 16) / 255;
+  var g = parseInt(color.slice(3, 5), 16) / 255;
+  var b = parseInt(color.slice(5, 7), 16) / 255;
+  // Calcula o máximo, o mínimo e a diferença entre os valores RGB
+  var max = Math.max(r, g, b);
+  var min = Math.min(r, g, b);
+  var diff = max - min;
+  // Variáveis para armazenar os valores HSV
+  var h, s, v;
+  // Calcula o valor de H
+  if (max == min) {
+    h = 0;
+  } else if (max == r) {
+    h = ((60 * (g - b)) / diff + 360) % 360;
+  } else if (max == g) {
+    h = ((60 * (b - r)) / diff + 120) % 360;
+  } else if (max == b) {
+    h = ((60 * (r - g)) / diff + 240) % 360;
+  }
+  // Calcula o valor de S
+  if (max == 0) {
+    s = 0;
+  } else {
+    s = diff / max;
+  }
+  // Calcula o valor de V
+  v = max;
+  // Retorna um objeto com os valores HSV
+  return { h: h, s: s, v: v };
+}
+
+// Função para verificar se duas cores são parecidas, ou do mesmo tom
+function similarColors(color1, color2) {
+  // Converte as cores hexadecimais em HSV
+  var hsv1 = hexToHSV(color1);
+  var hsv2 = hexToHSV(color2);
+  // Calcula a distância entre as cores no espaço HSV
+  var d = distance(hsv1.h, hsv1.s, hsv2.h, hsv2.s);
+  // Define um limiar de similaridade
+  var threshold = 10;
+  // Retorna verdadeiro se a distância for menor que o limiar, falso caso contrário
+  return d < threshold;
 }
 
 const movendoImagem = (

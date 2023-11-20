@@ -35,9 +35,9 @@ export default function Elemento() {
         MapaFunctionHelpers.retornaElementoOuAlteracaoPorId(mapaContext, x.id)
       )
       .concat([mapaContext?.elementoFoco])
-      .filter((x, i, a) => x && a.findIndex((z) => z.id === x.id) === i) ?? [
-      mapaContext?.elementoFoco,
-    ]
+      .filter(
+        (x, i, a) => x && a.findIndex((z) => !!z && z.id === x.id) === i
+      ) ?? [mapaContext?.elementoFoco]
   );
 
   return (
