@@ -12,61 +12,69 @@ const initialMapaContexto: () => mapaContextSchema = () => {
     typeof window !== "undefined"
       ? localStorage?.getItem("mapaContext")
       : "false";
-  return mapaLocal && JSON.parse(mapaLocal)
-    ? JSON.parse(mapaLocal)
-    : ({
-        elementoInteracao: elementos.Hand,
-        slidePropriedade: false,
-        cenaInicio: moment().format("yyyy-MM-DDTHH:mm:ss"),
-        cenaFim: moment().add(1, "minutes").format("yyyy-MM-DDTHH:mm:ss"),
-        tempo: moment().add(2, "seconds").format("yyyy-MM-DDTHH:mm:ss"),
-        mapOptions: {
-          center: [0, 0],
-        },
-        playStatus: -1,
-        conteudo: {
-          cenas: [
-            {
-              cenaInicio: moment().format("yyyy-MM-DDTHH:mm:ss"),
-              cenaFim: moment().add(1, "minute").format("yyyy-MM-DDTHH:mm:ss"),
-              id: v4(),
-              nome: "Primeira cena",
-              dataRef: "cenas",
-              visTimelineObject: {
-                type: "background",
-              },
-              type: "FeatureCollection",
-              color: "#df000024",
-            },
-          ],
-        },
-        timelineOptions: {
-          editable: { remove: true, updateTime: true },
-          // zoomKey: "ctrlKey",
-          preferZoom: true,
-          start: moment().format("yyyy-MM-DDTHH:mm:ss"),
-          end: moment().add(10, "minutes").format("yyyy-MM-DDTHH:mm:ss"),
-          autoResize: false,
-          selectable: true,
-          multiselect: true,
-          orientation: { axis: "top" },
-          longSelectPressTime: 777,
-          snap: (date: Date) => {
-            return date;
+  const newMapaContext = {
+    elementoInteracao: elementos.Hand,
+    slidePropriedade: false,
+    cenaInicio: moment().format("yyyy-MM-DDTHH:mm:ss"),
+    cenaFim: moment().add(1, "minutes").format("yyyy-MM-DDTHH:mm:ss"),
+    tempo: moment().add(2, "seconds").format("yyyy-MM-DDTHH:mm:ss"),
+    mapOptions: {
+      center: [0, 0],
+    },
+    playStatus: -1,
+    conteudo: {
+      cenas: [
+        {
+          cenaInicio: moment().format("yyyy-MM-DDTHH:mm:ss"),
+          cenaFim: moment().add(1, "minute").format("yyyy-MM-DDTHH:mm:ss"),
+          id: v4(),
+          nome: "Primeira cena",
+          dataRef: "cenas",
+          visTimelineObject: {
+            type: "background",
           },
-          rollingMode: { offset: 0, follow: false },
-          showCurrentTime: false,
-          // groupEditable: { order: true },
-          groupHeightMode: "fitItems",
-          verticalScroll: true,
-          margin: { item: { vertical: 20 } },
-          zoomable: true,
-          moveable: true,
-          order: (a, b) => b.order - a.order,
-          groupOrder: (a, b) => b.order - a.order,
-          locale: "pt_BR",
+          type: "FeatureCollection",
+          color: "#df000024",
         },
-      } as mapaContextSchema);
+      ],
+    },
+    timelineOptions: {
+      editable: { remove: true, updateTime: true },
+      // zoomKey: "ctrlKey",
+      preferZoom: true,
+      start: moment().format("yyyy-MM-DDTHH:mm:ss"),
+      end: moment().add(10, "minutes").format("yyyy-MM-DDTHH:mm:ss"),
+      autoResize: false,
+      selectable: true,
+      multiselect: true,
+      orientation: { axis: "top" },
+      longSelectPressTime: 777,
+      snap: (date: Date) => {
+        console.log("snap", date);
+        return date;
+      },
+      rollingMode: { offset: 0, follow: false },
+      showCurrentTime: false,
+      // groupEditable: { order: true },
+      groupHeightMode: "fitItems",
+      verticalScroll: true,
+      margin: { item: { vertical: 20 } },
+      zoomable: true,
+      moveable: true,
+      order: (a, b) => b.order - a.order,
+      groupOrder: (a, b) => b.order - a.order,
+      locale: "pt_BR",
+    },
+  } as mapaContextSchema;
+  return mapaLocal && JSON.parse(mapaLocal)
+    ? {
+        ...JSON.parse(mapaLocal),
+        timelineOptions: {
+          ...newMapaContext.timelineOptions,
+          ...JSON.parse(mapaLocal).timelineOptions,
+        },
+      }
+    : newMapaContext;
 };
 
 const MapaContext = createContext<mapaContextSchema>(initialMapaContexto());
@@ -106,7 +114,15 @@ export function MapaProvider({ children }) {
               old,
               e.type === "use-undo" ? { ...e, type: "trocaMapaContext" } : e
             )
-          : e.mapContext ?? initialMapaContexto();
+          : e.mapContext
+          ? {
+              ...e.mapContext,
+              timelineOptions: {
+                ...initialMapaContexto().timelineOptions,
+                ...e.mapContext.timelineOptions,
+              },
+            }
+          : initialMapaContexto();
       if (e.type !== "use-undo") set(newContext, false);
       localStorage.setItem("mapaContext", JSON.stringify(newContext));
       return newContext;

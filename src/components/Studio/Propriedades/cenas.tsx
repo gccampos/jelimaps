@@ -157,15 +157,20 @@ export default function Cenas() {
                   >
                     Fixar tela
                   </Button>
-                  <Button
-                    variant="outlined"
-                    color="error"
-                    onClick={() => {
-                      dispatch({ type: "deletarCena", id: cenaSelecionada.id });
-                    }}
-                  >
-                    Deletar Cena
-                  </Button>
+                  {mapaContext?.conteudo.cenas.length > 1 && (
+                    <Button
+                      variant="outlined"
+                      color="error"
+                      onClick={() => {
+                        dispatch({
+                          type: "deletarCena",
+                          id: cenaSelecionada.id,
+                        });
+                      }}
+                    >
+                      Deletar Cena
+                    </Button>
+                  )}
                 </Form>
               );
             }}
