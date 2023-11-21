@@ -51,12 +51,17 @@ const initialMapaContexto: () => mapaContextSchema = () => {
           multiselect: true,
           orientation: { axis: "top" },
           longSelectPressTime: 777,
-          snap: (date) => date,
+          snap: (date: Date) => {
+            return date;
+          },
           rollingMode: { offset: 0, follow: false },
           showCurrentTime: false,
           // groupEditable: { order: true },
           groupHeightMode: "fitItems",
           verticalScroll: true,
+          margin: { item: { vertical: 20 } },
+          zoomable: true,
+          moveable: true,
           order: (a, b) => b.order - a.order,
           groupOrder: (a, b) => b.order - a.order,
           locale: "pt_BR",
@@ -78,7 +83,7 @@ export function useMapaDispatch() {
 
 const MapaUndoContext = createContext<{
   // set: (newPresent: mapaContextSchema, checkpoint?: boolean) => void;
-  reset: (newPresent: mapaContextSchema) => void;
+  reset: (newContext?: mapaContextSchema) => void;
   undo: () => void;
   redo: () => void;
   canUndo: boolean;
@@ -95,10 +100,13 @@ export function MapaProvider({ children }) {
   const [, dispatch] = useReducer(
     (old: mapaContextSchema, e: actionContextChange) => {
       console.log("dispatch original", e);
-      const newContext = mapaReducer(
-        old,
-        e.type === "use-undo" ? { ...e, type: "trocaMapaContext" } : e
-      );
+      const newContext =
+        e.type !== "reset"
+          ? mapaReducer(
+              old,
+              e.type === "use-undo" ? { ...e, type: "trocaMapaContext" } : e
+            )
+          : e.mapContext ?? initialMapaContexto();
       if (e.type !== "use-undo") set(newContext, false);
       localStorage.setItem("mapaContext", JSON.stringify(newContext));
       return newContext;
@@ -109,7 +117,14 @@ export function MapaProvider({ children }) {
   return (
     <MapaUndoContext.Provider
       value={{
-        reset, // TODO: implementar reset
+        reset: (newContext?: mapaContextSchema) => {
+          localStorage.clear();
+          dispatch({
+            type: "reset",
+            mapContext: newContext ?? initialMapaContexto(),
+          });
+          reset(newContext ?? initialMapaContexto());
+        },
         undo: () => {
           dispatch({
             type: "use-undo",

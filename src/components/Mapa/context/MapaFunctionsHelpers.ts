@@ -298,6 +298,8 @@ const removeElemento = (
   return {
     ...oldMapaContext,
     conteudo: newConteudo,
+    elementoFoco: null,
+    elementosFoco: null,
   };
 };
 
@@ -457,7 +459,6 @@ function getRandomColor(oldMapaContext: mapaContextSchema) {
   }
   const cenafim =
     oldMapaContext.conteudo.cenas[oldMapaContext.conteudo.cenas.length - 1];
-  console.log("gertRandoCOmlor", cenafim.color, color);
   if (isPastel(color) && !similarColors(cenafim.color, color)) return color;
   else return getRandomColor(oldMapaContext);
 }

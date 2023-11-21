@@ -286,11 +286,26 @@ const Studio = () => {
     }
   }, [altura, dispatch, draw, height, isMobile, map]);
   useEffect(() => {
-    if (!(mapaContext.elementoFoco && mapaContext.elementosFoco)) {
-      console.log("useEffect[draw, conteudoElementosRef.current]", draw);
-    }
+    if (draw)
+      if (!(!!mapaContext.elementoFoco || !!mapaContext.elementosFoco)) {
+        (draw as any)._modes.select.deselect();
+      } else {
+        console.log(
+          "useEffect[draw, conteudoElementosRef.current] SELECTED",
+          draw,
+          "\n",
+          mapaContext.elementoFoco,
+          "\n",
+          mapaContext.elementosFoco
+        );
+      }
     //TODO:selecionar elemento no draw
-  }, [draw, mapaContext.elementoFoco, mapaContext.elementosFoco]);
+  }, [
+    draw,
+    mapaContext.conteudo,
+    mapaContext.elementoFoco,
+    mapaContext.elementosFoco,
+  ]);
   return (
     <Grid container sx={{ height: "100%" }} id="studioMapa">
       <Grid item container xs={12}>

@@ -178,6 +178,7 @@ export default function Mapa(props: {
     // setConteudoElementos(
     //   MapaFunctionHelpers.retornaListaElementosConteudo(mapaContext)
     // );
+    console.log("mapaContext", mapaContext);
     conteudoElementosRef.current =
       MapaFunctionHelpers.retornaListaElementosConteudoCenaAtual(mapaContext);
   });
@@ -205,13 +206,21 @@ export default function Mapa(props: {
       if (map && props.draw) {
         if (p.el.draggable) {
           const ds = p.el as GeoJSONStoreFeatures;
-          props.draw?.addFeatures([ds]);
-          if (
-            mapaContext.elementoFoco?.id === p.el.id &&
-            !(props.draw as any)._mode.selected?.some((x) => x === p.el.id)
-          )
-            (props.draw as any)._mode.selected = [p.el.id];
-          //(props.draw as any)._mode.onSelect(p.el.id);
+          try {
+            props.draw?.addFeatures([ds]);
+            if (
+              mapaContext.elementoFoco?.id === p.el.id &&
+              !(props.draw as any)._mode.selected?.some((x) => x === p.el.id)
+            )
+              (props.draw as any)._mode.selected = [p.el.id];
+            //(props.draw as any)._mode.onSelect(p.el.id);
+          } catch (error) {
+            console.error(error);
+            dispatch({
+              type: "removeElements",
+              id: p.el.id,
+            });
+          }
         } else {
           el.on("click", () =>
             dispatch({
@@ -237,20 +246,11 @@ export default function Mapa(props: {
               ).some((x) => x.id === p.el.id)
             ) {
               // props.draw.removeFeatures([p.el.id.toString()]);
-
-              (props.draw as any)._store &&
-              (props.draw as any)._store.store[p.el.id.toString()]
-                ? props.draw.removeFeatures([p.el.id.toString()])
-                : openModalConfirm({
-                    title: "Deletar item",
-                    message: "Você tem certeza disso?",
-                    onConfirm: () => {
-                      dispatch({
-                        type: "removeElements",
-                        id: p.el.id,
-                      });
-                    },
-                  });
+              if (
+                (props.draw as any)._store &&
+                (props.draw as any)._store.store[p.el.id.toString()]
+              )
+                props.draw.removeFeatures([p.el.id.toString()]);
             }
           } else {
             map.removeLayer(el);

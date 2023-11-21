@@ -1,12 +1,5 @@
-import React, {
-  useEffect,
-  useRef,
-  useState,
-  useCallback,
-  useMemo,
-} from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import {
-  //DataSet,
   Timeline,
   TimelineEventPropertiesResult,
   TimelineItem,
@@ -39,8 +32,9 @@ export default function VisTimeline(props: {
   const elementosTimelineRef = useRef(null);
   // const dataSetRef = useRef(null);
   const visJsRef = useRef<HTMLDivElement>(null);
-  const divScrollRef = useRef(0);
-  const deveFazerScrollRef = useRef(false);
+  const alturaRef = useRef(0);
+  const elementosFocadosRef = useRef(null);
+  const elementosFocadosRealRef = useRef(null);
   const eventRef = useRef(null);
   const { openModalConfirm } = useCaixaDialogo();
   const startMapaContextRef = useRef(mapaContext.cenaInicio);
@@ -56,6 +50,18 @@ export default function VisTimeline(props: {
     startMapaContextRef.current = mapaContext.cenaInicio;
     endMapaContextRef.current = mapaContext.cenaFim;
   }, [mapaContext.cenaInicio, mapaContext.cenaFim]);
+  useEffect(() => {
+    if (mapaContext.elementosFoco && mapaContext.elementosFoco.length > 0)
+      elementosFocadosRealRef.current = mapaContext.elementosFoco.map(
+        (x) => x.id
+      );
+    else if (mapaContext.elementoFoco)
+      elementosFocadosRealRef.current = [mapaContext.elementoFoco.id];
+    else elementosFocadosRealRef.current = null;
+  }, [mapaContext.elementosFoco, mapaContext.elementoFoco]);
+  const elementosFocados = useCallback(() => {
+    return elementosFocadosRealRef.current;
+  }, []);
 
   const listaMapeada = useCallback(
     (lista?: (tipoElemento | tipoGenericoElementoTimeline)[]) => {
@@ -113,14 +119,8 @@ export default function VisTimeline(props: {
     return valorItems;
   }, [listaMapeada, listaMapeadaPropriedades]);
 
-  const elementosFocados = useMemo(() => {
-    if (mapaContext.elementosFoco && mapaContext.elementosFoco.length > 0)
-      return mapaContext.elementosFoco.map((x) => x.id);
-    if (mapaContext.elementoFoco) return mapaContext.elementoFoco.id;
-  }, [mapaContext.elementosFoco, mapaContext.elementoFoco]);
-
   const setElementosSelecionados = useCallback(() => {
-    if (visTimeline) visTimeline.setSelection(elementosFocados);
+    if (visTimeline) visTimeline.setSelection(elementosFocados());
   }, [visTimeline, elementosFocados]);
 
   const handleSeleciona = useCallback(
@@ -284,19 +284,19 @@ export default function VisTimeline(props: {
   //   [dispatch]
   // );
   const handleChange = useCallback(
-    (tl: any) => {
+    (properties: any) => {
+      const { start, end } = properties;
       if (
         startMapaContextRef.current !==
-          moment(tl.range.start).format("yyyy-MM-DDTHH:mm:ss") ||
-        endMapaContextRef.current !==
-          moment(tl.range.end).format("yyyy-MM-DDTHH:mm:ss")
+          moment(start).format("yyyy-MM-DDTHH:mm:ss") ||
+        endMapaContextRef.current !== moment(end).format("yyyy-MM-DDTHH:mm:ss")
       ) {
         clearTimeout(eventRef.current);
         eventRef.current = setTimeout(() => {
           dispatch({
             type: "alteraTempoInicioFim",
-            start: moment(tl.range.start).format("yyyy-MM-DDTHH:mm:ss"),
-            end: moment(tl.range.end).format("yyyy-MM-DDTHH:mm:ss"),
+            start: moment(start).format("yyyy-MM-DDTHH:mm:ss"),
+            end: moment(end).format("yyyy-MM-DDTHH:mm:ss"),
           });
           eventRef.current = null;
         }, 100);
@@ -326,39 +326,6 @@ export default function VisTimeline(props: {
     //handleAdicionarPropriedadeConteudo,
   ]);
 
-  const mudaScroll = useCallback(() => {
-    if (visTimeline) {
-      console.log("mudando valor de scroll", divScrollRef.current);
-      console.log(
-        "offsetHeight",
-        (visTimeline as any).dom.leftContainer.offsetHeight
-      );
-      console.log(
-        "clientHeight",
-        (visTimeline as any).dom.leftContainer.offsetHeight
-      );
-      setTimeout(() => {
-        (visTimeline as any).dom.leftContainer.scroll(0, 0);
-        console.log("mudando valor de scroll 1", divScrollRef.current);
-        deveFazerScrollRef.current = true;
-        setTimeout(() => {
-          (visTimeline as any).dom.leftContainer.scroll(
-            0,
-            (visTimeline as any).dom.leftContainer.offsetHeight
-          );
-          console.log("mudando valor de scroll 2", divScrollRef.current);
-          setTimeout(() => {
-            (visTimeline as any).dom.leftContainer.scroll(
-              0,
-              divScrollRef.current
-            );
-            console.log("mudando valor de scroll 3", divScrollRef.current);
-          }, 1);
-        }, 1);
-      }, 1);
-    }
-  }, [visTimeline]);
-
   const calls = useCallback(() => {
     const atual = {
       groups: listaMapeada().filter(
@@ -366,16 +333,30 @@ export default function VisTimeline(props: {
       ),
       items: elementosAlteracoesTimeline().filter((x) => !x.collapseTimeline),
     };
-    visTimeline.setData(atual);
-    visTimeline.setOptions(optionsVisTimeline());
-    setElementosSelecionados();
-    elementosTimelineRef.current = atual;
-    setTimeout(() => {
-      mudaScroll();
-    }, 100);
+
+    if (
+      JSON.stringify(atual) !== JSON.stringify(elementosTimelineRef.current) ||
+      alturaRef.current !== altura ||
+      elementosFocadosRef.current !== elementosFocados()
+    ) {
+      visTimeline.setData(atual);
+      visTimeline.setOptions(optionsVisTimeline());
+      setElementosSelecionados();
+      elementosTimelineRef.current = atual;
+      alturaRef.current = altura;
+      elementosFocadosRef.current = elementosFocados();
+      setTimeout(() => {
+        const cenas = listaMapeada()
+          .filter((x) => x.visTimelineObject?.type === "background")
+          .map((x) => x.id);
+        if (elementosFocados())
+          visTimeline?.focus([...elementosFocados(), ...cenas]);
+      }, 100);
+    }
   }, [
+    altura,
     visTimeline,
-    mudaScroll,
+    elementosFocados,
     elementosAlteracoesTimeline,
     optionsVisTimeline,
     listaMapeada,
@@ -394,18 +375,8 @@ export default function VisTimeline(props: {
         setVisTimeline(tl);
         tl.on("select", handleSeleciona);
         tl.on("click", handleClick);
-        tl.on("changed", () => handleChange(tl));
-        (tl as any).dom.leftContainer.onscroll = () => {
-          clearTimeout(eventRef.current);
-          eventRef.current = setTimeout(() => {
-            console.log(
-              "atualizando valor de scroll",
-              (tl as any).dom.leftContainer.scrollTop
-            );
-            divScrollRef.current = (tl as any).dom.leftContainer.scrollTop;
-            eventRef.current = null;
-          }, 100);
-        };
+        // tl.on("changed", () => handleChange(tl));
+        tl.on("rangechange", handleChange);
         tl.on("doubleClick", handleDoubleClick);
         tl.on("timechanged", (e) => {
           dispatch({ type: "atualizaTempo", time: e.time });

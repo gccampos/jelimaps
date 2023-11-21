@@ -50,3 +50,10 @@ body:has(#studioMapa) {
   background-color: red !important;
   width: 3px !important;
 }
+
+form > * {
+  margin-top: 15px !important;
+}
+form > *:first-child {
+  margin-top: 0px;
+}

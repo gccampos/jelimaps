@@ -112,12 +112,12 @@ export default function Propriedades(props: {
   const displaYNoneStyle = { display: "none" };
 
   useEffect(() => {
-    setValue(
+    const val =
       mapaContext.elementoFoco ||
-        (mapaContext.elementosFoco && mapaContext.elementosFoco.length)
+      (mapaContext.elementosFoco && mapaContext.elementosFoco.length)
         ? 2
-        : 0
-    );
+        : 0;
+    setValue(val);
   }, [mapaContext.elementoFoco, mapaContext.elementosFoco]);
 
   return (

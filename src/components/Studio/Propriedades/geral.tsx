@@ -1,18 +1,24 @@
 import React from "react";
 import {
+  Button,
+  ButtonGroup,
   TextField,
   // FormControlLabel, Switch
 } from "@mui/material";
 import {
   useMapaContext,
   useMapaDispatch,
+  useMapaUndo,
 } from "@/components/Mapa/context/MapaContext";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
+import useCaixaDialogo from "@/components/CaixaDialogo/useCaixaDialogo";
 
 export default function Geral() {
   const mapaContext = useMapaContext();
+  const { reset } = useMapaUndo();
   const dispatch = useMapaDispatch();
+  const { openModalConfirm } = useCaixaDialogo();
 
   return (
     <Formik
@@ -35,14 +41,51 @@ export default function Geral() {
         return (
           <Form
             onBlur={(e: any) => {
-              dispatch({
-                type: "alteraPropriedadeGeral",
-                tipo: e.target.name,
-                valor: e.target.value,
-                formik: formik,
-              });
+              if (!!e.target.name && !!e.target.value)
+                dispatch({
+                  type: "alteraPropriedadeGeral",
+                  tipo: e.target.name,
+                  valor: e.target.value,
+                  formik: formik,
+                });
             }}
           >
+            <ButtonGroup variant="outlined" aria-label="outlined button group">
+              <Button
+                onClick={() => {
+                  openModalConfirm({
+                    title: "Começar um novo",
+                    message:
+                      "Vai perder todas alterações feitas, tem certeza disso?",
+                    onConfirm: () => {
+                      reset();
+                    },
+                  });
+                }}
+              >
+                Resetar
+              </Button>
+              {/* <Button component="label">
+                Importar
+                <VisuallyHiddenInput type="file" />
+              </Button> */}
+              <Button
+                onClick={() => {
+                  const conteudo = JSON.stringify(mapaContext);
+                  const blob = new Blob([conteudo], { type: "text/plain" });
+                  var url = URL.createObjectURL(blob);
+                  var a = document.createElement("a");
+                  a.href = url;
+                  a.download = "arquivo.griot";
+                  document.body.appendChild(a);
+                  a.click();
+                  document.body.removeChild(a);
+                  URL.revokeObjectURL(url);
+                }}
+              >
+                Exportar
+              </Button>
+            </ButtonGroup>
             <TextField
               fullWidth
               id="cenaInicio"

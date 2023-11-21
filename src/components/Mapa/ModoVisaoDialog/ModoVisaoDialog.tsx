@@ -5,21 +5,37 @@ import {
   DialogTitle,
   TextField,
   Typography,
+  styled,
+  Button as ButtonMUI,
 } from "@mui/material";
 import { Button } from "react-bootstrap";
 import {
   useMapaContext,
   useMapaDispatch,
+  useMapaUndo,
 } from "@/components/Mapa/context/MapaContext";
 import { MODO_VISAO } from "@/components/Studio/Mapa";
 import useCaixaDialogo from "@/components/CaixaDialogo/useCaixaDialogo";
 import ImageResolver from "@/components/ImageUrlResolver";
+
+const VisuallyHiddenInput = styled("input")({
+  clip: "rect(0 0 0 0)",
+  clipPath: "inset(50%)",
+  height: 1,
+  overflow: "hidden",
+  position: "absolute",
+  bottom: 0,
+  left: 0,
+  whiteSpace: "nowrap",
+  width: 1,
+});
 
 export default function ModoVisaoDialog() {
   const { openModalConfirm, closeModalConfirm, onConfirm } = useCaixaDialogo();
   const mapaContext = useMapaContext();
   const dispatch = useMapaDispatch();
   const nameRef = React.useRef("");
+  const { reset } = useMapaUndo();
 
   const handleOpenStreetMap = useCallback(() => {
     dispatch({
@@ -109,14 +125,63 @@ export default function ModoVisaoDialog() {
                 Mapa Próprio: Nesse modo, você terá que subir uma imagem para
                 utilizar como mapa.
               </Typography>
+              <div id="resultado"></div>
             </DialogContent>
             <DialogActions>
-              <Button onClick={handleOpenStreetMap}>OpenStreetMap</Button>
-              <Button onClick={handleMapaProprio}>Mapa Próprio</Button>
+              <ButtonMUI variant="contained" onClick={handleOpenStreetMap}>
+                OpenStreetMap
+              </ButtonMUI>
+              <ButtonMUI variant="contained" onClick={handleMapaProprio}>
+                Mapa Próprio
+              </ButtonMUI>
+              <ButtonMUI variant="contained" sx={{ mx: 1 }} component="label">
+                Continuar projeto
+                <VisuallyHiddenInput
+                  type="file"
+                  onChange={(e) => {
+                    var arquivo = e.target.files[0];
+
+                    // Verificar se o arquivo tem a extensão .griot
+                    if (arquivo.name.endsWith(".griot")) {
+                      // Criar um objeto FileReader para ler o arquivo
+                      var leitor = new FileReader();
+
+                      // Definir uma função que é chamada quando o arquivo é lido
+                      leitor.onload = function (e) {
+                        // Obter o conteúdo do arquivo como uma string
+
+                        // Tentar converter o texto em um objeto JSON
+                        try {
+                          const texto = e.target.result as string;
+                          var json = JSON.parse(texto);
+
+                          // Mostrar o JSON na tela
+                          reset(json);
+                          document.getElementById("resultado").innerHTML =
+                            JSON.stringify(json, null, 2);
+                          closeModalConfirm(null, null);
+                        } catch (erro) {
+                          // Mostrar o erro na tela
+                          document.getElementById("resultado").innerHTML =
+                            "Erro ao converter o texto em JSON: " +
+                            erro.message;
+                        }
+                      };
+
+                      // Ler o arquivo como uma string
+                      leitor.readAsText(arquivo);
+                    } else {
+                      // Mostrar uma mensagem de erro na tela
+                      document.getElementById("resultado").innerHTML =
+                        "O arquivo selecionado não tem a extensão .griot";
+                    }
+                  }}
+                />
+              </ButtonMUI>
             </DialogActions>
           </div>
         ),
       });
-  }, []);
+  }, [mapaContext.modoVisao]);
   return null;
 }
