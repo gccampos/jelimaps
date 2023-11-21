@@ -268,14 +268,14 @@ export default function Mapa(props: {
           center={mapaContext.mapOptions?.center ?? center}
           zoom={mapaContext.mapOptions?.zoom ?? zoom}
           ref={setMap}
-          maxZoom={25}
+          maxZoom={23}
         >
           {mapaContext.modoVisao === MODO_VISAO.openstreetmap && (
             <TileLayer
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-              maxNativeZoom={20}
-              maxZoom={25}
+              maxNativeZoom={19}
+              maxZoom={23}
             />
           )}
           {mapaContext.modoVisao === MODO_VISAO.mapaProprio && (
