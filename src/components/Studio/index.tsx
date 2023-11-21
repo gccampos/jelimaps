@@ -32,6 +32,7 @@ const Studio = () => {
   const conteudoElementosRef = useRef<tipoElemento[]>(null);
   const mapaContext = useMapaContext();
   const tempoAtualRef = useRef(null);
+  const elementosSelecionadosRef = useRef(null);
   const [draw, setDraw] = useState<TerraDraw>(null);
   const [altura, setAltura] = useState(height * 0.25);
   const displaYNoneStyle = { display: "none" };
@@ -44,6 +45,16 @@ const Studio = () => {
       !!navigator.userAgent.match(/Mobi/)
     );
   }, []);
+
+  useEffect(() => {
+    if (mapaContext.elementosFoco && mapaContext.elementosFoco.length > 0)
+      elementosSelecionadosRef.current = mapaContext.elementosFoco.map(
+        (x) => x.id
+      );
+    else if (mapaContext.elementoFoco)
+      elementosSelecionadosRef.current = [mapaContext.elementoFoco.id];
+    else elementosSelecionadosRef.current = null;
+  }, [mapaContext.elementosFoco, mapaContext.elementoFoco]);
 
   useEffect(() => {
     console.log("useEffect do Studio", map);
@@ -287,19 +298,13 @@ const Studio = () => {
   }, [altura, dispatch, draw, height, isMobile, map]);
   useEffect(() => {
     if (draw)
-      if (!(!!mapaContext.elementoFoco || !!mapaContext.elementosFoco)) {
+      if (!elementosSelecionadosRef.current) {
         (draw as any)._modes.select.deselect();
       } else {
-        console.log(
-          "useEffect[draw, conteudoElementosRef.current] SELECTED",
-          draw,
-          "\n",
-          mapaContext.elementoFoco,
-          "\n",
-          mapaContext.elementosFoco
-        );
+        if (elementosSelecionadosRef.current.length == 1)
+          (draw as any)._modes.select.selected =
+            elementosSelecionadosRef.current;
       }
-    //TODO:selecionar elemento no draw
   }, [
     draw,
     mapaContext.conteudo,

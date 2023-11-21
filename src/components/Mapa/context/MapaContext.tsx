@@ -50,7 +50,6 @@ const initialMapaContexto: () => mapaContextSchema = () => {
       orientation: { axis: "top" },
       longSelectPressTime: 777,
       snap: (date: Date) => {
-        console.log("snap", date);
         return date;
       },
       rollingMode: { offset: 0, follow: false },
