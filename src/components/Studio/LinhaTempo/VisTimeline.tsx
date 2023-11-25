@@ -400,15 +400,15 @@ export default function VisTimeline(props: {
     if (mapaContext.playStatus === 0)
       dispatch({
         type: "alteraPropriedadeGeral",
-        tipo: "playStatus",
-        valor: -1,
+        nomePropriedade: "playStatus",
+        valorPropriedade: -1,
       });
     if (mapaContext.fit) {
       visTimeline.fit();
       dispatch({
         type: "alteraPropriedadeGeral",
-        tipo: "fit",
-        valor: false,
+        nomePropriedade: "fit",
+        valorPropriedade: false,
       });
     }
   }, [dispatch, mapaContext, visTimeline]);

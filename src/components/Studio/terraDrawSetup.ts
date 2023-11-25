@@ -23,7 +23,8 @@ const terraDrawSetup = (
   dispatch: React.Dispatch<actionContextChange>,
   map: Leaflet.Map,
   pegarConteudoElementos: () => tipoElemento[],
-  alterarEventTimeoutConteudoElemento: (index: number, value: any) => void
+  alterarEventTimeoutConteudoElemento: (index: number, value: any) => void,
+  pegarElementosSelecionados: () => any
 ) => {
   const terraDrawPolygonMode = new TerraDrawPolygonMode({
     allowSelfIntersections: false,
@@ -75,15 +76,16 @@ const terraDrawSetup = (
       selectedPolygonFillOpacity: 0.7, // 0 - 1
       selectedPolygonOutlineColor: "#333333", // Any hex color you like
       selectedPolygonOutlineWidth: 2, // Integer
+      selectedPointColor: "#000000",
     },
   });
 
   (function (modes) {
     modes.forEach((mode) => {
       var oldEvent = mode.origin[mode.eventName];
-      mode.origin[mode.eventName] = (e: any) => {
+      mode.origin[mode.eventName] = (e: any, f: any) => {
         try {
-          oldEvent.apply(mode.origin, [e]);
+          oldEvent.apply(mode.origin, [e, f]);
         } catch (error) {
           console.error(error);
         }
@@ -196,6 +198,7 @@ const terraDrawSetup = (
       onFinishModesExistents;
 
   draw.on("select", (id: string) => {
+    console.log("terra draw");
     dispatch({
       type: "selecionarElementoFoco",
       id: id,
@@ -203,9 +206,10 @@ const terraDrawSetup = (
   });
 
   draw.on("deselect", () => {
-    dispatch({
-      type: "selecionarElementoFoco",
-    });
+    if (pegarElementosSelecionados())
+      dispatch({
+        type: "selecionarElementoFoco",
+      });
   });
 
   draw.on("change", (e: string[], type: string) => {

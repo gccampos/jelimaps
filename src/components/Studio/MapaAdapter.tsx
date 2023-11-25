@@ -58,16 +58,24 @@ export default function Mapa(propsMapa: {
         : [0.5, 0.75],
     [mapaContext.modoVisao]
   );
+  const moveStartedRef = useRef<boolean>(false);
 
   useEffect(() => {
     if (map && !isMounted) {
-      map.on("moveend", () => {
-        dispatch({ type: "alteraPropriedadesMapa", map: map });
+      map.on("moveend", (e) => {
+        if (!moveStartedRef.current)
+          setTimeout(() => {
+            if (map.distance(mapaContext.center, map.getCenter()) > 1) {
+              console.log("vai dispachar a alteração", e);
+              dispatch({ type: "alteraPropriedadesMapa", map: map });
+            }
+          }, 100);
+        else moveStartedRef.current = false;
       });
       setMapa(map);
       setIsMounted(true);
     }
-  }, [map, isMounted, dispatch, setMapa]);
+  }, [map, isMounted, mapaContext, dispatch, setMapa]);
 
   const center = useMemo(
     () => new LatLng(position[0], position[1]),
@@ -75,12 +83,16 @@ export default function Mapa(propsMapa: {
   );
   const zoom = mapaContext.modoVisao === MODO_VISAO.openstreetmap ? 15 : 9;
   useEffect(() => {
-    if (map != null) map.setView(center, zoom);
+    if (map != null) {
+      moveStartedRef.current = true;
+      map.setView(center, zoom);
+    }
   }, [mapaContext.modoVisao, map, center, zoom]);
 
   const bounds = new LatLngBounds([0, 0], [1, 1.5]);
 
   const cliqueElementoNoMapa = (elemento, evento) => {
+    console.log("clique no mapa");
     if (evento.originalEvent.shiftKey || evento.originalEvent.ctrlKey)
       dispatch({ type: "adicionarElementoFoco", elemento: elemento });
     else dispatch({ type: "selecionarElementoFoco", elemento: elemento });
@@ -158,8 +170,10 @@ export default function Mapa(propsMapa: {
       map &&
       mapaContext.center?.lat !== map.getCenter().lat &&
       mapaContext.center?.lng !== map.getCenter().lng
-    )
+    ) {
+      moveStartedRef.current = true;
       map.setView(mapaContext.center, mapaContext.zoom);
+    }
     if (
       mapaContext.caixaDialogo &&
       mapaContext.caixaDialogo !== caixaDialogoRef.current &&
@@ -192,7 +206,10 @@ export default function Mapa(propsMapa: {
       if (map && propsMapa.draw) {
         if (propsConteudoMapa.elemento.draggable) {
           const ds = propsConteudoMapa.elemento as GeoJSONStoreFeatures;
+          // TODO: inserir cor personalizada ou se estiver selecionado
+
           try {
+            ds.bbox;
             propsMapa.draw?.addFeatures([ds]);
             if (
               mapaContext.elementoFoco?.id === propsConteudoMapa.elemento.id &&
@@ -212,12 +229,16 @@ export default function Mapa(propsMapa: {
             });
           }
         } else {
-          elementoGeoJSON.on("click", () =>
+          elementoGeoJSON.on("click", () => {
+            console.log("click no elementoGeoJSON");
             dispatch({
               type: "selecionarElementoFoco",
               id: propsConteudoMapa.elemento.id,
-            })
-          );
+            });
+          });
+          elementoGeoJSON.setStyle({
+            color: corItemSelecionadoFoco(propsConteudoMapa.elemento),
+          });
           map.addLayer(elementoGeoJSON);
         }
         return () => {
@@ -296,6 +317,15 @@ export default function Mapa(propsMapa: {
                   <Marker
                     {...marker}
                     position={marker.geometry.coordinates as [number, number]}
+                    draggable={
+                      (marker.draggable &&
+                        mapaContext.elementosFoco &&
+                        mapaContext.elementosFoco.length > 0 &&
+                        mapaContext.elementosFoco?.some(
+                          (x) => x.id === marker.id
+                        )) ||
+                      mapaContext.elementoFoco?.id === marker.id
+                    }
                     icon={divIcon({
                       className: "",
                       html: ReactDOMServer.renderToString(

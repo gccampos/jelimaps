@@ -182,6 +182,7 @@ export default function ModoVisaoDialog() {
           </div>
         ),
       });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mapaContext.modoVisao]);
   return null;
 }

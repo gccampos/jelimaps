@@ -79,8 +79,6 @@ export function mapaReducer(
     case "movendoImagem": {
       return MapaContextChanger.movendoImagem(oldMapaContext, action);
     }
-
-    // TODO: refatorar para ContextChangers (Elemento, Cena, LinhaTempo)
     case "propriedadeToggle": {
       action.nomePropriedade = "slidePropriedade";
       action.valorPropriedade = !oldMapaContext.slidePropriedade;

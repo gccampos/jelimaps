@@ -228,8 +228,8 @@ export default function Propriedades(props: {
                 onChange={(e, i) => {
                   dispatch({
                     type: "alteraPropriedadeGeral",
-                    tipo: "playStatus",
-                    valor: i,
+                    nomePropriedade: "playStatus",
+                    valorPropriedade: i,
                   });
 
                   if (!intervalId && i > 0) {
