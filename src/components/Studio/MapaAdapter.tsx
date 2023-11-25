@@ -31,7 +31,7 @@ import ImageResolver from "@/components/ImageUrlResolver";
 import ImageOverlayRotated from "../Mapa/ImageOverlayRotated";
 import { elementoPadrao, tipoElemento } from "../Mapa/mapaContextTypes";
 import { TerraDraw, GeoJSONStoreFeatures } from "terra-draw";
-import MapaContextChanger from "../Mapa/MapaContextChanger";
+import MapaContextChanger from "../Mapa/ContextChangers";
 import UndoControl from "./UndoControl";
 
 export const MODO_VISAO = {

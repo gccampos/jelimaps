@@ -44,8 +44,8 @@ export default function Geral() {
               if (!!e.target.name && !!e.target.value)
                 dispatch({
                   type: "alteraPropriedadeGeral",
-                  tipo: e.target.name,
-                  valor: e.target.value,
+                  nomePropriedade: e.target.name,
+                  valorPropriedade: e.target.value,
                   formik: formik,
                 });
             }}

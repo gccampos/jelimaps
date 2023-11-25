@@ -1,5 +1,5 @@
 import { Button, ButtonGroup, styled } from "@mui/material";
-import React from "react";
+import React, { useEffect } from "react";
 import { Undo, Redo } from "@mui/icons-material";
 import { useMapaUndo } from "../Mapa/MapaContext";
 
@@ -25,6 +25,9 @@ const DivStil = styled("div")`
 
 export default function UndoControl() {
   const { undo, redo, canRedo, canUndo } = useMapaUndo();
+  useEffect(() => {
+    console.log("alterrou o valor canRedo", canRedo);
+  }, [canRedo]);
   return (
     <DivStil>
       <ButtonGroup

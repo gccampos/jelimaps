@@ -1,6 +1,5 @@
-import moment from "moment";
 import { actionContextChange, mapaContextSchema } from "./mapaContextTypes";
-import MapaContextChanger from "./MapaContextChanger";
+import MapaContextChanger from "./ContextChangers";
 
 export function mapaReducer(
   oldMapaContext: mapaContextSchema,
@@ -83,143 +82,55 @@ export function mapaReducer(
 
     // TODO: refatorar para ContextChangers (Elemento, Cena, LinhaTempo)
     case "propriedadeToggle": {
-      return {
-        ...oldMapaContext,
-        slidePropriedade: !oldMapaContext.slidePropriedade,
-      };
+      action.nomePropriedade = "slidePropriedade";
+      action.valorPropriedade = !oldMapaContext.slidePropriedade;
+      return MapaContextChanger.changePropriedadeMapa(oldMapaContext, action);
     }
     case "modoVisao": {
-      return {
-        ...oldMapaContext,
-        modoVisao: action.tipo,
-        urlMapaProprio: action.valor ?? "",
-      };
+      return MapaContextChanger.selecionaModoVisao(oldMapaContext, action);
     }
     case "alteraPropriedadesMapa": {
-      return {
-        ...oldMapaContext,
-        center: action.map?.getCenter(),
-        zoom: action.map?.getZoom(),
-        bounds: action.map?.getBounds(),
-      };
+      return MapaContextChanger.changeCoordenadasMapa(oldMapaContext, action);
     }
     case "trocaMapaContext": {
-      return {
-        ...(action.mapContext ?? oldMapaContext),
-      };
+      return MapaContextChanger.changeCompletoMapaContext(
+        oldMapaContext,
+        action
+      );
     }
     case "limpaCaixaDialogo": {
-      return {
-        ...oldMapaContext,
-        caixaDialogo: "",
-      };
+      action.nomePropriedade = "caixaDialogo";
+      action.valorPropriedade = "";
+      return MapaContextChanger.changePropriedadeMapa(oldMapaContext, action);
     }
     case "atualizaTempo": {
-      const novoTempo = action.time ?? oldMapaContext.tempo;
-      const cenaNova = oldMapaContext.conteudo.cenas.find(
-        (x) =>
-          moment(x.cenaInicio) <= moment(novoTempo) &&
-          moment(x.cenaFim) >= moment(novoTempo) &&
-          (moment(x.cenaInicio) > moment(oldMapaContext.tempo) ||
-            moment(x.cenaFim) < moment(oldMapaContext.tempo))
-      );
-      if (cenaNova) {
-        oldMapaContext.center = cenaNova.center;
-        oldMapaContext.zoom = cenaNova.zoom;
-        oldMapaContext.bounds = cenaNova.bounds;
-      }
-      return {
-        ...oldMapaContext,
-        tempo: moment(novoTempo).format("yyyy-MM-DDTHH:mm:ss"),
-      };
+      return MapaContextChanger.changeTempoAtual(oldMapaContext, action);
     }
     case "alteraTempoInicioFim": {
-      return {
-        ...oldMapaContext,
-        cenaInicio: action.start,
-        cenaFim: action.end,
-      };
+      return MapaContextChanger.changeTempoInicioTempoFim(
+        oldMapaContext,
+        action
+      );
     }
     case "alteraPropriedadeGeral": {
-      if (action.tipo.includes("cena")) {
-        if (!action.formik.isValid) return oldMapaContext;
-        if (action.tipo === "cenaInicio")
-          oldMapaContext.conteudo.cenas[0].cenaInicio = action.valor;
-        if (action.tipo === "cenaFim")
-          oldMapaContext.conteudo.cenas[
-            oldMapaContext.conteudo.cenas.length - 1
-          ].cenaFim = action.valor;
-      }
-      return { ...oldMapaContext, [action.tipo]: action.valor };
-    }
-    case "alteraPropriedadeTimelineOptions": {
-      if (action.tipo === "showCurrentTime")
-        if (action.valor) oldMapaContext.tempo = oldMapaContext.cenaInicio;
-      return {
-        ...oldMapaContext,
-        timelineOptions: {
-          ...oldMapaContext.timelineOptions,
-          [action.tipo]: action.valor,
-        },
-      };
+      return MapaContextChanger.changePropriedadeMapa(oldMapaContext, action);
     }
     case "inserindoNovaCena": {
-      const novaCena = MapaContextChanger.novaCena(oldMapaContext);
-      oldMapaContext.conteudo.cenas.push(novaCena);
-      return {
-        ...oldMapaContext,
-        cenaFim: novaCena.cenaFim,
-      };
+      return MapaContextChanger.adicionarNovaCena(oldMapaContext);
     }
     case "deletarCena": {
-      const novasCenas = oldMapaContext.conteudo.cenas.filter(
-        (x) => x.id !== action.id
-      );
-      return {
-        ...oldMapaContext,
-        conteudo: { ...oldMapaContext.conteudo, cenas: novasCenas },
-      };
+      return MapaContextChanger.deletarCena(oldMapaContext, action);
     }
     case "alteraPropriedadeCena": {
-      if (!action.formik.isValid) return oldMapaContext;
-      if (action.tipo.includes("cena"))
-        if (action.tipo === "cenaInicio") {
-          oldMapaContext.conteudo.cenas[action.indiceElemento][action.tipo] =
-            action.valor;
-          if (action.indiceElemento > 0)
-            oldMapaContext.conteudo.cenas[action.indiceElemento - 1].cenaFim =
-              action.valor;
-        } else if (action.tipo === "cenaFim") {
-          oldMapaContext.conteudo.cenas[action.indiceElemento][action.tipo] =
-            action.valor;
-          if (action.indiceElemento < oldMapaContext.conteudo.cenas.length - 2)
-            oldMapaContext.conteudo.cenas[
-              action.indiceElemento + 1
-            ].cenaInicio = action.valor;
-        } else
-          oldMapaContext.conteudo.cenas[action.indiceElemento][action.tipo] =
-            action.valor;
-      else
-        oldMapaContext.conteudo.cenas[action.indiceElemento][action.tipo] =
-          action.valor;
-      return { ...oldMapaContext };
+      return MapaContextChanger.changePropriedadeCena(oldMapaContext, action);
     }
     case "fixarCena": {
-      const ctent = oldMapaContext.conteudo.cenas.find(
-        (x) => x.id === action.id
-      );
-      ctent.center = oldMapaContext.center;
-      ctent.zoom = oldMapaContext.zoom;
-      ctent.bounds = oldMapaContext.bounds;
-      return {
-        ...oldMapaContext,
-      };
+      return MapaContextChanger.fixarCena(oldMapaContext, action);
     }
     case "addImageOverlay": {
-      return {
-        ...oldMapaContext,
-        caixaDialogo: "imageOverlay",
-      };
+      action.nomePropriedade = "caixaDialogo";
+      action.valorPropriedade = "imageOverlay";
+      return MapaContextChanger.changePropriedadeMapa(oldMapaContext, action);
     }
     default: {
       throw Error("Unknown action: " + action.type);

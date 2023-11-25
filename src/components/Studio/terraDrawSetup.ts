@@ -19,7 +19,6 @@ const isMobile = () => {
   );
 };
 
-// TODO: Verificar erro
 const terraDrawSetup = (
   dispatch: React.Dispatch<actionContextChange>,
   map: Leaflet.Map,
@@ -78,6 +77,22 @@ const terraDrawSetup = (
       selectedPolygonOutlineWidth: 2, // Integer
     },
   });
+
+  (function (modes) {
+    modes.forEach((mode) => {
+      var oldEvent = mode.origin[mode.eventName];
+      mode.origin[mode.eventName] = (e: any) => {
+        try {
+          oldEvent.apply(mode.origin, [e]);
+        } catch (error) {
+          console.error(error);
+        }
+      };
+    });
+  })([
+    { origin: terraDrawSelectMode, eventName: "onDragStart" },
+    { origin: terraDrawSelectMode, eventName: "onDrag" },
+  ]);
 
   const terraDrawLeafletAdapter = new TerraDrawLeafletAdapter({
     // The leaflet library object
@@ -194,6 +209,8 @@ const terraDrawSetup = (
   });
 
   draw.on("change", (e: string[], type: string) => {
+    if (e.some((z) => z === "4be64917-79df-4beb-b57c-07ce1a6eaaa1"))
+      console.log("o elemento tava aqui");
     const listaEl = pegarConteudoElementos();
     if (listaEl.some((x) => e.some((z) => z === x.id))) {
       switch (type) {

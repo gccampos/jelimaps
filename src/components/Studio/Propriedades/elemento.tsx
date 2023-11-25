@@ -18,7 +18,7 @@ import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import moment from "moment";
-import MapaContextChanger from "@/components/Mapa/MapaContextChanger";
+import MapaContextChanger from "@/components/Mapa/ContextChangers";
 import { Button } from "react-bootstrap";
 
 const WrapperStyled = styled("div")``;

@@ -107,7 +107,7 @@ export function MapaProvider({ children }) {
   );
   const [, dispatch] = useReducer(
     (old: mapaContextSchema, action: actionContextChange) => {
-      console.log("dispatch original", action);
+      console.log("dispatch original", action, canUndo, context, canRedo);
       const newContext =
         action.type !== "reset"
           ? mapaReducer(
@@ -137,11 +137,13 @@ export function MapaProvider({ children }) {
       value={{
         reset: (newContext?: mapaContextSchema) => {
           localStorage.clear();
+          newContext = newContext ?? initialMapaContexto();
           dispatch({
             type: "reset",
-            mapContext: newContext ?? initialMapaContexto(),
+            mapContext: newContext,
           });
-          reset(newContext ?? initialMapaContexto());
+          console.log("reset FUNCTION com o novo context", newContext);
+          reset(newContext);
         },
         undo: () => {
           dispatch({

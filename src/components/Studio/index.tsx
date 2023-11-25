@@ -10,7 +10,7 @@ import L from "leaflet";
 import { TerraDraw } from "terra-draw";
 import { useMapaContext, useMapaDispatch } from "../Mapa/MapaContext";
 import { tipoElemento } from "../Mapa/mapaContextTypes";
-import MapaContextChanger from "../Mapa/MapaContextChanger";
+import MapaContextChanger from "../Mapa/ContextChangers";
 import terraDrawSetup from "./terraDrawSetup";
 // import moment from "moment";
 
