@@ -13,15 +13,12 @@ import {
   Slider,
   Typography,
 } from "@mui/material";
-import {
-  useMapaContext,
-  useMapaDispatch,
-} from "@/components/Mapa/context/MapaContext";
+import { useMapaContext, useMapaDispatch } from "@/components/Mapa/MapaContext";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import moment from "moment";
-import MapaFunctionHelpers from "@/components/Mapa/context/MapaFunctionsHelpers";
+import MapaContextChanger from "@/components/Mapa/MapaContextChanger";
 import { Button } from "react-bootstrap";
 
 const WrapperStyled = styled("div")``;
@@ -32,7 +29,7 @@ export default function Elemento() {
   const [value, setValue] = React.useState(
     mapaContext?.elementosFoco
       ?.map((x: any) =>
-        MapaFunctionHelpers.retornaElementoOuAlteracaoPorId(mapaContext, x.id)
+        MapaContextChanger.retornaElementoOuAlteracaoPorId(mapaContext, x.id)
       )
       .concat([mapaContext?.elementoFoco])
       .filter(

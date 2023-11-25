@@ -13,8 +13,8 @@ import {
   useMapaContext,
   useMapaDispatch,
   useMapaUndo,
-} from "@/components/Mapa/context/MapaContext";
-import { MODO_VISAO } from "@/components/Studio/Mapa";
+} from "@/components/Mapa/MapaContext";
+import { MODO_VISAO } from "@/components/Studio/MapaAdapter";
 import useCaixaDialogo from "@/components/CaixaDialogo/useCaixaDialogo";
 import ImageResolver from "@/components/ImageUrlResolver";
 

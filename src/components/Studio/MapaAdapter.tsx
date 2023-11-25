@@ -12,10 +12,7 @@ import React from "react";
 import CustomControlLeaflet, {
   POSITION_CLASSES_CUSTOM_CONTROL,
 } from "@/components/CustomControlLeaflet/CustomControlLeaflet";
-import {
-  useMapaContext,
-  useMapaDispatch,
-} from "@/components/Mapa/context/MapaContext";
+import { useMapaContext, useMapaDispatch } from "@/components/Mapa/MapaContext";
 import {
   Button,
   ButtonGroup,
@@ -32,9 +29,9 @@ import ReactDOMServer from "react-dom/server";
 import useCaixaDialogo from "../CaixaDialogo/useCaixaDialogo";
 import ImageResolver from "@/components/ImageUrlResolver";
 import ImageOverlayRotated from "../Mapa/ImageOverlayRotated";
-import { elementoPadrao, tipoElemento } from "../Mapa/context/mapaContextTypes";
+import { elementoPadrao, tipoElemento } from "../Mapa/mapaContextTypes";
 import { TerraDraw, GeoJSONStoreFeatures } from "terra-draw";
-import MapaFunctionHelpers from "../Mapa/context/MapaFunctionsHelpers";
+import MapaContextChanger from "../Mapa/MapaContextChanger";
 import UndoControl from "./UndoControl";
 
 export const MODO_VISAO = {
@@ -42,13 +39,13 @@ export const MODO_VISAO = {
   mapaProprio: "Mapa Próprio",
 };
 
-export default function Mapa(props: {
+export default function Mapa(propsMapa: {
   altura: number;
   draw: TerraDraw;
   setMapa: React.Dispatch<React.SetStateAction<L.Map>>;
   conteudoElementosRef: React.MutableRefObject<tipoElemento[]>;
 }) {
-  const { setMapa, conteudoElementosRef } = props;
+  const { setMapa, conteudoElementosRef } = propsMapa;
   const [isMounted, setIsMounted] = React.useState(false);
   const [map, setMap] = useState<Map>(null);
   const caixaDialogoRef = useRef<String>(null);
@@ -98,10 +95,10 @@ export default function Mapa(props: {
       tipo: "ImageOverlay",
       valor: ImageResolver.UrlResolver(urlImageRef.current),
     });
-    props.draw.setMode("select");
+    propsMapa.draw.setMode("select");
     closeModalConfirm(null, null);
     caixaDialogoRef.current = urlImageRef.current = null;
-  }, [dispatch, closeModalConfirm, props.draw]);
+  }, [dispatch, closeModalConfirm, propsMapa.draw]);
 
   const handleInserirImagem = React.useCallback(() => {
     openModalConfirm({
@@ -175,85 +172,84 @@ export default function Mapa(props: {
       handleInserirImagem();
     }
 
-    // setConteudoElementos(
-    //   MapaFunctionHelpers.retornaListaElementosConteudo(mapaContext)
-    // );
     console.log("mapaContext", mapaContext);
     conteudoElementosRef.current =
-      MapaFunctionHelpers.retornaListaElementosConteudoCenaAtual(mapaContext);
+      MapaContextChanger.retornaListaElementosConteudoCenaAtual(mapaContext);
   });
 
-  // const verificaElementoFocadoPorId = (id) => {
-  //   return (
-  //     mapaContext?.elementosFoco
-  //       ?.concat([mapaContext?.elementoFoco])
-  //       .filter((x) => x) ?? [mapaContext?.elementoFoco]
-  //   ).some((x) => x?.id === id);
-  // };
-
-  const corItemSelecionadoFoco = (el) => {
+  const corItemSelecionadoFoco = (elemento) => {
     return (mapaContext.elementosFoco &&
       mapaContext.elementosFoco.length > 0 &&
-      mapaContext.elementosFoco?.some((x) => x.id === el.id)) ||
-      mapaContext.elementoFoco?.id === el.id
+      mapaContext.elementosFoco?.some((x) => x.id === elemento.id)) ||
+      mapaContext.elementoFoco?.id === elemento.id
       ? "#000000"
-      : el.color ?? "#0d6efd";
+      : elemento.color ?? "#0d6efd";
   };
 
-  const ConteudoMapa = (p: { el: elementoPadrao }) => {
-    const el = new L.GeoJSON(p.el);
+  const ConteudoMapa = (propsConteudoMapa: { elemento: elementoPadrao }) => {
+    const elementoGeoJSON = new L.GeoJSON(propsConteudoMapa.elemento);
     useEffect(() => {
-      if (map && props.draw) {
-        if (p.el.draggable) {
-          const ds = p.el as GeoJSONStoreFeatures;
+      if (map && propsMapa.draw) {
+        if (propsConteudoMapa.elemento.draggable) {
+          const ds = propsConteudoMapa.elemento as GeoJSONStoreFeatures;
           try {
-            props.draw?.addFeatures([ds]);
+            propsMapa.draw?.addFeatures([ds]);
             if (
-              mapaContext.elementoFoco?.id === p.el.id &&
-              !(props.draw as any)._mode.selected?.some((x) => x === p.el.id)
+              mapaContext.elementoFoco?.id === propsConteudoMapa.elemento.id &&
+              !(propsMapa.draw as any)._mode.selected?.some(
+                (x) => x === propsConteudoMapa.elemento.id
+              )
             )
-              (props.draw as any)._mode.selected = [p.el.id];
+              (propsMapa.draw as any)._mode.selected = [
+                propsConteudoMapa.elemento.id,
+              ];
             //(props.draw as any)._mode.onSelect(p.el.id);
           } catch (error) {
             console.error(error);
             dispatch({
               type: "removeElements",
-              id: p.el.id,
+              id: propsConteudoMapa.elemento.id,
             });
           }
         } else {
-          el.on("click", () =>
+          elementoGeoJSON.on("click", () =>
             dispatch({
               type: "selecionarElementoFoco",
-              id: p.el.id,
+              id: propsConteudoMapa.elemento.id,
             })
           );
-          map.addLayer(el);
+          map.addLayer(elementoGeoJSON);
         }
         return () => {
           // props.draw.removeFeatures([p.el.id.toString()]);
           if (
-            p.el.draggable ||
-            Object.keys((props.draw as any)._store.store).some(
-              (x) => x === p.el.id
+            propsConteudoMapa.elemento.draggable ||
+            Object.keys((propsMapa.draw as any)._store.store).some(
+              (x) => x === propsConteudoMapa.elemento.id
             )
           ) {
             // if (mapaContext.elementoFoco?.id === p.el.id)
             //   (props.draw as any)._mode.deselect();
             if (
-              MapaFunctionHelpers.retornaListaElementosConteudo(
+              MapaContextChanger.retornaListaElementosConteudo(
                 mapaContext
-              ).some((x) => x.id === p.el.id)
+              ).some(
+                (elemento) => elemento.id === propsConteudoMapa.elemento.id
+              )
             ) {
               // props.draw.removeFeatures([p.el.id.toString()]);
               if (
-                (props.draw as any)._store &&
-                (props.draw as any)._store.store[p.el.id.toString()]
+                (propsMapa.draw as any)._store &&
+                (propsMapa.draw as any)._store.store[
+                  propsConteudoMapa.elemento.id.toString()
+                ]
               )
-                props.draw.removeFeatures([p.el.id.toString()]);
+                propsMapa.draw.removeFeatures([
+                  propsConteudoMapa.elemento.id.toString(),
+                ]);
             }
           } else {
-            map.removeLayer(el);
+            map.removeLayer(elementoGeoJSON);
           }
         };
       }
@@ -263,7 +259,7 @@ export default function Mapa(props: {
 
   return (
     <Grid item xs>
-      <div style={{ height: props.altura, display: "grid" }}>
+      <div style={{ height: propsMapa.altura, display: "grid" }}>
         <MapContainer
           center={mapaContext.mapOptions?.center ?? center}
           zoom={mapaContext.mapOptions?.zoom ?? zoom}
@@ -291,21 +287,21 @@ export default function Mapa(props: {
             mapaContext.conteudo.Marker &&
             mapaContext.conteudo.Marker.length > 0 &&
             mapaContext.conteudo.Marker.filter(
-              (x) =>
-                new Date(x.cenaInicio) <= new Date(mapaContext.tempo) &&
-                new Date(x.cenaFim) >= new Date(mapaContext.tempo)
-            ).map((x, i, arr) => {
+              (marker) =>
+                new Date(marker.cenaInicio) <= new Date(mapaContext.tempo) &&
+                new Date(marker.cenaFim) >= new Date(mapaContext.tempo)
+            ).map((marker, index, origin) => {
               return (
-                x.geometry?.coordinates && (
+                marker.geometry?.coordinates && (
                   <Marker
-                    {...x}
-                    position={x.geometry.coordinates as [number, number]}
+                    {...marker}
+                    position={marker.geometry.coordinates as [number, number]}
                     icon={divIcon({
                       className: "",
                       html: ReactDOMServer.renderToString(
                         <LocationOn
                           style={{
-                            color: corItemSelecionadoFoco(x),
+                            color: corItemSelecionadoFoco(marker),
                             position: "absolute",
                             top: "-150%",
                             left: "-67%",
@@ -313,17 +309,18 @@ export default function Mapa(props: {
                         />
                       ),
                     })}
-                    key={`marker#${i}`}
+                    key={`marker#${index}`}
                     eventHandlers={{
-                      click: (e) => cliqueElementoNoMapa(arr[i], e),
+                      click: (e) => cliqueElementoNoMapa(origin[index], e),
+                      // TODO: só deixar mover se o marker estiver selecionado
                       moveend: (e) => {
                         dispatch({
                           type: "editarPropriedade",
-                          tipo: x.dataRef,
-                          id: x.id,
+                          tipo: marker.dataRef,
+                          id: marker.id,
                           nomePropriedade: "geometry",
                           valorPropriedade: {
-                            ...x.geometry,
+                            ...marker.geometry,
                             coordinates: [
                               e.sourceTarget._latlng.lat,
                               e.sourceTarget._latlng.lng,
@@ -365,55 +362,50 @@ export default function Mapa(props: {
             mapaContext.conteudo.Point &&
             mapaContext.conteudo.Point.length > 0 &&
             mapaContext.conteudo.Point.filter(
-              (x) =>
-                new Date(x.cenaInicio) <= new Date(mapaContext.tempo) &&
-                new Date(x.cenaFim) >= new Date(mapaContext.tempo)
-            ).map((x, i) => {
-              return <ConteudoMapa el={x} key={`Pointer#${i}`} />;
+              (point) =>
+                new Date(point.cenaInicio) <= new Date(mapaContext.tempo) &&
+                new Date(point.cenaFim) >= new Date(mapaContext.tempo)
+            ).map((point, index) => {
+              return <ConteudoMapa elemento={point} key={`Pointer#${index}`} />;
             })}
           {mapaContext.conteudo &&
             mapaContext.conteudo.Circle &&
             mapaContext.conteudo.Circle.length > 0 &&
             mapaContext.conteudo.Circle.filter(
-              (x) =>
-                new Date(x.cenaInicio) <= new Date(mapaContext.tempo) &&
-                new Date(x.cenaFim) >= new Date(mapaContext.tempo)
-            ).map((x, i) => {
-              return <ConteudoMapa el={x} key={`Circle#${i}`} />;
+              (circle) =>
+                new Date(circle.cenaInicio) <= new Date(mapaContext.tempo) &&
+                new Date(circle.cenaFim) >= new Date(mapaContext.tempo)
+            ).map((circle, index) => {
+              return <ConteudoMapa elemento={circle} key={`Circle#${index}`} />;
             })}
           {mapaContext.conteudo &&
             mapaContext.conteudo.LineString &&
             mapaContext.conteudo.LineString.length > 0 &&
             mapaContext.conteudo.LineString.filter(
-              (x) =>
-                new Date(x.cenaInicio) <= new Date(mapaContext.tempo) &&
-                new Date(x.cenaFim) >= new Date(mapaContext.tempo)
-            ).map((x, i) => {
-              return <ConteudoMapa el={x} key={`LineString#${i}`} />;
+              (lineString) =>
+                new Date(lineString.cenaInicio) <=
+                  new Date(mapaContext.tempo) &&
+                new Date(lineString.cenaFim) >= new Date(mapaContext.tempo)
+            ).map((lineString, index) => {
+              return (
+                <ConteudoMapa
+                  elemento={lineString}
+                  key={`LineString#${index}`}
+                />
+              );
             })}
 
           {mapaContext.conteudo &&
             mapaContext.conteudo.Polygon &&
             mapaContext.conteudo.Polygon.length > 0 &&
             mapaContext.conteudo.Polygon.filter(
-              (x) =>
-                new Date(x.cenaInicio) <= new Date(mapaContext.tempo) &&
-                new Date(x.cenaFim) >= new Date(mapaContext.tempo)
-            ).map((x, i) => {
-              return <ConteudoMapa el={x} key={`polygon#${i}`} />;
-              // return x?.geometry.coordinates.positions ? (
-              //   <div key={`polygon#${i}`}>
-              //     <Polygon
-              //       {...x}
-              //       pathOptions={{
-              //         color: corItemSelecionadoFoco(x),
-              //       }}
-              //       eventHandlers={{
-              //         click: (e) => cliqueElementoNoMapa(arr[i], e),
-              //       }}
-              //     ></Polygon>
-              //   </div>
-              // ) : null;
+              (polygon) =>
+                new Date(polygon.cenaInicio) <= new Date(mapaContext.tempo) &&
+                new Date(polygon.cenaFim) >= new Date(mapaContext.tempo)
+            ).map((polygon, index) => {
+              return (
+                <ConteudoMapa elemento={polygon} key={`polygon#${index}`} />
+              );
             })}
 
           {mapaContext.conteudo &&
@@ -421,18 +413,18 @@ export default function Mapa(props: {
             mapaContext.conteudo.cenas.length > 0 &&
             mapaContext.conteudo.cenas
               .filter(
-                (x) =>
-                  !!x.exibirLimite &&
-                  new Date(x.cenaInicio) <= new Date(mapaContext.tempo) &&
-                  new Date(x.cenaFim) >= new Date(mapaContext.tempo)
+                (cena) =>
+                  !!cena.exibirLimite &&
+                  new Date(cena.cenaInicio) <= new Date(mapaContext.tempo) &&
+                  new Date(cena.cenaFim) >= new Date(mapaContext.tempo)
               )
-              .map((x, i) => {
-                return x?.bounds ? (
+              .map((cena, index) => {
+                return cena?.bounds ? (
                   <Rectangle
-                    {...x}
-                    bounds={x.bounds}
+                    {...cena}
+                    bounds={cena.bounds}
                     className="background-scene"
-                    key={`Rectangle#${i}`}
+                    key={`Rectangle#${index}`}
                   >
                     {/* <Popup>
                           A pretty CSS3 popup. <br /> Easily customizable.
@@ -444,14 +436,14 @@ export default function Mapa(props: {
             mapaContext.conteudo.ImageOverlay &&
             mapaContext.conteudo.ImageOverlay.length > 0 &&
             mapaContext.conteudo.ImageOverlay.filter(
-              (x) =>
-                new Date(x.cenaInicio) <= new Date(mapaContext.tempo) &&
-                new Date(x.cenaFim) >= new Date(mapaContext.tempo)
-            ).map((x, i) => {
+              (image) =>
+                new Date(image.cenaInicio) <= new Date(mapaContext.tempo) &&
+                new Date(image.cenaFim) >= new Date(mapaContext.tempo)
+            ).map((image, index) => {
               return (
                 <ImageOverlayRotated
-                  key={`ImageOverlay#${i}`}
-                  x={x}
+                  key={`ImageOverlay#${index}`}
+                  x={image}
                   cliqueElementoNoMapa={cliqueElementoNoMapa}
                 />
               );

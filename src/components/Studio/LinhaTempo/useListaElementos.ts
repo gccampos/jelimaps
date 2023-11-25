@@ -1,5 +1,5 @@
-import { useMapaContext } from "@/components/Mapa/context/MapaContext";
-import { elementoPadrao } from "@/components/Mapa/context/mapaContextTypes";
+import { useMapaContext } from "@/components/Mapa/MapaContext";
+import { elementoPadrao } from "@/components/Mapa/mapaContextTypes";
 import { useEffect, useState } from "react";
 
 const useListaElementos = () => {

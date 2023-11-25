@@ -2,28 +2,37 @@ import React, { useEffect, useRef, useState } from "react";
 import Propriedades from "./Propriedades";
 import LinhaTempo from "./LinhaTempo/Index";
 import { Grid, styled } from "@mui/material";
-import Mapa from "./Mapa";
+import Mapa from "./MapaAdapter";
 import { Rnd } from "react-rnd";
 import useWindowDimensions from "./useWindowDimensions";
 import { ElementosLateral } from "./Elementos";
 import L from "leaflet";
-import {
-  TerraDraw,
-  TerraDrawLeafletAdapter,
-  TerraDrawSelectMode,
-  TerraDrawPolygonMode,
-  TerraDrawPointMode,
-  TerraDrawLineStringMode,
-  TerraDrawCircleMode,
-  TerraDrawRenderMode,
-} from "terra-draw";
-import { useMapaContext, useMapaDispatch } from "../Mapa/context/MapaContext";
-import { tipoElemento } from "../Mapa/context/mapaContextTypes";
+import { TerraDraw } from "terra-draw";
+import { useMapaContext, useMapaDispatch } from "../Mapa/MapaContext";
+import { tipoElemento } from "../Mapa/mapaContextTypes";
+import MapaContextChanger from "../Mapa/MapaContextChanger";
+import terraDrawSetup from "./terraDrawSetup";
 // import moment from "moment";
 
 const Dragger = styled("div")`
   cursor: n-resize;
 `;
+
+// Define a função para inserir um texto no clipboard
+function copyToClipboard(text) {
+  // Cria um elemento textarea temporário
+  const textarea = document.createElement("textarea");
+  // Define o valor do textarea como o texto
+  textarea.value = text;
+  // Adiciona o textarea ao documento
+  document.body.appendChild(textarea);
+  // Seleciona o texto do textarea
+  textarea.select();
+  // Executa o comando de copiar
+  document.execCommand("copy");
+  // Remove o textarea do documento
+  document.body.removeChild(textarea);
+}
 
 const Studio = () => {
   const { height } = useWindowDimensions();
@@ -39,11 +48,30 @@ const Studio = () => {
   const [larguraPropriedades, setLargurasPropriedades] = useState(250);
   const dispatch = useMapaDispatch();
 
-  const isMobile = React.useCallback(() => {
-    return (
-      "ontouchstart" in document.documentElement &&
-      !!navigator.userAgent.match(/Mobi/)
-    );
+  const handleKeyDown = (event) => {
+    if (event.ctrlKey && event.keyCode === 67) {
+      if (elementosSelecionadosRef.current.length === 1) {
+        const text = JSON.stringify(
+          MapaContextChanger.retornaListaElementosConteudo(mapaContext).find(
+            (x) => x.id === elementosSelecionadosRef.current[0]
+          )
+        );
+        copyToClipboard(text);
+      }
+    }
+    if (event.ctrlKey && event.keyCode === 86) {
+      navigator.clipboard.readText().then((x) => {
+        console.log("texto copiado", x);
+        // TODO: Realizar inserção de novo elemento de acordo com o JSON do texto copiado
+      });
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
   }, []);
 
   useEffect(() => {
@@ -56,246 +84,24 @@ const Studio = () => {
     else elementosSelecionadosRef.current = null;
   }, [mapaContext.elementosFoco, mapaContext.elementoFoco]);
 
+  const pegarConteudoElementos = () => conteudoElementosRef.current;
+  const alterarEventTimeoutConteudoElemento = (
+    index: number,
+    eventTimeout?: any
+  ) => (conteudoElementosRef.current[index].eventTimeout = eventTimeout);
+
   useEffect(() => {
-    console.log("useEffect do Studio", map);
-    if (map && !draw) {
-      const terraDrawPolygonMode = new TerraDrawPolygonMode({
-        allowSelfIntersections: false,
-        pointerDistance: 30,
-      });
-      const terraDrawPointMode = new TerraDrawPointMode({});
-      const terraDrawCircleMode = new TerraDrawCircleMode({});
-      const terraDrawMarkerMode = new TerraDrawRenderMode({
-        modeName: "marker",
-        styles: {},
-      });
-      const terraDrawImageOverlayMode = new TerraDrawRenderMode({
-        modeName: "ImageOverlay",
-        styles: {},
-      });
-      const terraDrawLineStringMode = new TerraDrawLineStringMode({});
-      const modelFlagsDefault = {
-        feature: {
-          scaleable: true,
-          rotateable: true,
-          draggable: true,
-          coordinates: {
-            midpoints: true,
-            draggable: true,
-            deletable: true,
-          },
-        },
-      };
-      const terraDrawSelectMode = new TerraDrawSelectMode({
-        flags: {
-          // Following flags determine what you can do in
-          // select mode for features of a given mode - in this case polygon
-          polygon: modelFlagsDefault,
-          linestring: modelFlagsDefault,
-          point: modelFlagsDefault,
-          circle: {
-            ...modelFlagsDefault,
-            feature: {
-              ...modelFlagsDefault.feature,
-              coordinates: {
-                ...modelFlagsDefault.feature.coordinates,
-                midpoints: false,
-              },
-            },
-          },
-        },
-        styles: {
-          selectedPolygonColor: "#222222", // Any hex color you like
-          selectedPolygonFillOpacity: 0.7, // 0 - 1
-          selectedPolygonOutlineColor: "#333333", // Any hex color you like
-          selectedPolygonOutlineWidth: 2, // Integer
-        },
-      });
+    if (map && !draw)
+      setDraw(
+        terraDrawSetup(
+          dispatch,
+          map,
+          pegarConteudoElementos,
+          alterarEventTimeoutConteudoElemento
+        )
+      );
+  }, [dispatch, draw, map]);
 
-      const terraDrawLeafletAdapter = new TerraDrawLeafletAdapter({
-        // The leaflet library object
-        lib: L,
-
-        // The leaflet map object we created
-        map: map,
-
-        // The decimal precision of the coordinates created
-        coordinatePrecision: 9,
-      });
-
-      const draw = new TerraDraw({
-        adapter: terraDrawLeafletAdapter,
-
-        // Modes is an object containing all the modes we wish to
-        // instantiate Terra Draw with
-        modes: [
-          terraDrawPointMode,
-          terraDrawCircleMode,
-          terraDrawPolygonMode,
-          terraDrawLineStringMode,
-          terraDrawSelectMode,
-          terraDrawMarkerMode,
-          terraDrawImageOverlayMode,
-        ],
-      });
-
-      // var oldEvent = terraDrawLeafletAdapter.render;
-      // terraDrawLeafletAdapter.render = (e, c) => {
-      //   oldEvent.apply(terraDrawLeafletAdapter, [e, c]);
-      // };
-      (terraDrawMarkerMode.onClick as any) = (e: any) => {
-        dispatch({
-          type: "addElemento",
-          posicao: [e.lat, e.lng],
-          tipo: "Marker",
-        });
-      };
-      terraDrawImageOverlayMode.onClick = () => {
-        dispatch({
-          type: "addImageOverlay",
-        });
-      };
-      (function (modes) {
-        modes.forEach((mode) => {
-          var oldEvent = mode.onClick;
-          mode.origin.onClick = (e: any) => {
-            if (
-              !(
-                e.containerY < 90 &&
-                e.containerX > (map as any)._container.offsetWidth - 90
-              ) &&
-              !(e.containerX < 60 && e.containerY < 160)
-              // e.containerX > (map as any)._container.offsetWidth - 70)
-            ) {
-              if (
-                typeof terraDrawCircleMode === typeof mode.origin &&
-                isMobile()
-              ) {
-                (mode.origin as any).clickCount =
-                  (mode.origin as any).clickCount ?? 0;
-                if ((mode.origin as any).clickCount === 1)
-                  mode.origin.onMouseMove(e);
-              }
-              oldEvent.apply(mode.origin, [e]);
-            }
-          };
-        });
-      })([
-        { origin: terraDrawCircleMode, onClick: terraDrawCircleMode.onClick },
-        {
-          origin: terraDrawLineStringMode,
-          onClick: terraDrawLineStringMode.onClick,
-        },
-        { origin: terraDrawPointMode, onClick: terraDrawPointMode.onClick },
-        { origin: terraDrawPolygonMode, onClick: terraDrawPolygonMode.onClick },
-        { origin: terraDrawSelectMode, onClick: terraDrawSelectMode.onClick },
-        { origin: terraDrawMarkerMode, onClick: terraDrawMarkerMode.onClick },
-        {
-          origin: terraDrawImageOverlayMode,
-          onClick: terraDrawImageOverlayMode.onClick,
-        },
-      ]);
-
-      const onFinishModesExistents = (e: any) => {
-        const element = draw.getSnapshot().find((x) => x.id === e);
-        dispatch({
-          type: "addElemento",
-          posicao: element.geometry.coordinates as
-            | [number, number]
-            | [number, number][],
-          tipo: element.geometry.type,
-          id: element.id,
-          valor: element,
-        });
-        draw.removeFeatures([e]);
-      };
-
-      terraDrawLineStringMode.onFinish =
-        terraDrawCircleMode.onFinish =
-        terraDrawPointMode.onFinish =
-        terraDrawPolygonMode.onFinish =
-          onFinishModesExistents;
-
-      draw.on("select", (id: string) => {
-        dispatch({
-          type: "selecionarElementoFoco",
-          id: id,
-        });
-      });
-
-      draw.on("deselect", () => {
-        dispatch({
-          type: "selecionarElementoFoco",
-        });
-      });
-
-      draw.on("change", (e: string[], type: string) => {
-        const listaEl = conteudoElementosRef.current;
-        if (listaEl.some((x) => e.some((z) => z === x.id))) {
-          switch (type) {
-            case "update":
-              {
-                const element = draw
-                  .getSnapshot()
-                  .find(
-                    (x) =>
-                      e.some((z) => z === x.id) &&
-                      listaEl.some((z) => z.id === x.id)
-                  );
-                const oldElement = listaEl.find((x) => x.id === element.id);
-                if (oldElement)
-                  if (
-                    JSON.stringify(oldElement.geometry.coordinates.flat()) !==
-                    JSON.stringify(element.geometry.coordinates.flat())
-                  ) {
-                    if (oldElement.eventTimeout) {
-                      clearTimeout(oldElement.eventTimeout);
-                    }
-                    conteudoElementosRef.current[
-                      conteudoElementosRef.current.findIndex(
-                        (x) => x.id === oldElement.id
-                      )
-                    ].eventTimeout = setTimeout(() => {
-                      if (
-                        conteudoElementosRef.current[
-                          conteudoElementosRef.current.findIndex(
-                            (x) => x.id === oldElement.id
-                          )
-                        ].eventTimeout !== null
-                      ) {
-                        dispatch({
-                          type: "alteraCoordinatesElemento",
-                          posicao: element.geometry.coordinates as
-                            | [number, number]
-                            | [number, number][]
-                            | [number, number][][],
-                          id: element.id,
-                        });
-                        conteudoElementosRef.current[
-                          conteudoElementosRef.current.findIndex(
-                            (x) => x.id === oldElement.id
-                          )
-                        ].eventTimeout = null;
-                      }
-                    }, 100);
-                  }
-                // });
-              }
-              break;
-
-            default:
-              break;
-          }
-        }
-      });
-
-      // Start drawing
-      draw.start();
-      setDraw(draw);
-      // Set the mode to polygon
-      draw.setMode("select");
-    }
-  }, [altura, dispatch, draw, height, isMobile, map]);
   useEffect(() => {
     if (draw)
       if (!elementosSelecionadosRef.current) {
@@ -311,6 +117,7 @@ const Studio = () => {
     mapaContext.elementoFoco,
     mapaContext.elementosFoco,
   ]);
+
   return (
     <Grid container sx={{ height: "100%" }} id="studioMapa">
       <Grid item container xs={12}>

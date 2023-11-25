@@ -10,6 +10,81 @@ import {
 import { v4, NIL } from "uuid";
 import moment from "moment";
 
+function getRandomColor(oldMapaContext: mapaContextSchema) {
+  var letters = "0123456789ABCDEF";
+  var color = "#";
+  for (var i = 0; i < 6; i++) {
+    color += letters[Math.floor(Math.random() * 16)];
+  }
+  const cenafim =
+    oldMapaContext.conteudo.cenas[oldMapaContext.conteudo.cenas.length - 1];
+  if (!similarColors(cenafim.color, color)) return hexToRGBA(color, 0.14);
+  else return getRandomColor(oldMapaContext);
+}
+function hexToRGBA(hex, alpha) {
+  var r = parseInt(hex.slice(1, 3), 16),
+    g = parseInt(hex.slice(3, 5), 16),
+    b = parseInt(hex.slice(5, 7), 16);
+
+  if (alpha) {
+    return "rgba(" + r + ", " + g + ", " + b + ", " + alpha + ")";
+  } else {
+    return "rgb(" + r + ", " + g + ", " + b + ")";
+  }
+}
+
+// Função para calcular a distância euclidiana entre dois pontos
+function distance(x1, y1, x2, y2) {
+  return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+}
+
+// Função para converter uma cor hexadecimal em HSV
+function hexToHSV(color) {
+  // Converte a cor hexadecimal em RGB
+  var r = parseInt(color.slice(1, 3), 16) / 255;
+  var g = parseInt(color.slice(3, 5), 16) / 255;
+  var b = parseInt(color.slice(5, 7), 16) / 255;
+  // Calcula o máximo, o mínimo e a diferença entre os valores RGB
+  var max = Math.max(r, g, b);
+  var min = Math.min(r, g, b);
+  var diff = max - min;
+  // Variáveis para armazenar os valores HSV
+  var h, s, v;
+  // Calcula o valor de H
+  if (max == min) {
+    h = 0;
+  } else if (max == r) {
+    h = ((60 * (g - b)) / diff + 360) % 360;
+  } else if (max == g) {
+    h = ((60 * (b - r)) / diff + 120) % 360;
+  } else if (max == b) {
+    h = ((60 * (r - g)) / diff + 240) % 360;
+  }
+  // Calcula o valor de S
+  if (max == 0) {
+    s = 0;
+  } else {
+    s = diff / max;
+  }
+  // Calcula o valor de V
+  v = max;
+  // Retorna um objeto com os valores HSV
+  return { h: h, s: s, v: v };
+}
+
+// Função para verificar se duas cores são parecidas, ou do mesmo tom
+function similarColors(color1, color2) {
+  // Converte as cores hexadecimais em HSV
+  var hsv1 = hexToHSV(color1);
+  var hsv2 = hexToHSV(color2);
+  // Calcula a distância entre as cores no espaço HSV
+  var d = distance(hsv1.h, hsv1.s, hsv2.h, hsv2.s);
+  // Define um limiar de similaridade
+  var threshold = 10;
+  // Retorna verdadeiro se a distância for menor que o limiar, falso caso contrário
+  return d < threshold;
+}
+
 const retornaListaElementosConteudoCenaAtual = (
   oldMapaContext: mapaContextSchema
 ) =>
@@ -22,12 +97,10 @@ const retornaListaElementosConteudoCenaAtual = (
         moment(x.cenaInicio) <= moment(oldMapaContext.tempo) &&
         moment(x.cenaFim) >= moment(oldMapaContext.tempo)
     );
-
 const retornaListaElementosConteudo = (oldMapaContext: mapaContextSchema) =>
   Object.keys(oldMapaContext?.conteudo)
     .map((x) => oldMapaContext?.conteudo[x])
     .flat();
-
 const retornaListaAlteracoesConteudo = (oldMapaContext: mapaContextSchema) =>
   Object.keys(oldMapaContext?.conteudo)
     .map((x) => oldMapaContext?.conteudo[x])
@@ -37,26 +110,6 @@ const retornaListaAlteracoesConteudo = (oldMapaContext: mapaContextSchema) =>
     })
     .flat()
     .filter((x) => x);
-
-const padraoElementoNovoAdicionado = (oldMapaContext: mapaContextSchema) => {
-  return {
-    cenaInicio: moment(oldMapaContext.conteudo.cenas[0].cenaInicio)
-      .add(1, "seconds")
-      .format("yyyy-MM-DDTHH:mm:ss"),
-    cenaFim: moment(
-      oldMapaContext.conteudo.cenas[oldMapaContext.conteudo.cenas.length - 1]
-        .cenaFim
-    )
-      .add(-1, "seconds")
-      .format("yyyy-MM-DDTHH:mm:ss"),
-    order:
-      retornaListaElementosConteudo(oldMapaContext).filter(
-        (x) => !(x.visTimelineObject?.type === "background")
-      ).length ?? 0,
-    draggable: true,
-  };
-};
-
 const retornaElementoOuAlteracaoPorId = (
   oldMapaContext: mapaContextSchema,
   id: NIL
@@ -77,6 +130,25 @@ const retornaElementoOuAlteracaoPorId = (
       .filter((x) => x)
       .find((x) => x.id === id)
   );
+};
+
+const padraoElementoNovoAdicionado = (oldMapaContext: mapaContextSchema) => {
+  return {
+    cenaInicio: moment(oldMapaContext.conteudo.cenas[0].cenaInicio)
+      .add(1, "seconds")
+      .format("yyyy-MM-DDTHH:mm:ss"),
+    cenaFim: moment(
+      oldMapaContext.conteudo.cenas[oldMapaContext.conteudo.cenas.length - 1]
+        .cenaFim
+    )
+      .add(-1, "seconds")
+      .format("yyyy-MM-DDTHH:mm:ss"),
+    order:
+      retornaListaElementosConteudo(oldMapaContext).filter(
+        (x) => !(x.visTimelineObject?.type === "background")
+      ).length ?? 0,
+    draggable: true,
+  };
 };
 
 const changeElementoInteracao = (
@@ -137,7 +209,7 @@ const changeElementosFoco = (
 const changeTodosElementosFocoPorIds = (
   oldMapaContext: mapaContextSchema,
   actionContextChange: actionContextChange
-) => {
+): mapaContextSchema => {
   return changeTodosElementosFoco(oldMapaContext, {
     ...actionContextChange,
     elementos: actionContextChange.ids.map((x) => {
@@ -365,11 +437,14 @@ const alteraCoordinatesElemento = (
 
 const editarPropriedadeElemento = (
   oldMapaContext: mapaContextSchema,
-  tipoElemento: string,
-  id: NIL,
-  nomePropriedade: string,
-  novoValor: any
+  actionContextChange: actionContextChange
 ): mapaContextSchema => {
+  const {
+    tipo: tipoElemento,
+    id,
+    nomePropriedade,
+    valorPropriedade: novoValor,
+  } = actionContextChange;
   const newListaConteudoTipo = oldMapaContext.conteudo[tipoElemento].map(
     (elemento) =>
       elemento.id === id
@@ -443,86 +518,13 @@ const novaCena = (oldMapaContext: mapaContextSchema) => {
     id: v4(),
     cenaInicio: cenafim.format("yyyy-MM-DDTHH:mm:ss"),
     cenaFim: cenafim.add(diffCen, "seconds").format("yyyy-MM-DDTHH:mm:ss"),
-    nome: `cena #${oldMapaContext.conteudo.cenas.length}`,
+    nome: `cena #${oldMapaContext.conteudo.cenas.length + 1}`,
     dataRef: "cenas",
     color: getRandomColor(oldMapaContext),
     // style: `background-color: ${getRandomColor(oldMapaContext)}`,
     visTimelineObject: { type: "background" },
   } as elementoPadrao;
 };
-
-function getRandomColor(oldMapaContext: mapaContextSchema) {
-  var letters = "0123456789ABCDEF";
-  var color = "#";
-  for (var i = 0; i < 6; i++) {
-    color += letters[Math.floor(Math.random() * 16)];
-  }
-  const cenafim =
-    oldMapaContext.conteudo.cenas[oldMapaContext.conteudo.cenas.length - 1];
-  if (isPastel(color) && !similarColors(cenafim.color, color)) return color;
-  else return getRandomColor(oldMapaContext);
-}
-function isPastel(color) {
-  // Converte a cor hexadecimal em RGB
-  var r = parseInt(color.slice(1, 3), 16);
-  var g = parseInt(color.slice(3, 5), 16);
-  var b = parseInt(color.slice(5, 7), 16);
-  // Calcula a luminosidade da cor
-  var luminosity = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-  // Retorna verdadeiro se a luminosidade for maior que 0.8, falso caso contrário
-  return luminosity > 0.8;
-}
-// Função para calcular a distância euclidiana entre dois pontos
-function distance(x1, y1, x2, y2) {
-  return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
-}
-
-// Função para converter uma cor hexadecimal em HSV
-function hexToHSV(color) {
-  // Converte a cor hexadecimal em RGB
-  var r = parseInt(color.slice(1, 3), 16) / 255;
-  var g = parseInt(color.slice(3, 5), 16) / 255;
-  var b = parseInt(color.slice(5, 7), 16) / 255;
-  // Calcula o máximo, o mínimo e a diferença entre os valores RGB
-  var max = Math.max(r, g, b);
-  var min = Math.min(r, g, b);
-  var diff = max - min;
-  // Variáveis para armazenar os valores HSV
-  var h, s, v;
-  // Calcula o valor de H
-  if (max == min) {
-    h = 0;
-  } else if (max == r) {
-    h = ((60 * (g - b)) / diff + 360) % 360;
-  } else if (max == g) {
-    h = ((60 * (b - r)) / diff + 120) % 360;
-  } else if (max == b) {
-    h = ((60 * (r - g)) / diff + 240) % 360;
-  }
-  // Calcula o valor de S
-  if (max == 0) {
-    s = 0;
-  } else {
-    s = diff / max;
-  }
-  // Calcula o valor de V
-  v = max;
-  // Retorna um objeto com os valores HSV
-  return { h: h, s: s, v: v };
-}
-
-// Função para verificar se duas cores são parecidas, ou do mesmo tom
-function similarColors(color1, color2) {
-  // Converte as cores hexadecimais em HSV
-  var hsv1 = hexToHSV(color1);
-  var hsv2 = hexToHSV(color2);
-  // Calcula a distância entre as cores no espaço HSV
-  var d = distance(hsv1.h, hsv1.s, hsv2.h, hsv2.s);
-  // Define um limiar de similaridade
-  var threshold = 10;
-  // Retorna verdadeiro se a distância for menor que o limiar, falso caso contrário
-  return d < threshold;
-}
 
 const movendoImagem = (
   oldMapaContext: mapaContextSchema,
@@ -539,7 +541,7 @@ const movendoImagem = (
   };
 };
 
-const MapaFunctionHelpers = {
+const MapaContextChanger = {
   changeElementoInteracao,
   changeElementoFoco,
   changeElementosFoco,
@@ -558,4 +560,4 @@ const MapaFunctionHelpers = {
   retornaListaElementosConteudo,
   retornaListaElementosConteudoCenaAtual,
 };
-export default MapaFunctionHelpers;
+export default MapaContextChanger;

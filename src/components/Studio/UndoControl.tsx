@@ -1,7 +1,7 @@
 import { Button, ButtonGroup, styled } from "@mui/material";
 import React from "react";
 import { Undo, Redo } from "@mui/icons-material";
-import { useMapaUndo } from "../Mapa/context/MapaContext";
+import { useMapaUndo } from "../Mapa/MapaContext";
 
 // type Props = {};
 

@@ -11,10 +11,7 @@ import {
   Paper,
   BottomNavigationAction,
 } from "@mui/material";
-import {
-  useMapaContext,
-  useMapaDispatch,
-} from "@/components/Mapa/context/MapaContext";
+import { useMapaContext, useMapaDispatch } from "@/components/Mapa/MapaContext";
 import { Rnd } from "react-rnd";
 import AlignVerticalCenterIcon from "@mui/icons-material/AlignVerticalCenter";
 import useWindowDimensions from "../useWindowDimensions";

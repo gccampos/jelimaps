@@ -8,10 +8,7 @@ import {
   SpeedDialIcon,
   Tooltip,
 } from "@mui/material";
-import {
-  useMapaContext,
-  useMapaDispatch,
-} from "@/components/Mapa/context/MapaContext";
+import { useMapaContext, useMapaDispatch } from "@/components/Mapa/MapaContext";
 import { elementos } from "@/main/constants/elementos";
 import useWindowDimensions from "./useWindowDimensions";
 import styled from "@emotion/styled";

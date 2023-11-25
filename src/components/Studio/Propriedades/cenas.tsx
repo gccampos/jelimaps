@@ -10,15 +10,12 @@ import {
   Select,
   MenuItem,
 } from "@mui/material";
-import {
-  useMapaContext,
-  useMapaDispatch,
-} from "@/components/Mapa/context/MapaContext";
+import { useMapaContext, useMapaDispatch } from "@/components/Mapa/MapaContext";
 import { Queue } from "@mui/icons-material";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import moment from "moment";
-import { elementoPadrao } from "@/components/Mapa/context/mapaContextTypes";
+import { elementoPadrao } from "@/components/Mapa/mapaContextTypes";
 
 export default function Cenas() {
   const mapaContext = useMapaContext();

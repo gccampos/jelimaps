@@ -8,12 +8,9 @@ import {
   ListItemIcon,
   Typography,
 } from "@mui/material";
-import {
-  useMapaContext,
-  useMapaDispatch,
-} from "../../Mapa/context/MapaContext";
+import { useMapaContext, useMapaDispatch } from "../../Mapa/MapaContext";
 import { Delete, Menu } from "@mui/icons-material";
-import { elementoPadrao } from "../../Mapa/context/mapaContextTypes";
+import { elementoPadrao } from "../../Mapa/mapaContextTypes";
 import { ReactSortable } from "react-sortablejs";
 import styled from "@emotion/styled";
 // import useWindowDimensions from "./useWindowDimensions";
@@ -111,9 +108,7 @@ export default function LinhaTempoArtesanal(props: {
                 bgcolor: "#6e7073bf",
               },
             }}
-          >
-            {/* TODO: Fazer o preenchimento da linha do tempo com cenaInicio e cenaFim  */}
-          </Grid>
+          ></Grid>
         </ListItem>
 
         <Divider />

@@ -2,8 +2,8 @@ import React, { useEffect } from "react";
 import "leaflet-imageoverlay-rotated";
 import L, { Bounds, LatLng } from "leaflet";
 import { Marker, useMap } from "react-leaflet";
-import { elementoComBounds } from "./context/mapaContextTypes";
-import { useMapaContext, useMapaDispatch } from "./context/MapaContext";
+import { elementoComBounds } from "./mapaContextTypes";
+import { useMapaContext, useMapaDispatch } from "./MapaContext";
 import "leaflet.path.drag";
 import "leaflet-imageoverlay-rotated";
 
@@ -83,6 +83,8 @@ const ImageOverlayRotated = (props: Props) => {
       };
     }
   });
+
+  // TODO: evitar reposicionamento no modo apresentação
   return (x.draggable &&
     mapaContext.elementosFoco &&
     mapaContext.elementosFoco.length > 0 &&

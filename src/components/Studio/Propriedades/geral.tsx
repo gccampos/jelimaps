@@ -9,7 +9,7 @@ import {
   useMapaContext,
   useMapaDispatch,
   useMapaUndo,
-} from "@/components/Mapa/context/MapaContext";
+} from "@/components/Mapa/MapaContext";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import useCaixaDialogo from "@/components/CaixaDialogo/useCaixaDialogo";

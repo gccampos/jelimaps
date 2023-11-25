@@ -1,6 +1,6 @@
 import moment from "moment";
 import { actionContextChange, mapaContextSchema } from "./mapaContextTypes";
-import MapaFunctionHelpers from "./MapaFunctionsHelpers";
+import MapaContextChanger from "./MapaContextChanger";
 
 export function mapaReducer(
   oldMapaContext: mapaContextSchema,
@@ -12,6 +12,82 @@ export function mapaReducer(
     action
   );
   switch (action.type) {
+    case "selecionarElementoInteracao": {
+      return MapaContextChanger.changeElementoInteracao(
+        oldMapaContext,
+        action.arg
+      );
+    }
+    case "adicionarElementoFoco": {
+      return MapaContextChanger.changeElementosFoco(oldMapaContext, action);
+    }
+    case "adicionarAlteracaoElemento": {
+      return MapaContextChanger.addAlteracaoElemento(oldMapaContext, action);
+    }
+    case "selecionarElementosFoco": {
+      return MapaContextChanger.changeTodosElementosFoco(
+        oldMapaContext,
+        action
+      );
+    }
+    case "selecionarElementoFoco": {
+      return MapaContextChanger.changeElementoFoco(oldMapaContext, action);
+    }
+    case "selecionarElementosFocoPorId": {
+      return MapaContextChanger.changeTodosElementosFocoPorIds(
+        oldMapaContext,
+        action
+      );
+    }
+    case "addElemento": {
+      return MapaContextChanger.addElementoPadrao(oldMapaContext, action);
+    }
+    case "alteraCoordinatesElemento": {
+      return MapaContextChanger.alteraCoordinatesElemento(
+        oldMapaContext,
+        action
+      );
+    }
+    case "adicionarImageOverlay": {
+      return MapaContextChanger.addElementoImagem(oldMapaContext, action);
+    }
+    case "toggleCollapseTimeline": {
+      action.tipo = oldMapaContext.elementoFoco.dataRef;
+      action.id = oldMapaContext.elementoFoco.id;
+      action.nomePropriedade = "collapseTimeline";
+      action.valorPropriedade = !oldMapaContext.elementoFoco.collapseTimeline;
+
+      return MapaContextChanger.editarPropriedadeElemento(
+        oldMapaContext,
+        action
+      );
+    }
+    case "removeElements": {
+      return MapaContextChanger.removeElemento(oldMapaContext, action);
+    }
+    case "updateTimelineElement": {
+      return MapaContextChanger.atualizaLinhaTempoElemento(
+        oldMapaContext,
+        action
+      );
+    }
+    case "editarPropriedade": {
+      return MapaContextChanger.editarPropriedadeElemento(
+        oldMapaContext,
+        action
+      );
+    }
+    case "movendoImagem": {
+      return MapaContextChanger.movendoImagem(oldMapaContext, action);
+    }
+
+    // TODO: refatorar para ContextChangers (Elemento, Cena, LinhaTempo)
+    case "propriedadeToggle": {
+      return {
+        ...oldMapaContext,
+        slidePropriedade: !oldMapaContext.slidePropriedade,
+      };
+    }
     case "modoVisao": {
       return {
         ...oldMapaContext,
@@ -27,78 +103,6 @@ export function mapaReducer(
         bounds: action.map?.getBounds(),
       };
     }
-    case "selecionarElementoInteracao": {
-      return MapaFunctionHelpers.changeElementoInteracao(
-        oldMapaContext,
-        action.arg
-      );
-    }
-    case "adicionarElementoFoco": {
-      return MapaFunctionHelpers.changeElementosFoco(oldMapaContext, action);
-    }
-    case "adicionarAlteracaoElemento": {
-      return MapaFunctionHelpers.addAlteracaoElemento(oldMapaContext, action);
-    }
-    case "selecionarElementosFoco": {
-      return MapaFunctionHelpers.changeTodosElementosFoco(
-        oldMapaContext,
-        action
-      );
-    }
-    case "selecionarElementoFoco": {
-      return MapaFunctionHelpers.changeElementoFoco(oldMapaContext, action);
-    }
-    case "selecionarElementosFocoPorId": {
-      return MapaFunctionHelpers.changeTodosElementosFocoPorIds(
-        oldMapaContext,
-        action
-      );
-    }
-    case "addElemento": {
-      return MapaFunctionHelpers.addElementoPadrao(oldMapaContext, action);
-    }
-    case "alteraCoordinatesElemento": {
-      return MapaFunctionHelpers.alteraCoordinatesElemento(
-        oldMapaContext,
-        action
-      );
-    }
-    case "adicionarImageOverlay": {
-      return MapaFunctionHelpers.addElementoImagem(oldMapaContext, action);
-    }
-    case "toggleCollapseTimeline": {
-      return MapaFunctionHelpers.editarPropriedadeElemento(
-        oldMapaContext,
-        oldMapaContext.elementoFoco.dataRef,
-        oldMapaContext.elementoFoco.id,
-        "collapseTimeline",
-        !oldMapaContext.elementoFoco.collapseTimeline
-      );
-    }
-    case "propriedadeToggle": {
-      return {
-        ...oldMapaContext,
-        slidePropriedade: !oldMapaContext.slidePropriedade,
-      };
-    }
-    case "removeElements": {
-      return MapaFunctionHelpers.removeElemento(oldMapaContext, action);
-    }
-    case "updateTimelineElement": {
-      return MapaFunctionHelpers.atualizaLinhaTempoElemento(
-        oldMapaContext,
-        action
-      );
-    }
-    case "editarPropriedade": {
-      return MapaFunctionHelpers.editarPropriedadeElemento(
-        oldMapaContext,
-        action.tipo,
-        action.id,
-        action.nomePropriedade,
-        action.valorPropriedade
-      );
-    }
     case "trocaMapaContext": {
       return {
         ...(action.mapContext ?? oldMapaContext),
@@ -109,9 +113,6 @@ export function mapaReducer(
         ...oldMapaContext,
         caixaDialogo: "",
       };
-    }
-    case "movendoImagem": {
-      return MapaFunctionHelpers.movendoImagem(oldMapaContext, action);
     }
     case "atualizaTempo": {
       const novoTempo = action.time ?? oldMapaContext.tempo;
@@ -163,7 +164,7 @@ export function mapaReducer(
       };
     }
     case "inserindoNovaCena": {
-      const novaCena = MapaFunctionHelpers.novaCena(oldMapaContext);
+      const novaCena = MapaContextChanger.novaCena(oldMapaContext);
       oldMapaContext.conteudo.cenas.push(novaCena);
       return {
         ...oldMapaContext,

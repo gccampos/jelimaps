@@ -1,6 +1,6 @@
 import { Dispatch, createContext, useContext, useReducer } from "react";
 import React from "react";
-import { mapaReducer } from "./MapaDispatchEvents";
+import { mapaReducer } from "./MapaEventDispatcher";
 import { elementos } from "@/main/constants/elementos";
 import { mapaContextSchema, actionContextChange } from "./mapaContextTypes";
 import { v4 } from "uuid";
@@ -28,7 +28,7 @@ const initialMapaContexto: () => mapaContextSchema = () => {
           cenaInicio: moment().format("yyyy-MM-DDTHH:mm:ss"),
           cenaFim: moment().add(1, "minute").format("yyyy-MM-DDTHH:mm:ss"),
           id: v4(),
-          nome: "Primeira cena",
+          nome: "cena #1",
           dataRef: "cenas",
           visTimelineObject: {
             type: "background",
@@ -96,6 +96,7 @@ const MapaUndoContext = createContext<{
   canUndo: boolean;
   canRedo: boolean;
 }>(null);
+
 export function useMapaUndo() {
   return useContext(MapaUndoContext);
 }
@@ -105,24 +106,26 @@ export function MapaProvider({ children }) {
     initialMapaContexto()
   );
   const [, dispatch] = useReducer(
-    (old: mapaContextSchema, e: actionContextChange) => {
-      console.log("dispatch original", e);
+    (old: mapaContextSchema, action: actionContextChange) => {
+      console.log("dispatch original", action);
       const newContext =
-        e.type !== "reset"
+        action.type !== "reset"
           ? mapaReducer(
               old,
-              e.type === "use-undo" ? { ...e, type: "trocaMapaContext" } : e
+              action.type === "use-undo"
+                ? { ...action, type: "trocaMapaContext" }
+                : action
             )
-          : e.mapContext
+          : action.mapContext
           ? {
-              ...e.mapContext,
+              ...action.mapContext,
               timelineOptions: {
                 ...initialMapaContexto().timelineOptions,
-                ...e.mapContext.timelineOptions,
+                ...action.mapContext.timelineOptions,
               },
             }
           : initialMapaContexto();
-      if (e.type !== "use-undo") set(newContext, false);
+      if (action.type !== "use-undo") set(newContext, false);
       localStorage.setItem("mapaContext", JSON.stringify(newContext));
       return newContext;
     },

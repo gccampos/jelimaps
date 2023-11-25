@@ -5,15 +5,12 @@ import {
   TimelineItem,
   TimelineOptions,
 } from "vis-timeline/standalone";
-import {
-  useMapaContext,
-  useMapaDispatch,
-} from "@/components/Mapa/context/MapaContext";
+import { useMapaContext, useMapaDispatch } from "@/components/Mapa/MapaContext";
 import {
   elementoPadrao,
   tipoElemento,
   tipoGenericoElementoTimeline,
-} from "@/components/Mapa/context/mapaContextTypes";
+} from "@/components/Mapa/mapaContextTypes";
 import { v4 } from "uuid";
 import moment from "moment";
 import { Dialog, IconButton, Stack } from "@mui/material";

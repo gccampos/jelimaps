@@ -3,7 +3,7 @@
 import dynamic from "next/dynamic";
 import "leaflet/dist/leaflet.css";
 import React from "react";
-import { MapaProvider } from "@/components/Mapa/context/MapaContext";
+import { MapaProvider } from "@/components/Mapa/MapaContext";
 
 const ModoVisaoDialog = dynamic(
   () => import("@/components/Mapa/ModoVisaoDialog/ModoVisaoDialog"),
