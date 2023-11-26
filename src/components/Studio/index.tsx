@@ -75,7 +75,6 @@ const Studio = () => {
   }, []);
 
   useEffect(() => {
-    console.log("alterou o elemento foco INDEX");
     if (mapaContext.elementosFoco && mapaContext.elementosFoco.length > 0)
       elementosSelecionadosRef.current = mapaContext.elementosFoco.map(
         (x) => x.id
@@ -91,6 +90,9 @@ const Studio = () => {
     eventTimeout?: any
   ) => (conteudoElementosRef.current[index].eventTimeout = eventTimeout);
   const pegarElementosSelecionados = () => elementosSelecionadosRef.current;
+  const eventRef = useRef<boolean>();
+  const pegarEventRef = () => eventRef.current;
+  const alterarEventRef = (value: boolean) => (eventRef.current = value);
 
   useEffect(() => {
     if (map && !draw)
@@ -100,7 +102,9 @@ const Studio = () => {
           map,
           pegarConteudoElementos,
           alterarEventTimeoutConteudoElemento,
-          pegarElementosSelecionados
+          pegarElementosSelecionados,
+          pegarEventRef,
+          alterarEventRef
         )
       );
   }, [dispatch, draw, map]);

@@ -62,11 +62,10 @@ export default function Mapa(propsMapa: {
 
   useEffect(() => {
     if (map && !isMounted) {
-      map.on("moveend", (e) => {
+      map.on("moveend", () => {
         if (!moveStartedRef.current)
           setTimeout(() => {
             if (map.distance(mapaContext.center, map.getCenter()) > 1) {
-              console.log("vai dispachar a alteração", e);
               dispatch({ type: "alteraPropriedadesMapa", map: map });
             }
           }, 100);
@@ -92,7 +91,6 @@ export default function Mapa(propsMapa: {
   const bounds = new LatLngBounds([0, 0], [1, 1.5]);
 
   const cliqueElementoNoMapa = (elemento, evento) => {
-    console.log("clique no mapa");
     if (evento.originalEvent.shiftKey || evento.originalEvent.ctrlKey)
       dispatch({ type: "adicionarElementoFoco", elemento: elemento });
     else dispatch({ type: "selecionarElementoFoco", elemento: elemento });
@@ -192,10 +190,7 @@ export default function Mapa(propsMapa: {
   });
 
   const corItemSelecionadoFoco = (elemento) => {
-    return (mapaContext.elementosFoco &&
-      mapaContext.elementosFoco.length > 0 &&
-      mapaContext.elementosFoco?.some((x) => x.id === elemento.id)) ||
-      mapaContext.elementoFoco?.id === elemento.id
+    return MapaContextChanger.isElementoSelecionado(mapaContext, elemento.id)
       ? "#000000"
       : elemento.color ?? "#0d6efd";
   };
@@ -230,7 +225,6 @@ export default function Mapa(propsMapa: {
           }
         } else {
           elementoGeoJSON.on("click", () => {
-            console.log("click no elementoGeoJSON");
             dispatch({
               type: "selecionarElementoFoco",
               id: propsConteudoMapa.elemento.id,
@@ -318,13 +312,11 @@ export default function Mapa(propsMapa: {
                     {...marker}
                     position={marker.geometry.coordinates as [number, number]}
                     draggable={
-                      (marker.draggable &&
-                        mapaContext.elementosFoco &&
-                        mapaContext.elementosFoco.length > 0 &&
-                        mapaContext.elementosFoco?.some(
-                          (x) => x.id === marker.id
-                        )) ||
-                      mapaContext.elementoFoco?.id === marker.id
+                      marker.draggable &&
+                      MapaContextChanger.isElementoSelecionado(
+                        mapaContext,
+                        marker.id
+                      )
                     }
                     icon={divIcon({
                       className: "",
@@ -342,6 +334,12 @@ export default function Mapa(propsMapa: {
                     key={`marker#${index}`}
                     eventHandlers={{
                       click: (e) => cliqueElementoNoMapa(origin[index], e),
+                      // MapaContextChanger.isElementoSelecionado(
+                      //   mapaContext,
+                      //   marker.id
+                      // )
+                      //   ? null
+                      //   : cliqueElementoNoMapa(origin[index], e),
                       // TODO: só deixar mover se o marker estiver selecionado
                       moveend: (e) => {
                         dispatch({
@@ -360,30 +358,33 @@ export default function Mapa(propsMapa: {
                       },
                     }}
                   >
-                    <Popup>
-                      <ButtonGroup
-                        variant="text"
-                        aria-label="text button group"
-                      >
-                        <Button
-                          onClick={() => {
-                            openModalConfirm({
-                              title: "Deletar item",
-                              message: "Você tem certeza disso?",
-                              onConfirm: () => {
-                                dispatch({
-                                  type: "removeElements",
-                                });
-                              },
-                            });
-                          }}
+                    {MapaContextChanger.isElementoSelecionado(
+                      mapaContext,
+                      marker.id
+                    ) && (
+                      <Popup>
+                        <ButtonGroup
+                          variant="text"
+                          aria-label="text button group"
                         >
-                          Excluir
-                        </Button>
-                        {/* <Button>Two</Button>
-                              <Button>Three</Button> */}
-                      </ButtonGroup>
-                    </Popup>
+                          <Button
+                            onClick={() => {
+                              openModalConfirm({
+                                title: "Deletar item",
+                                message: "Você tem certeza disso?",
+                                onConfirm: () => {
+                                  dispatch({
+                                    type: "removeElements",
+                                  });
+                                },
+                              });
+                            }}
+                          >
+                            Excluir
+                          </Button>
+                        </ButtonGroup>
+                      </Popup>
+                    )}
                   </Marker>
                 )
               );

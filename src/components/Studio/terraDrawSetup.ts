@@ -24,7 +24,9 @@ const terraDrawSetup = (
   map: Leaflet.Map,
   pegarConteudoElementos: () => tipoElemento[],
   alterarEventTimeoutConteudoElemento: (index: number, value: any) => void,
-  pegarElementosSelecionados: () => any
+  pegarElementosSelecionados: () => any,
+  pegarEventRef: () => boolean,
+  alterarEventRef: (x: boolean) => void
 ) => {
   const terraDrawPolygonMode = new TerraDrawPolygonMode({
     allowSelfIntersections: false,
@@ -134,6 +136,7 @@ const terraDrawSetup = (
       tipo: "Marker",
     });
   };
+
   terraDrawImageOverlayMode.onClick = () => {
     dispatch({
       type: "addImageOverlay",
@@ -151,11 +154,48 @@ const terraDrawSetup = (
           !(e.containerX < 60 && e.containerY < 160)
           // e.containerX > (map as any)._container.offsetWidth - 70)
         ) {
-          if (typeof terraDrawCircleMode === typeof mode.origin && isMobile()) {
-            (mode.origin as any).clickCount =
-              (mode.origin as any).clickCount ?? 0;
-            if ((mode.origin as any).clickCount === 1)
-              mode.origin.onMouseMove(e);
+          switch (mode.origin.mode) {
+            case terraDrawSelectMode.mode:
+              var eleClicado = pegarConteudoElementos()
+                .filter(
+                  (x) => x.dataRef === "Marker" || x.dataRef === "ImageOverlay"
+                )
+                .find((x, i, a) => {
+                  return x.dataRef === "ImageOverlay"
+                    ? Leaflet.latLngBounds(
+                        (x as any).positionBL,
+                        (x as any).positionTR
+                      ).contains(e)
+                    : map.distance(
+                        x.geometry.coordinates as [number, number],
+                        e
+                      ) ===
+                        Math.min(
+                          ...a
+                            .filter((x) => x.dataRef === "Marker")
+                            .map((x) =>
+                              map.distance(
+                                x.geometry.coordinates as [number, number],
+                                e
+                              )
+                            )
+                        );
+                });
+              if (eleClicado) {
+                alterarEventRef(true);
+              }
+
+              break;
+            case terraDrawCircleMode.mode:
+              if (isMobile()) {
+                (mode.origin as any).clickCount =
+                  (mode.origin as any).clickCount ?? 0;
+                if ((mode.origin as any).clickCount === 1)
+                  mode.origin.onMouseMove(e);
+              }
+              break;
+            default:
+              break;
           }
           oldEvent.apply(mode.origin, [e]);
         }
@@ -198,7 +238,6 @@ const terraDrawSetup = (
       onFinishModesExistents;
 
   draw.on("select", (id: string) => {
-    console.log("terra draw");
     dispatch({
       type: "selecionarElementoFoco",
       id: id,
@@ -206,15 +245,15 @@ const terraDrawSetup = (
   });
 
   draw.on("deselect", () => {
-    if (pegarElementosSelecionados())
-      dispatch({
-        type: "selecionarElementoFoco",
-      });
+    if (!pegarEventRef()) {
+      if (pegarElementosSelecionados())
+        dispatch({
+          type: "selecionarElementoFoco",
+        });
+    } else alterarEventRef(false);
   });
 
   draw.on("change", (e: string[], type: string) => {
-    if (e.some((z) => z === "4be64917-79df-4beb-b57c-07ce1a6eaaa1"))
-      console.log("o elemento tava aqui");
     const listaEl = pegarConteudoElementos();
     if (listaEl.some((x) => e.some((z) => z === x.id))) {
       switch (type) {

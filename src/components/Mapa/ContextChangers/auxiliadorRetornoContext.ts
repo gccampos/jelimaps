@@ -52,7 +52,17 @@ const retornaElementoOuAlteracaoPorId = (
   );
 };
 
+const isElementoSelecionado = (oldMapaContext: mapaContextSchema, id: NIL) => {
+  return (
+    (oldMapaContext.elementosFoco &&
+      oldMapaContext.elementosFoco.length > 0 &&
+      oldMapaContext.elementosFoco?.some((x) => x.id === id)) ||
+    oldMapaContext.elementoFoco?.id === id
+  );
+};
+
 const conteudoContextChanger = {
+  isElementoSelecionado,
   retornaListaElementosConteudo,
   retornaListaAlteracoesConteudo,
   retornaElementoOuAlteracaoPorId,
