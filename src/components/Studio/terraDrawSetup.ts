@@ -10,7 +10,7 @@ import {
   TerraDrawRenderMode,
 } from "terra-draw";
 import { actionContextChange, tipoElemento } from "../Mapa/mapaContextTypes";
-import Leaflet from "leaflet";
+import Leaflet, { Point } from "leaflet";
 
 const isMobile = () => {
   return (
@@ -129,6 +129,7 @@ const terraDrawSetup = (
   // terraDrawLeafletAdapter.render = (e, c) => {
   //   oldEvent.apply(terraDrawLeafletAdapter, [e, c]);
   // };
+
   (terraDrawMarkerMode.onClick as any) = (e: any) => {
     dispatch({
       type: "addElemento",
@@ -160,29 +161,36 @@ const terraDrawSetup = (
                 .filter(
                   (x) => x.dataRef === "Marker" || x.dataRef === "ImageOverlay"
                 )
-                .find((x, i, a) => {
+                .find((x) => {
+                  var elementoById = document.getElementById(x.id);
                   return x.dataRef === "ImageOverlay"
                     ? Leaflet.latLngBounds(
                         (x as any).positionBL,
                         (x as any).positionTR
                       ).contains(e)
-                    : map.distance(
-                        x.geometry.coordinates as [number, number],
-                        e
-                      ) ===
-                        Math.min(
-                          ...a
-                            .filter((x) => x.dataRef === "Marker")
-                            .map((x) =>
-                              map.distance(
-                                x.geometry.coordinates as [number, number],
-                                e
-                              )
-                            )
-                        );
+                    : elementoById &&
+                        Leaflet.latLngBounds(
+                          map.layerPointToLatLng({
+                            x: elementoById.getBoundingClientRect().x - 60,
+                            y: elementoById.getBoundingClientRect().y + 12,
+                          } as Point),
+                          map.layerPointToLatLng({
+                            x: elementoById.getBoundingClientRect().x - 36,
+                            y: elementoById.getBoundingClientRect().y + 36,
+                          } as Point)
+                        ).contains(e);
                 });
-              if (eleClicado) {
+              if (
+                eleClicado
+                // &&
+                // pegarElementosSelecionados().some((x) => eleClicado.id === x)
+              ) {
                 alterarEventRef(true);
+              } else {
+                alterarEventRef(false);
+                dispatch({
+                  type: "selecionarElementoFoco",
+                });
               }
 
               break;
@@ -246,10 +254,11 @@ const terraDrawSetup = (
 
   draw.on("deselect", () => {
     if (!pegarEventRef()) {
-      if (pegarElementosSelecionados())
+      if (pegarElementosSelecionados()) {
         dispatch({
           type: "selecionarElementoFoco",
         });
+      }
     } else alterarEventRef(false);
   });
 

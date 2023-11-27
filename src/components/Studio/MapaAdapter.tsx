@@ -88,8 +88,6 @@ export default function Mapa(propsMapa: {
     }
   }, [mapaContext.modoVisao, map, center, zoom]);
 
-  const bounds = new LatLngBounds([0, 0], [1, 1.5]);
-
   const cliqueElementoNoMapa = (elemento, evento) => {
     if (evento.originalEvent.shiftKey || evento.originalEvent.ctrlKey)
       dispatch({ type: "adicionarElementoFoco", elemento: elemento });
@@ -99,6 +97,7 @@ export default function Mapa(propsMapa: {
   const urlImageRef = useRef<string>();
   const { openModalConfirm, closeModalConfirm, onConfirm } = useCaixaDialogo();
 
+  //TODO: Função undo não pode reabrir popup de inserção de elemento????
   const handleDispatchInserirImageOverlay = React.useCallback(() => {
     dispatch({
       type: "adicionarImageOverlay",
@@ -271,6 +270,34 @@ export default function Mapa(propsMapa: {
     });
     return null;
   };
+  function getImageDimensions(url) {
+    return new Promise((resolve, reject) => {
+      let img = new Image();
+      img.onload = () => {
+        let maxDimension = Math.max(img.width, img.height);
+        resolve({
+          width: (img.width / maxDimension).toFixed(1),
+          height: (img.height / maxDimension).toFixed(1),
+        });
+      };
+      img.onerror = reject;
+      img.src = url;
+    });
+  }
+
+  const [bounds, setBounds] = useState<LatLngBounds>(
+    new LatLngBounds([0, 0], [1, 1.5])
+  );
+  useEffect(() => {
+    getImageDimensions(mapaContext.urlMapaProprio).then((dimensions) =>
+      setBounds(
+        new LatLngBounds(
+          [0, 0],
+          [(dimensions as any).height, (dimensions as any).width]
+        )
+      )
+    );
+  }, [mapaContext.urlMapaProprio]);
 
   return (
     <Grid item xs>
@@ -290,13 +317,7 @@ export default function Mapa(propsMapa: {
             />
           )}
           {mapaContext.modoVisao === MODO_VISAO.mapaProprio && (
-            <ImageOverlay
-              bounds={bounds}
-              url={
-                mapaContext.urlMapaProprio ??
-                "https://onedrive.live.com/embed?resid=9337381634E30E6%211127330&authkey=%21ADDU_4ofkVlIREA&width=4096&height=2896"
-              }
-            />
+            <ImageOverlay bounds={bounds} url={mapaContext.urlMapaProprio} />
           )}
           {mapaContext.conteudo &&
             mapaContext.conteudo.Marker &&
@@ -322,6 +343,7 @@ export default function Mapa(propsMapa: {
                       className: "",
                       html: ReactDOMServer.renderToString(
                         <LocationOn
+                          id={marker.id}
                           style={{
                             color: corItemSelecionadoFoco(marker),
                             position: "absolute",
@@ -340,7 +362,6 @@ export default function Mapa(propsMapa: {
                       // )
                       //   ? null
                       //   : cliqueElementoNoMapa(origin[index], e),
-                      // TODO: só deixar mover se o marker estiver selecionado
                       moveend: (e) => {
                         dispatch({
                           type: "editarPropriedade",
