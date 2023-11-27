@@ -125,16 +125,17 @@ export default function VisTimeline(props: {
       if (
         item.event.srcEvent.type === "pointerup" ||
         item.event.srcEvent.type === "pointerdown"
-      )
+      ) {
         dispatch({
           type: "selecionarElementosFocoPorId",
           ids: item.items,
         });
-      else {
+        elementosFocadosRef.current = elementosFocados();
+      } else {
         item.event.preventDefault();
       }
     },
-    [dispatch]
+    [dispatch, elementosFocados]
   );
 
   const handleRemoveConteudo = useCallback(
@@ -330,24 +331,21 @@ export default function VisTimeline(props: {
       ),
       items: elementosAlteracoesTimeline().filter((x) => !x.collapseTimeline),
     };
-
     if (
-      JSON.stringify(atual) !== JSON.stringify(elementosTimelineRef.current) ||
-      alturaRef.current !== altura ||
-      elementosFocadosRef.current !== elementosFocados()
+      !elementosTimelineRef.current ||
+      atual.items.length !== elementosTimelineRef.current?.items.length ||
+      alturaRef.current !== altura
     ) {
       visTimeline.setData(atual);
       visTimeline.setOptions(optionsVisTimeline());
-      setElementosSelecionados();
       elementosTimelineRef.current = atual;
       alturaRef.current = altura;
+    }
+    if (elementosFocadosRef.current !== elementosFocados()) {
+      setElementosSelecionados();
       elementosFocadosRef.current = elementosFocados();
       setTimeout(() => {
-        const cenas = listaMapeada()
-          .filter((x) => x.visTimelineObject?.type === "background")
-          .map((x) => x.id);
-        if (elementosFocados())
-          visTimeline?.focus([...elementosFocados(), ...cenas]);
+        if (elementosFocados()) visTimeline?.focus([...elementosFocados()]);
       }, 100);
     }
   }, [

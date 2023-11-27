@@ -170,13 +170,13 @@ const terraDrawSetup = (
                       ).contains(e)
                     : elementoById &&
                         Leaflet.latLngBounds(
-                          map.layerPointToLatLng({
+                          map.containerPointToLatLng({
                             x: elementoById.getBoundingClientRect().x - 60,
-                            y: elementoById.getBoundingClientRect().y + 12,
+                            y: elementoById.getBoundingClientRect().y + 6,
                           } as Point),
-                          map.layerPointToLatLng({
+                          map.containerPointToLatLng({
                             x: elementoById.getBoundingClientRect().x - 36,
-                            y: elementoById.getBoundingClientRect().y + 36,
+                            y: elementoById.getBoundingClientRect().y + 30,
                           } as Point)
                         ).contains(e);
                 });
