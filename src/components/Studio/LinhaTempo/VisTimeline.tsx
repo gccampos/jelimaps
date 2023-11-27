@@ -130,12 +130,11 @@ export default function VisTimeline(props: {
           type: "selecionarElementosFocoPorId",
           ids: item.items,
         });
-        elementosFocadosRef.current = elementosFocados();
       } else {
         item.event.preventDefault();
       }
     },
-    [dispatch, elementosFocados]
+    [dispatch]
   );
 
   const handleRemoveConteudo = useCallback(
