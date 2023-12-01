@@ -24,14 +24,168 @@ export default function Cenas() {
     mapaContext?.conteudo.cenas[0]
   );
   const [index, setIndex] = useState(0);
+  const [troca, setTroca] = useState(false);
   React.useEffect(() => {
-    if (cenaSelecionada && cenaSelecionada.id)
-      setIndex(
-        mapaContext?.conteudo.cenas.findIndex(
-          (x) => x.id === cenaSelecionada.id
-        )
-      );
-  }, [cenaSelecionada]);
+    const i = mapaContext?.conteudo.cenas.findIndex(
+      (x) => x.id === cenaSelecionada.id
+    );
+    if (cenaSelecionada && cenaSelecionada.id && i != index) {
+      setIndex(i);
+      setTroca(!troca);
+    }
+  }, [cenaSelecionada, index, mapaContext?.conteudo.cenas, troca]);
+
+  const CenaSelecionadaComponent = () => {
+    return (
+      <ListItem>
+        <Formik
+          initialValues={cenaSelecionada as elementoPadrao}
+          onSubmit={() => console.log("submtou")}
+          validateOnChange={true}
+          validationSchema={Yup.object({
+            cenaInicio: Yup.date().test(
+              "data-inicio-menor-que-fim",
+              "O inicio deve ser menor que o final da primeira cena.",
+              (value, context) =>
+                moment(value) < moment(context.options.context.cenaFim)
+            ),
+            cenaFim: Yup.date().test(
+              "data-fim-maior-que-inicio",
+              "O final deve ser maior que o inicio da ultima cena.",
+              (value, context) =>
+                moment(value) > moment(context.options.context.cenaInicio)
+            ),
+          })}
+        >
+          {(formik) => {
+            return (
+              <Form
+                onBlur={(e: any) => {
+                  dispatch({
+                    type: "alteraPropriedadeCena",
+                    tipo: e.target.name,
+                    valor: e.target.value,
+                    indiceElemento: index,
+                    formik: formik,
+                  });
+                }}
+              >
+                <TextField
+                  fullWidth
+                  id="titulo"
+                  name="titulo"
+                  label="Título"
+                  value={formik.values.titulo}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  error={
+                    (formik.touched as any).titulo &&
+                    Boolean((formik.errors as any).titulo)
+                  }
+                  helperText={
+                    (formik.touched as any).titulo &&
+                    (formik.errors as any).titulo
+                  }
+                />
+                <TextField
+                  fullWidth
+                  id="cenaInicio"
+                  name="cenaInicio"
+                  label="Inicio"
+                  type="datetime-local"
+                  value={formik.values.cenaInicio}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  error={
+                    formik.touched.cenaInicio &&
+                    Boolean(formik.errors.cenaInicio)
+                  }
+                  helperText={
+                    formik.touched.cenaInicio && formik.errors.cenaInicio
+                  }
+                />
+                <TextField
+                  fullWidth
+                  id="cenaFim"
+                  name="cenaFim"
+                  label="Final"
+                  type="datetime-local"
+                  value={formik.values.cenaFim}
+                  inputProps={{
+                    step: 1,
+                  }}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  error={
+                    formik.touched.cenaFim && Boolean(formik.errors.cenaFim)
+                  }
+                  helperText={formik.touched.cenaFim && formik.errors.cenaFim}
+                />
+                {/* <FormControlLabel
+              control={
+                <Switch
+                  checked={formik.values.exibirLimite}
+                  onChange={(e, checked) => {
+                    dispatch({
+                      type: "alteraPropriedadeCena",
+                      tipo: "exibirLimite",
+                      valor: checked,
+                      indiceElemento: i,
+                      formik: formik,
+                    });
+                  }}
+                  name={"exibirLimite"}
+                />
+              }
+              label={"Exibir tamanho da cena"}
+            /> */}
+                <TextField
+                  fullWidth
+                  id="texto"
+                  name="texto"
+                  label="Texto"
+                  multiline
+                  rows={4}
+                  value={formik.values.texto}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  error={
+                    (formik.touched as any).texto &&
+                    Boolean((formik.errors as any).texto)
+                  }
+                  helperText={
+                    (formik.touched as any).texto &&
+                    (formik.errors as any).texto
+                  }
+                />
+                <Button
+                  onClick={() => {
+                    dispatch({ type: "fixarCena", id: cenaSelecionada.id });
+                  }}
+                >
+                  Fixar tela
+                </Button>
+                {mapaContext?.conteudo.cenas.length > 1 && (
+                  <Button
+                    variant="outlined"
+                    color="error"
+                    onClick={() => {
+                      dispatch({
+                        type: "deletarCena",
+                        id: cenaSelecionada.id,
+                      });
+                    }}
+                  >
+                    Deletar Cena
+                  </Button>
+                )}
+              </Form>
+            );
+          }}
+        </Formik>
+      </ListItem>
+    );
+  };
   return (
     <>
       <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }} fullWidth>
@@ -42,13 +196,13 @@ export default function Cenas() {
           labelId="demo-simple-select-standard-label"
           id="demo-simple-select-standard"
           value={cenaSelecionada?.id ?? mapaContext?.conteudo.cenas[0].id}
-          onChange={(e, c: any) =>
+          onChange={(e, c: any) => {
             setCenaSelecionada(
               mapaContext?.conteudo.cenas.find(
                 (x) => x.id.toString() === c.props.value
               )
-            )
-          }
+            );
+          }}
           label="Age"
         >
           {mapaContext?.conteudo.cenas &&
@@ -63,145 +217,8 @@ export default function Cenas() {
           <Queue />
         </ListItemButton>
       </FormControl>
-      {cenaSelecionada && (
-        <ListItem>
-          <Formik
-            initialValues={cenaSelecionada as elementoPadrao}
-            onSubmit={() => console.log("submtou")}
-            validateOnChange={true}
-            validationSchema={Yup.object({
-              cenaInicio: Yup.date().test(
-                "data-inicio-menor-que-fim",
-                "O inicio deve ser menor que o final da primeira cena.",
-                (value, context) =>
-                  moment(value) < moment(context.options.context.cenaFim)
-              ),
-              cenaFim: Yup.date().test(
-                "data-fim-maior-que-inicio",
-                "O final deve ser maior que o inicio da ultima cena.",
-                (value, context) =>
-                  moment(value) > moment(context.options.context.cenaInicio)
-              ),
-            })}
-          >
-            {(formik) => {
-              return (
-                <Form
-                  onBlur={(e: any) => {
-                    dispatch({
-                      type: "alteraPropriedadeCena",
-                      tipo: e.target.name,
-                      valor: e.target.value,
-                      indiceElemento: index,
-                      formik: formik,
-                    });
-                  }}
-                >
-                  <TextField
-                    fullWidth
-                    id="titulo"
-                    name="titulo"
-                    label="Título"
-                    value={formik.values.titulo}
-                  />
-                  <TextField
-                    fullWidth
-                    id="cenaInicio"
-                    name="cenaInicio"
-                    label="Inicio"
-                    type="datetime-local"
-                    value={formik.values.cenaInicio}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    error={
-                      formik.touched.cenaInicio &&
-                      Boolean(formik.errors.cenaInicio)
-                    }
-                    helperText={
-                      formik.touched.cenaInicio && formik.errors.cenaInicio
-                    }
-                  />
-                  <TextField
-                    fullWidth
-                    id="cenaFim"
-                    name="cenaFim"
-                    label="Final"
-                    type="datetime-local"
-                    value={formik.values.cenaFim}
-                    inputProps={{
-                      step: 1,
-                    }}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    error={
-                      formik.touched.cenaFim && Boolean(formik.errors.cenaFim)
-                    }
-                    helperText={formik.touched.cenaFim && formik.errors.cenaFim}
-                  />
-                  {/* <FormControlLabel
-                  control={
-                    <Switch
-                      checked={formik.values.exibirLimite}
-                      onChange={(e, checked) => {
-                        dispatch({
-                          type: "alteraPropriedadeCena",
-                          tipo: "exibirLimite",
-                          valor: checked,
-                          indiceElemento: i,
-                          formik: formik,
-                        });
-                      }}
-                      name={"exibirLimite"}
-                    />
-                  }
-                  label={"Exibir tamanho da cena"}
-                /> */}
-                  <TextField
-                    fullWidth
-                    id="texto"
-                    name="texto"
-                    label="Texto"
-                    multiline
-                    rows={4}
-                    value={formik.values.texto}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    error={
-                      (formik.touched as any).texto &&
-                      Boolean((formik.errors as any).texto)
-                    }
-                    helperText={
-                      (formik.touched as any).texto &&
-                      (formik.errors as any).texto
-                    }
-                  />
-                  <Button
-                    onClick={() => {
-                      dispatch({ type: "fixarCena", id: cenaSelecionada.id });
-                    }}
-                  >
-                    Fixar tela
-                  </Button>
-                  {mapaContext?.conteudo.cenas.length > 1 && (
-                    <Button
-                      variant="outlined"
-                      color="error"
-                      onClick={() => {
-                        dispatch({
-                          type: "deletarCena",
-                          id: cenaSelecionada.id,
-                        });
-                      }}
-                    >
-                      Deletar Cena
-                    </Button>
-                  )}
-                </Form>
-              );
-            }}
-          </Formik>
-        </ListItem>
-      )}
+      {cenaSelecionada &&
+        (troca ? <CenaSelecionadaComponent /> : <CenaSelecionadaComponent />)}
     </>
   );
 }
