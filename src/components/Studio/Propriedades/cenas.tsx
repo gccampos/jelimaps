@@ -34,8 +34,10 @@ export default function Cenas() {
   }, [cenaSelecionada]);
   return (
     <>
-      <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-        <InputLabel id="demo-simple-select-standard-label">Age</InputLabel>
+      <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }} fullWidth>
+        <InputLabel id="demo-simple-select-standard-label">
+          Escolha a cena para editar
+        </InputLabel>
         <Select
           labelId="demo-simple-select-standard-label"
           id="demo-simple-select-standard"
@@ -97,6 +99,13 @@ export default function Cenas() {
                 >
                   <TextField
                     fullWidth
+                    id="titulo"
+                    name="titulo"
+                    label="Título"
+                    value={formik.values.titulo}
+                  />
+                  <TextField
+                    fullWidth
                     id="cenaInicio"
                     name="cenaInicio"
                     label="Inicio"
@@ -147,6 +156,25 @@ export default function Cenas() {
                   }
                   label={"Exibir tamanho da cena"}
                 /> */}
+                  <TextField
+                    fullWidth
+                    id="texto"
+                    name="texto"
+                    label="Texto"
+                    multiline
+                    rows={4}
+                    value={formik.values.texto}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    error={
+                      (formik.touched as any).texto &&
+                      Boolean((formik.errors as any).texto)
+                    }
+                    helperText={
+                      (formik.touched as any).texto &&
+                      (formik.errors as any).texto
+                    }
+                  />
                   <Button
                     onClick={() => {
                       dispatch({ type: "fixarCena", id: cenaSelecionada.id });

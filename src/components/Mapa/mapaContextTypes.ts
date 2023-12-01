@@ -34,6 +34,7 @@ export type elementoPadrao = tipoGenericoElementoTimeline & {
     coordinates: [number, number] | [number, number][] | [number, number][][];
   };
   properties?: { createdAt: number; updatedAt: number };
+  titulo?: string;
   texto?: string;
   color?: string;
   opacity?: number;
@@ -57,13 +58,19 @@ export type elementoComBounds = {
   positionBL?: [number, number];
   positionTR?: [number, number];
 } & elementoPadrao;
+
+export const MODO_VISAO = {
+  openstreetmap: "OpenStreetMap",
+  mapaProprio: "Mapa Próprio",
+};
+
 export type mapaContextSchema = periodoInicioFim &
   telaMapa & {
     elementoInteracao: elementoProto;
     elementoFoco?: tipoElemento;
     elementosFoco?: { id: NIL }[];
     slidePropriedade: boolean;
-    modoVisao?: string;
+    modoVisao?: "OpenStreetMap" | "Mapa Próprio";
     conteudo: conteudoType & {
       Marker?: arrayPadraoType;
       Point?: arrayPadraoType;
@@ -79,7 +86,11 @@ export type mapaContextSchema = periodoInicioFim &
     mapOptions: MapOptions;
     timelineOptions: TimelineOptions;
     reloadTimelineOptions?: boolean;
-    playStatus: number;
+    playStatus: -1 | 0 | 1 | 2;
+    // -1 := pausado
+    // 0  := parado
+    // 1  := reproduzindo
+    // 2  := apresentando
     caixaDialogo?: string;
   };
 type telaMapa = {
@@ -104,6 +115,7 @@ export type actionContextChange = {
   id?: NIL;
   group?: NIL;
   ids?: NIL[];
+  modoVisao?: "OpenStreetMap" | "Mapa Próprio";
   arg?: elementoProto;
   elemento?: tipoElemento;
   elementos?: tipoElemento[];

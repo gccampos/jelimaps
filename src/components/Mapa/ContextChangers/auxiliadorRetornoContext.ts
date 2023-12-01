@@ -1,6 +1,7 @@
 import { mapaContextSchema, tipoElemento } from "../mapaContextTypes";
 import { NIL } from "uuid";
 import moment from "moment";
+import { DateType } from "vis-timeline/standalone";
 
 const retornaListaElementosConteudoCenaAtual = (
   oldMapaContext: mapaContextSchema
@@ -14,6 +15,18 @@ const retornaListaElementosConteudoCenaAtual = (
         moment(x.cenaInicio) <= moment(oldMapaContext.tempo) &&
         moment(x.cenaFim) >= moment(oldMapaContext.tempo)
     );
+
+function removeDuplicates(array: DateType[]): DateType[] {
+  return [...new Set(array)];
+}
+const retornaListaTemposConteudo = (oldMapaContext: mapaContextSchema) =>
+  removeDuplicates(
+    Object.keys(oldMapaContext?.conteudo)
+      .map((x) => oldMapaContext?.conteudo[x])
+      .flat()
+      .map((x) => [x.cenaInicio, x.cenaFim])
+      .flat()
+  );
 
 const retornaListaElementosConteudo = (oldMapaContext: mapaContextSchema) =>
   Object.keys(oldMapaContext?.conteudo)
@@ -61,11 +74,12 @@ const isElementoSelecionado = (oldMapaContext: mapaContextSchema, id: NIL) => {
   );
 };
 
-const conteudoContextChanger = {
+const auxiliadorRetornoContext = {
   isElementoSelecionado,
+  retornaListaTemposConteudo,
   retornaListaElementosConteudo,
   retornaListaAlteracoesConteudo,
   retornaElementoOuAlteracaoPorId,
   retornaListaElementosConteudoCenaAtual,
 };
-export default conteudoContextChanger;
+export default auxiliadorRetornoContext;

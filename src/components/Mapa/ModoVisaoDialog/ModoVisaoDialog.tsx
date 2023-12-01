@@ -14,7 +14,6 @@ import {
   useMapaDispatch,
   useMapaUndo,
 } from "@/components/Mapa/MapaContext";
-import { MODO_VISAO } from "@/components/Studio/MapaAdapter";
 import useCaixaDialogo from "@/components/CaixaDialogo/useCaixaDialogo";
 import ImageResolver from "@/components/ImageUrlResolver";
 
@@ -40,7 +39,7 @@ export default function ModoVisaoDialog() {
   const handleOpenStreetMap = useCallback(() => {
     dispatch({
       type: "modoVisao",
-      tipo: MODO_VISAO.openstreetmap,
+      modoVisao: "OpenStreetMap",
     });
     closeModalConfirm(null, null);
   }, [closeModalConfirm, dispatch]);
@@ -48,7 +47,7 @@ export default function ModoVisaoDialog() {
   const handleMapaProprioComImagem = useCallback(() => {
     dispatch({
       type: "modoVisao",
-      tipo: MODO_VISAO.mapaProprio,
+      modoVisao: "Mapa Próprio",
       valor: ImageResolver.UrlResolver(nameRef.current),
     });
     closeModalConfirm(null, null);

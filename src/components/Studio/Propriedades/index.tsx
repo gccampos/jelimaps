@@ -16,7 +16,14 @@ import { Rnd } from "react-rnd";
 import AlignVerticalCenterIcon from "@mui/icons-material/AlignVerticalCenter";
 import useWindowDimensions from "../useWindowDimensions";
 import Cenas from "./cenas";
-import { Pause, PlayArrow, Stop } from "@mui/icons-material";
+import {
+  Pause,
+  PlayArrow,
+  Stop,
+  DesktopWindows,
+  SkipNext,
+  SkipPrevious,
+} from "@mui/icons-material";
 import Geral from "./geral";
 import Elemento from "./elemento";
 import moment from "moment";
@@ -225,6 +232,39 @@ export default function Propriedades(props: {
               ref={tocadorRef}
             >
               <BottomNavigation
+                onChange={(e, i) => {
+                  if (i == 2)
+                    dispatch({
+                      type: "alteraPropriedadeGeral",
+                      nomePropriedade: "playStatus",
+                      valorPropriedade: i,
+                    });
+                  else {
+                    dispatch({
+                      type: "pulaTempo",
+                      valorPropriedade: i,
+                    });
+                  }
+                }}
+              >
+                <BottomNavigationAction
+                  label="Anterior"
+                  icon={<SkipPrevious />}
+                  value={-1}
+                />
+                <BottomNavigationAction
+                  label="Apresentação"
+                  icon={<DesktopWindows />}
+                  value={2}
+                />
+                <BottomNavigationAction
+                  label="Proximo"
+                  icon={<SkipNext />}
+                  value={1}
+                />
+              </BottomNavigation>
+              <BottomNavigation
+                value={mapaContext.playStatus}
                 onChange={(e, i) => {
                   dispatch({
                     type: "alteraPropriedadeGeral",

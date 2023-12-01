@@ -4,7 +4,7 @@ import {
   ShowChart,
   RadioButtonUnchecked,
   AddPhotoAlternate,
-  RadioButtonChecked,
+  // RadioButtonChecked,
 } from "@mui/icons-material";
 import polygonIcon from "public/assets/polygonIcon.svg";
 import SvgIcon, { SvgIconTypeMap } from "@mui/material/SvgIcon";
@@ -38,12 +38,12 @@ export const elementos: { [key: string]: elementoProto } = {
     icon: <PinDrop />,
     iconComponent: PinDrop,
   },
-  Point: {
-    nome: "point",
-    label: "Adicionar ponto no mapa",
-    icon: <RadioButtonChecked />,
-    iconComponent: RadioButtonChecked,
-  },
+  // Point: {
+  //   nome: "point",
+  //   label: "Adicionar ponto no mapa",
+  //   icon: <RadioButtonChecked />,
+  //   iconComponent: RadioButtonChecked,
+  // },
   Polyline: {
     nome: "linestring",
     label: "Adicionar Linha no mapa",

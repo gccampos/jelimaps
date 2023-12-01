@@ -29,15 +29,15 @@ import ReactDOMServer from "react-dom/server";
 import useCaixaDialogo from "../CaixaDialogo/useCaixaDialogo";
 import ImageResolver from "@/components/ImageUrlResolver";
 import ImageOverlayRotated from "../Mapa/ImageOverlayRotated";
-import { elementoPadrao, tipoElemento } from "../Mapa/mapaContextTypes";
+import {
+  MODO_VISAO,
+  elementoPadrao,
+  tipoElemento,
+} from "../Mapa/mapaContextTypes";
 import { TerraDraw, GeoJSONStoreFeatures } from "terra-draw";
 import MapaContextChanger from "../Mapa/ContextChangers";
 import UndoControl from "./UndoControl";
-
-export const MODO_VISAO = {
-  openstreetmap: "OpenStreetMap",
-  mapaProprio: "Mapa Próprio",
-};
+import { getImageDimensions } from "../Mapa/MapaUtils";
 
 export default function Mapa(propsMapa: {
   altura: number;
@@ -65,7 +65,10 @@ export default function Mapa(propsMapa: {
       map.on("moveend", () => {
         if (!moveStartedRef.current)
           setTimeout(() => {
-            if (map.distance(mapaContext.center, map.getCenter()) > 1) {
+            if (
+              !mapaContext.center ||
+              map.distance(mapaContext.center, map.getCenter()) > 1
+            ) {
               dispatch({ type: "alteraPropriedadesMapa", map: map });
             }
           }, 100);
@@ -270,20 +273,6 @@ export default function Mapa(propsMapa: {
     });
     return null;
   };
-  function getImageDimensions(url) {
-    return new Promise((resolve, reject) => {
-      let img = new Image();
-      img.onload = () => {
-        let maxDimension = Math.max(img.width, img.height);
-        resolve({
-          width: (img.width / maxDimension).toFixed(1),
-          height: (img.height / maxDimension).toFixed(1),
-        });
-      };
-      img.onerror = reject;
-      img.src = url;
-    });
-  }
 
   const [bounds, setBounds] = useState<LatLngBounds>(
     new LatLngBounds([0, 0], [1, 1.5])

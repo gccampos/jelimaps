@@ -5,6 +5,8 @@ import {
 } from "./../mapaContextTypes";
 import { v4 } from "uuid";
 import moment from "moment";
+import auxiliadorRetornoContext from "./auxiliadorRetornoContext";
+import { DateType } from "vis-timeline/standalone";
 
 function getRandomColor(oldMapaContext: mapaContextSchema) {
   var letters = "0123456789ABCDEF";
@@ -14,7 +16,7 @@ function getRandomColor(oldMapaContext: mapaContextSchema) {
   }
   const cenafim =
     oldMapaContext.conteudo.cenas[oldMapaContext.conteudo.cenas.length - 1];
-  if (!similarColors(cenafim.color, color)) return hexToRGBA(color, 0.14);
+  if (!similarColors(cenafim.color, color)) return hexToRGBA(color, 0.8);
   else return getRandomColor(oldMapaContext);
 }
 function hexToRGBA(hex, alpha) {
@@ -179,10 +181,57 @@ const fixarCena = (
   };
 };
 
+function getClosestDateIndex(dateList: DateType[], targetDate: DateType) {
+  var closestDateIndex = 0;
+  var closestDateDiff = Math.abs(
+    new Date(dateList[0]).getTime() - new Date(targetDate).getTime()
+  );
+
+  for (var i = 1; i < dateList.length; i++) {
+    var diff = Math.abs(
+      new Date(dateList[i]).getTime() - new Date(targetDate).getTime()
+    );
+    if (diff < closestDateDiff) {
+      closestDateDiff = diff;
+      closestDateIndex = i;
+    }
+  }
+
+  return closestDateIndex;
+}
+
+const pulaTempoCenaOuAlteracaoConteudo = (
+  oldMapaContext: mapaContextSchema,
+  actionContextChange: actionContextChange
+) => {
+  const temposOrdenados = auxiliadorRetornoContext
+    .retornaListaTemposConteudo(oldMapaContext)
+    .sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
+  const indiceElemento = getClosestDateIndex(
+    temposOrdenados,
+    oldMapaContext.tempo
+  );
+  console.log(
+    "proximaCenaOuAlteracaoConteudo",
+    indiceElemento,
+    oldMapaContext.tempo,
+    temposOrdenados[indiceElemento],
+    temposOrdenados[indiceElemento + 1]
+  );
+  return {
+    ...oldMapaContext,
+    tempo:
+      temposOrdenados[
+        indiceElemento + (actionContextChange.valorPropriedade > 0 ? 1 : -1)
+      ],
+  };
+};
+
 const cenaContextChanger = {
   fixarCena,
   deletarCena,
   adicionarNovaCena,
   changePropriedadeCena,
+  pulaTempoCenaOuAlteracaoConteudo,
 };
 export default cenaContextChanger;

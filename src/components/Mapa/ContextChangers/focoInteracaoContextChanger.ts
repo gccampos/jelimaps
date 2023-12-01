@@ -111,7 +111,7 @@ const selecionaModoVisao = (
 ): mapaContextSchema => {
   return {
     ...oldMapaContext,
-    modoVisao: actionContextChange.tipo,
+    modoVisao: actionContextChange.modoVisao,
     urlMapaProprio: actionContextChange.valor ?? "",
   };
 };

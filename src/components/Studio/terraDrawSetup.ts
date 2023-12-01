@@ -163,6 +163,21 @@ const terraDrawSetup = (
                 )
                 .find((x) => {
                   var elementoById = document.getElementById(x.id);
+                  // if (elementoById) {
+                  //   console.log("VerificaCliqueELemento", elementoById);
+                  //   Leaflet.marker(
+                  //     map.containerPointToLatLng({
+                  //       x: elementoById.getBoundingClientRect().x - 60,
+                  //       y: elementoById.getBoundingClientRect().y + 6,
+                  //     } as Point)
+                  //   ).addTo(map);
+                  //   Leaflet.marker(
+                  //     map.containerPointToLatLng({
+                  //       x: elementoById.getBoundingClientRect().x - 36,
+                  //       y: elementoById.getBoundingClientRect().y + 30,
+                  //     } as Point)
+                  //   ).addTo(map);
+                  // }
                   return x.dataRef === "ImageOverlay"
                     ? Leaflet.latLngBounds(
                         (x as any).positionBL,

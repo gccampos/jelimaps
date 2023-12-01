@@ -95,7 +95,7 @@ const Studio = () => {
   const alterarEventRef = (value: boolean) => (eventRef.current = value);
 
   useEffect(() => {
-    if (map && !draw)
+    if (map && !draw) {
       setDraw(
         terraDrawSetup(
           dispatch,
@@ -107,6 +107,7 @@ const Studio = () => {
           alterarEventRef
         )
       );
+    }
   }, [dispatch, draw, map]);
 
   useEffect(() => {
@@ -127,69 +128,73 @@ const Studio = () => {
 
   return (
     <Grid container sx={{ height: "100%" }} id="studioMapa">
-      <Grid item container xs={12}>
-        <ElementosLateral altura={height - altura} draw={draw} />
-        <Mapa
-          altura={height - altura}
-          setMapa={setMap}
-          draw={draw}
-          conteudoElementosRef={conteudoElementosRef}
-        />
-        <Propriedades
-          altura={height - altura}
-          tempoAtualRef={tempoAtualRef}
-          larguraPropriedades={larguraPropriedades}
-          setLargurasPropriedades={setLargurasPropriedades}
-        />
-      </Grid>
-      <Rnd
-        ref={(c) => {
-          setRndRef(c);
-        }}
-        maxHeight={height * 0.9}
-        minHeight={height * 0.05}
-        resizeHandleStyles={{
-          bottom: displaYNoneStyle,
-          left: displaYNoneStyle,
-          right: displaYNoneStyle,
-          topLeft: displaYNoneStyle,
-          topRight: displaYNoneStyle,
-          bottomLeft: displaYNoneStyle,
-          bottomRight: displaYNoneStyle,
-          top: { height: 25 },
-        }}
-        size={{ height: altura, width: "100%" }}
-        disableDragging
-        position={{ y: height - altura, x: 0 }}
-        resizeHandleComponent={{
-          top: (
-            <Dragger
-              sx={{
-                borderStyle: "outset",
-                borderBottom: 2,
-                height: 20,
-                backgroundColor: "#e2e2e2",
-                marginTop: 0.6,
-              }}
-            ></Dragger>
-          ),
-        }}
-        onResize={(e, dir, ref) => {
-          if (rndRef && rndRef.updatePosition)
-            rndRef?.updatePosition({ x: 0, y: height - ref.offsetHeight });
-          setAltura(ref.offsetHeight);
-        }}
-      >
-        <Grid
-          item
-          container
-          xs={12}
-          mt={2.2}
-          sx={{ height: "95%", maxHeight: altura }}
-        >
-          <LinhaTempo tempoAtualRef={tempoAtualRef} altura={altura} />
-        </Grid>
-      </Rnd>
+      {
+        <>
+          <Grid item container xs={12}>
+            <ElementosLateral altura={height - altura} draw={draw} />
+            <Mapa
+              altura={height - altura}
+              setMapa={setMap}
+              draw={draw}
+              conteudoElementosRef={conteudoElementosRef}
+            />
+            <Propriedades
+              altura={height - altura}
+              tempoAtualRef={tempoAtualRef}
+              larguraPropriedades={larguraPropriedades}
+              setLargurasPropriedades={setLargurasPropriedades}
+            />
+          </Grid>
+          <Rnd
+            ref={(c) => {
+              setRndRef(c);
+            }}
+            maxHeight={height * 0.9}
+            minHeight={height * 0.05}
+            resizeHandleStyles={{
+              bottom: displaYNoneStyle,
+              left: displaYNoneStyle,
+              right: displaYNoneStyle,
+              topLeft: displaYNoneStyle,
+              topRight: displaYNoneStyle,
+              bottomLeft: displaYNoneStyle,
+              bottomRight: displaYNoneStyle,
+              top: { height: 25 },
+            }}
+            size={{ height: altura, width: "100%" }}
+            disableDragging
+            position={{ y: height - altura, x: 0 }}
+            resizeHandleComponent={{
+              top: (
+                <Dragger
+                  sx={{
+                    borderStyle: "outset",
+                    borderBottom: 2,
+                    height: 20,
+                    backgroundColor: "#e2e2e2",
+                    marginTop: 0.6,
+                  }}
+                ></Dragger>
+              ),
+            }}
+            onResize={(e, dir, ref) => {
+              if (rndRef && rndRef.updatePosition)
+                rndRef?.updatePosition({ x: 0, y: height - ref.offsetHeight });
+              setAltura(ref.offsetHeight);
+            }}
+          >
+            <Grid
+              item
+              container
+              xs={12}
+              mt={2.2}
+              sx={{ height: "95%", maxHeight: altura }}
+            >
+              <LinhaTempo tempoAtualRef={tempoAtualRef} altura={altura} />
+            </Grid>
+          </Rnd>
+        </>
+      }
     </Grid>
   );
 };

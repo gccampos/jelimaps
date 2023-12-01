@@ -46,7 +46,7 @@ const initialMapaContexto: () => mapaContextSchema = () => {
       end: moment().add(10, "minutes").format("yyyy-MM-DDTHH:mm:ss"),
       autoResize: false,
       selectable: true,
-      multiselect: true,
+      multiselect: false,
       orientation: { axis: "top" },
       longSelectPressTime: 777,
       snap: (date: Date) => {

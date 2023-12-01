@@ -26,21 +26,40 @@ const WrapperStyled = styled("div")``;
 export default function Elemento() {
   const mapaContext = useMapaContext();
   const dispatch = useMapaDispatch();
-  const [value, setValue] = React.useState(
-    mapaContext?.elementosFoco
-      ?.map((x: any) =>
-        MapaContextChanger.retornaElementoOuAlteracaoPorId(mapaContext, x.id)
-      )
-      .concat([mapaContext?.elementoFoco])
-      .filter(
-        (x, i, a) => x && a.findIndex((z) => !!z && z.id === x.id) === i
-      ) ?? [mapaContext?.elementoFoco]
+  const carregaElementosFoco = React.useCallback(() => {
+    console.log("render pcarregaElementosFoco");
+    return (
+      mapaContext?.elementosFoco
+        ?.map((x: any) =>
+          MapaContextChanger.retornaElementoOuAlteracaoPorId(mapaContext, x.id)
+        )
+        .concat([
+          MapaContextChanger.retornaElementoOuAlteracaoPorId(
+            mapaContext,
+            mapaContext?.elementoFoco?.id
+          ),
+        ])
+        .filter(
+          (x, i, a) => x && a.findIndex((z) => !!z && z.id === x.id) === i
+        ) ?? [
+        MapaContextChanger.retornaElementoOuAlteracaoPorId(
+          mapaContext,
+          mapaContext?.elementoFoco?.id
+        ),
+      ]
+    );
+  }, [mapaContext]);
+
+  const [value, setValue] = React.useState<{ collapse: boolean }[]>(
+    carregaElementosFoco().map((x) => {
+      return { collapse: x.collapse };
+    })
   );
 
   return (
     <List sx={{ height: "100%", pt: 0 }} key={"lista"}>
-      {value &&
-        value.map((x, i) => {
+      {carregaElementosFoco() &&
+        carregaElementosFoco().map((x, i) => {
           return (
             <WrapperStyled key={`Wrapper#${x}-${i}`}>
               <ListItemButton
@@ -195,45 +214,65 @@ export default function Elemento() {
                               }
                             />
                           )}
-                          {(formik.values as any).opacity ? (
-                            <>
-                              <Typography>Opacidade</Typography>
-                              <Slider
-                                value={(formik.values as any).opacity}
-                                name=""
-                                min={0}
-                                step={0.1}
-                                max={1}
-                                onChange={(e, newV) =>
+                          {(formik.values as any).positionBL &&
+                            ((formik.values as any).opacity ? (
+                              <>
+                                <Typography>Opacidade</Typography>
+                                <Slider
+                                  value={(formik.values as any).opacity}
+                                  name=""
+                                  min={0}
+                                  step={0.1}
+                                  max={1}
+                                  onChange={(e, newV) =>
+                                    dispatch({
+                                      type: "editarPropriedade",
+                                      tipo: x.dataRef,
+                                      id: x.id,
+                                      nomePropriedade: "opacity",
+                                      valorPropriedade: newV,
+                                    })
+                                  }
+                                  valueLabelDisplay="auto"
+                                  aria-labelledby="non-linear-slider"
+                                />
+                              </>
+                            ) : (
+                              <Button
+                                onClick={() =>
                                   dispatch({
                                     type: "editarPropriedade",
                                     tipo: x.dataRef,
                                     id: x.id,
                                     nomePropriedade: "opacity",
-                                    valorPropriedade: newV,
+                                    valorPropriedade: 0.9,
                                   })
                                 }
-                                valueLabelDisplay="auto"
-                                aria-labelledby="non-linear-slider"
-                              />
-                            </>
-                          ) : (
-                            <Button
-                              onClick={() =>
-                                dispatch({
-                                  type: "editarPropriedade",
-                                  tipo: x.dataRef,
-                                  id: x.id,
-                                  nomePropriedade: "opacity",
-                                  valorPropriedade: 0.9,
-                                })
-                              }
-                            >
-                              {(formik.values as any).opacity === 0
-                                ? "Exibir elemento"
-                                : "Ativar Opacidade"}
-                            </Button>
-                          )}
+                              >
+                                {(formik.values as any).opacity === 0
+                                  ? "Exibir elemento"
+                                  : "Ativar Opacidade"}
+                              </Button>
+                            ))}
+                          <TextField
+                            fullWidth
+                            id="texto"
+                            name="texto"
+                            label="Texto"
+                            multiline
+                            rows={4}
+                            value={(formik.values as any).texto}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            error={
+                              (formik.touched as any).texto &&
+                              Boolean((formik.errors as any).texto)
+                            }
+                            helperText={
+                              (formik.touched as any).texto &&
+                              (formik.errors as any).texto
+                            }
+                          />
                         </Form>
                       );
                     }}

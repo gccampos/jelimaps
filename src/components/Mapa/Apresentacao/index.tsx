@@ -1,0 +1,106 @@
+"use client";
+import { MapContainer, TileLayer, ImageOverlay } from "react-leaflet";
+import { LatLng, LatLngBounds } from "leaflet";
+import { useEffect, useState } from "react";
+import React from "react";
+import CustomControlLeaflet, {
+  POSITION_CLASSES_CUSTOM_CONTROL,
+} from "@/components/CustomControlLeaflet/CustomControlLeaflet";
+import { useMapaContext, useMapaDispatch } from "@/components/Mapa/MapaContext";
+import { Fab, Grid } from "@mui/material";
+// import Elementos from "./Elementos";
+import { Close } from "@mui/icons-material";
+import { MODO_VISAO } from "../mapaContextTypes";
+import { getImageDimensions } from "../MapaUtils";
+import useWindowDimensions from "../../Studio/useWindowDimensions";
+import Legenda from "./legenda";
+import LinhaTempo from "./linhaTempo";
+
+const Apresentacao = () => {
+  const mapaContext = useMapaContext();
+  const dispatch = useMapaDispatch();
+  const { height } = useWindowDimensions();
+
+  const [bounds, setBounds] = useState<LatLngBounds>(
+    new LatLngBounds([0, 0], [1, 1.5])
+  );
+  useEffect(() => {
+    getImageDimensions(mapaContext.urlMapaProprio).then((dimensions) =>
+      setBounds(
+        new LatLngBounds(
+          [0, 0],
+          [(dimensions as any).height, (dimensions as any).width]
+        )
+      )
+    );
+  }, [mapaContext.urlMapaProprio]);
+
+  useEffect(() => {
+    console.log("mapaContext", mapaContext);
+  }, [mapaContext]);
+
+  const position = React.useMemo(
+    () =>
+      mapaContext.modoVisao === MODO_VISAO.openstreetmap
+        ? [-22.906659526195618, -43.1333403313017]
+        : [0.5, 0.75],
+    [mapaContext.modoVisao]
+  );
+  const center = React.useMemo(
+    () => new LatLng(position[0], position[1]),
+    [position]
+  );
+  const zoom = mapaContext.modoVisao === MODO_VISAO.openstreetmap ? 15 : 9;
+  return (
+    <>
+      <Grid item container xs={12}>
+        <Legenda />
+        <Grid item xs>
+          <div style={{ height: height, display: "grid" }}>
+            <MapContainer
+              center={mapaContext.center ?? center}
+              zoom={mapaContext.zoom ?? zoom}
+              maxZoom={23}
+              minZoom={mapaContext.modoVisao === MODO_VISAO.mapaProprio ? 9 : 5}
+            >
+              {mapaContext.modoVisao === MODO_VISAO.openstreetmap && (
+                <TileLayer
+                  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                  maxNativeZoom={19}
+                  maxZoom={23}
+                />
+              )}
+              {mapaContext.modoVisao === MODO_VISAO.mapaProprio && (
+                <ImageOverlay
+                  bounds={bounds}
+                  url={mapaContext.urlMapaProprio}
+                />
+              )}
+              <CustomControlLeaflet
+                position={POSITION_CLASSES_CUSTOM_CONTROL.topright}
+              >
+                <Fab
+                  color="primary"
+                  onClick={() =>
+                    dispatch({
+                      type: "alteraPropriedadeGeral",
+                      nomePropriedade: "playStatus",
+                      valorPropriedade: -1,
+                    })
+                  }
+                  sx={{ zIndex: 100000 }}
+                >
+                  <Close />
+                </Fab>
+              </CustomControlLeaflet>
+              <LinhaTempo />
+            </MapContainer>
+          </div>
+        </Grid>
+      </Grid>
+    </>
+  );
+};
+
+export default Apresentacao;

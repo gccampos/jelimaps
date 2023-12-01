@@ -11,7 +11,6 @@ import {
   tipoElemento,
   tipoGenericoElementoTimeline,
 } from "@/components/Mapa/mapaContextTypes";
-import { v4 } from "uuid";
 import moment from "moment";
 import { Dialog, IconButton, Stack } from "@mui/material";
 import { Delete, Edit, UnfoldLess, UnfoldMore } from "@mui/icons-material";
@@ -36,6 +35,7 @@ export default function VisTimeline(props: {
   const { openModalConfirm } = useCaixaDialogo();
   const startMapaContextRef = useRef(mapaContext.cenaInicio);
   const endMapaContextRef = useRef(mapaContext.cenaFim);
+  const fitElementoSelecionadotRef = useRef(false);
   // const elementos = useRef(
   //   useListaElementos().filter((x) => x.visTimelineObject?.type != "background")
   // );
@@ -164,18 +164,15 @@ export default function VisTimeline(props: {
     [dispatch]
   );
 
-  const handleDoubleClick = useCallback(
-    (e: TimelineEventPropertiesResult) => {
-      if (e.group)
-        dispatch({
-          ...e,
-          start: e.snappedTime,
-          id: v4(),
-          type: "adicionarAlteracaoElemento",
-        });
-    },
-    [dispatch]
-  );
+  const handleDoubleClick = useCallback((e: TimelineEventPropertiesResult) => {
+    if (e.group) fitElementoSelecionadotRef.current = true;
+    // dispatch({
+    //   ...e,
+    //   start: e.snappedTime,
+    //   id: v4(),
+    //   type: "adicionarAlteracaoElemento",
+    // });
+  }, []);
   const handleClick = useCallback(
     (item: TimelineEventPropertiesResult) => {
       if (!item.what) {
@@ -310,8 +307,16 @@ export default function VisTimeline(props: {
       onMoving: handleOnMoving,
       // groupOrderSwap: handleAlterandoOrdem,
       maxHeight: altura,
-      start: moment(mapaContext.cenaInicio).format("yyyy-MM-DDTHH:mm:ss"),
-      end: moment(mapaContext.cenaFim).format("yyyy-MM-DDTHH:mm:ss"),
+      start:
+        moment(mapaContext.cenaInicio).format("yyyy-MM-DDTHH:mm:ss") !=
+        "Invalid date"
+          ? moment(mapaContext.cenaInicio).format("yyyy-MM-DDTHH:mm:ss")
+          : mapaContext.timelineOptions.start,
+      end:
+        moment(mapaContext.cenaFim).format("yyyy-MM-DDTHH:mm:ss") !=
+        "Invalid date"
+          ? moment(mapaContext.cenaFim).format("yyyy-MM-DDTHH:mm:ss")
+          : mapaContext.timelineOptions.end,
     };
   }, [
     mapaContext,
@@ -343,9 +348,11 @@ export default function VisTimeline(props: {
     if (elementosFocadosRef.current !== elementosFocados()) {
       setElementosSelecionados();
       elementosFocadosRef.current = elementosFocados();
-      setTimeout(() => {
-        if (elementosFocados()) visTimeline?.focus([...elementosFocados()]);
-      }, 100);
+      if (fitElementoSelecionadotRef.current)
+        setTimeout(() => {
+          if (elementosFocados()) visTimeline?.focus([...elementosFocados()]);
+          fitElementoSelecionadotRef.current = false;
+        }, 100);
     }
   }, [
     altura,

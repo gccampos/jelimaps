@@ -130,6 +130,12 @@ export function mapaReducer(
       action.valorPropriedade = "imageOverlay";
       return MapaContextChanger.changePropriedadeMapa(oldMapaContext, action);
     }
+    case "pulaTempo": {
+      return MapaContextChanger.pulaTempoCenaOuAlteracaoConteudo(
+        oldMapaContext,
+        action
+      );
+    }
     default: {
       throw Error("Unknown action: " + action.type);
     }
