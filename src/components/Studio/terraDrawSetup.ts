@@ -153,47 +153,40 @@ const terraDrawSetup = (
             e.containerX > (map as any)._container.offsetWidth - 90
           ) &&
           !(e.containerX < 60 && e.containerY < 160)
-          // e.containerX > (map as any)._container.offsetWidth - 70)
         ) {
           switch (mode.origin.mode) {
             case terraDrawSelectMode.mode:
               var eleClicado = pegarConteudoElementos()
-                .filter(
-                  (x) => x.dataRef === "Marker" || x.dataRef === "ImageOverlay"
-                )
+                // .filter(
+                //   (x) => x.dataRef === "Marker" || x.dataRef === "ImageOverlay"
+                // )
                 .find((x) => {
                   var elementoById = document.getElementById(x.id);
-                  // if (elementoById) {
-                  //   console.log("VerificaCliqueELemento", elementoById);
-                  //   Leaflet.marker(
-                  //     map.containerPointToLatLng({
-                  //       x: elementoById.getBoundingClientRect().x - 60,
-                  //       y: elementoById.getBoundingClientRect().y + 6,
-                  //     } as Point)
-                  //   ).addTo(map);
-                  //   Leaflet.marker(
-                  //     map.containerPointToLatLng({
-                  //       x: elementoById.getBoundingClientRect().x - 36,
-                  //       y: elementoById.getBoundingClientRect().y + 30,
-                  //     } as Point)
-                  //   ).addTo(map);
-                  // }
+                  var elementoVirtual = null;
+
+                  try {
+                    elementoVirtual = new Leaflet.GeoJSON(x);
+                  } catch (error) {
+                    /* empty */
+                  }
+
                   return x.dataRef === "ImageOverlay"
                     ? Leaflet.latLngBounds(
                         (x as any).positionBL,
                         (x as any).positionTR
                       ).contains(e)
-                    : elementoById &&
-                        Leaflet.latLngBounds(
-                          map.containerPointToLatLng({
-                            x: elementoById.getBoundingClientRect().x - 60,
-                            y: elementoById.getBoundingClientRect().y + 6,
-                          } as Point),
-                          map.containerPointToLatLng({
-                            x: elementoById.getBoundingClientRect().x - 36,
-                            y: elementoById.getBoundingClientRect().y + 30,
-                          } as Point)
-                        ).contains(e);
+                    : elementoById && !elementoVirtual
+                    ? Leaflet.latLngBounds(
+                        map.containerPointToLatLng({
+                          x: elementoById.getBoundingClientRect().x - 60,
+                          y: elementoById.getBoundingClientRect().y + 6,
+                        } as Point),
+                        map.containerPointToLatLng({
+                          x: elementoById.getBoundingClientRect().x - 36,
+                          y: elementoById.getBoundingClientRect().y + 30,
+                        } as Point)
+                      ).contains(e)
+                    : elementoVirtual?.getBounds().contains(e);
                 });
               if (
                 eleClicado

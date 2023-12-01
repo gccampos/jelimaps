@@ -72,19 +72,18 @@ export default function Cenas() {
               >
                 <TextField
                   fullWidth
-                  id="titulo"
-                  name="titulo"
+                  id="nome"
+                  name="nome"
                   label="Título"
-                  value={formik.values.titulo}
+                  value={formik.values.nome}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   error={
-                    (formik.touched as any).titulo &&
-                    Boolean((formik.errors as any).titulo)
+                    (formik.touched as any).nome &&
+                    Boolean((formik.errors as any).nome)
                   }
                   helperText={
-                    (formik.touched as any).titulo &&
-                    (formik.errors as any).titulo
+                    (formik.touched as any).nome && (formik.errors as any).nome
                   }
                 />
                 <TextField

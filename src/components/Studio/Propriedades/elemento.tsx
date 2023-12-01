@@ -12,6 +12,9 @@ import {
   Switch,
   Slider,
   Typography,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from "@mui/material";
 import { useMapaContext, useMapaDispatch } from "@/components/Mapa/MapaContext";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
@@ -20,12 +23,15 @@ import * as Yup from "yup";
 import moment from "moment";
 import MapaContextChanger from "@/components/Mapa/ContextChangers";
 import { Button } from "react-bootstrap";
+import useCaixaDialogo from "@/components/CaixaDialogo/useCaixaDialogo";
+import ImageResolver from "@/components/ImageUrlResolver";
 
 const WrapperStyled = styled("div")``;
 
 export default function Elemento() {
   const mapaContext = useMapaContext();
   const dispatch = useMapaDispatch();
+  const elementoRef = React.useRef(null);
   const carregaElementosFoco = React.useCallback(() => {
     console.log("render pcarregaElementosFoco");
     return (
@@ -55,6 +61,69 @@ export default function Elemento() {
       return { collapse: x.collapse };
     })
   );
+
+  const urlImageRef = React.useRef<string>();
+  const { openModalConfirm, closeModalConfirm, onConfirm } = useCaixaDialogo();
+
+  //TODO: Função undo não pode reabrir popup de inserção de elemento????
+  const handleDispatchInserirImageOverlay = React.useCallback(() => {
+    dispatch({
+      type: "editarPropriedade",
+      tipo: elementoRef.current.dataRef,
+      id: elementoRef.current.id,
+      nomePropriedade: "imagemURL",
+      valorPropriedade: urlImageRef.current,
+    });
+    elementoRef.current = urlImageRef.current = null;
+    closeModalConfirm(null, null);
+  }, [dispatch, closeModalConfirm]);
+
+  const handleInserirImagem = React.useCallback(() => {
+    openModalConfirm({
+      title: "",
+      message: "",
+      onConfirm,
+      cancelarNotVisible: true,
+      confirmarNotVisible: true,
+      componentMessage: (
+        <div>
+          <DialogTitle>Por favor, insira a url da imagem</DialogTitle>
+          <DialogContent dividers>
+            <TextField
+              id="outlined-controlled"
+              label="Controlled"
+              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                urlImageRef.current = event.target.value;
+              }}
+            />
+            {urlImageRef.current &&
+            urlImageRef.current !== "" &&
+            ImageResolver.isValidUrl(urlImageRef.current) ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                alt="MapaProprio"
+                src={ImageResolver.UrlResolver(urlImageRef.current)}
+                width={1250}
+                height={1250}
+              />
+            ) : (
+              <div> Copie um link válido</div>
+            )}
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleInserirImagem}>Atualizar</Button>
+            {urlImageRef.current &&
+              urlImageRef.current !== "" &&
+              ImageResolver.isValidUrl(urlImageRef.current) && (
+                <Button onClick={handleDispatchInserirImageOverlay}>
+                  Salvar
+                </Button>
+              )}
+          </DialogActions>
+        </div>
+      ),
+    });
+  }, [openModalConfirm, onConfirm, handleDispatchInserirImageOverlay]);
 
   return (
     <List sx={{ height: "100%", pt: 0 }} key={"lista"}>
@@ -123,10 +192,12 @@ export default function Elemento() {
                             control={
                               <Switch
                                 checked={formik.values.draggable}
-                                onChange={() => {
-                                  mapaContext.conteudo[x.dataRef].find(
-                                    (z) => z.id === x.id
-                                  ).draggable = !formik.values.draggable;
+                                value={formik.values.draggable}
+                                onChange={(e) => {
+                                  // mapaContext.conteudo[x.dataRef].find(
+                                  //   (z) => z.id === x.id
+                                  // ).draggable = !formik.values.draggable;
+                                  console.log("onChange");
                                   dispatch({
                                     type: "editarPropriedade",
                                     tipo: x.dataRef,
@@ -134,6 +205,7 @@ export default function Elemento() {
                                     nomePropriedade: "draggable",
                                     valorPropriedade: !formik.values.draggable,
                                   });
+                                  formik.handleChange(e);
                                 }}
                                 name={"draggable"}
                               />
@@ -254,6 +326,27 @@ export default function Elemento() {
                                   : "Ativar Opacidade"}
                               </Button>
                             ))}
+                          {!(formik.values as any).positionBL && (
+                            <Button
+                              onClick={() => {
+                                elementoRef.current = formik.values;
+                                handleInserirImagem();
+                              }}
+                            >
+                              {(formik.values as any).imagemURL &&
+                              (formik.values as any).imagemURL.length
+                                ? "Trocar imagem"
+                                : "Inserir imagem"}
+                            </Button>
+                          )}
+                          {(formik.values as any).imagemURL &&
+                            (formik.values as any).imagemURL.length && (
+                              <img
+                                src={(formik.values as any).imagemURL}
+                                width={"auto"}
+                                height={"auto"}
+                              />
+                            )}
                           <TextField
                             fullWidth
                             id="texto"
