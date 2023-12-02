@@ -66,7 +66,6 @@ export default function Elemento(props: { map: Map }) {
   const urlImageRef = React.useRef<string>();
   const { openModalConfirm, closeModalConfirm, onConfirm } = useCaixaDialogo();
 
-  //TODO: Função undo não pode reabrir popup de inserção de elemento????
   const handleDispatchInserirImageOverlay = React.useCallback(() => {
     dispatch({
       type: "editarPropriedade",

@@ -17,19 +17,12 @@ import useBarraAlerta from "../BarraAlerta/useBarraAlerta";
 // import moment from "moment";
 
 // Define a função para inserir um texto no clipboard
-function copyToClipboard(text) {
-  // Cria um elemento textarea temporário
-  const textarea = document.createElement("textarea");
-  // Define o valor do textarea como o texto
-  textarea.value = text;
-  // Adiciona o textarea ao documento
-  document.body.appendChild(textarea);
-  // Seleciona o texto do textarea
-  textarea.select();
-  // Executa o comando de copiar
-  document.execCommand("copy");
-  // Remove o textarea do documento
-  document.body.removeChild(textarea);
+async function copyToClipboard(text) {
+  try {
+    await navigator.clipboard.writeText(text);
+  } catch (err) {
+    console.error("Falha ao copiar texto: ", err);
+  }
 }
 
 const Studio = () => {
@@ -47,48 +40,61 @@ const Studio = () => {
   const dispatch = useMapaDispatch();
   const barraAlerta = useBarraAlerta();
 
-  const handleKeyDown = (event) => {
-    if (event.ctrlKey && event.keyCode === 67) {
-      if (elementosSelecionadosRef.current?.length === 1) {
-        const text = JSON.stringify(
-          MapaContextChanger.retornaListaElementosConteudo(mapaContext).find(
-            (x) => x.id === elementosSelecionadosRef.current[0]
-          )
-        );
-        copyToClipboard(text);
-      }
-    }
-    if (event.ctrlKey && event.keyCode === 86) {
-      navigator.clipboard.readText().then((x) => {
-        if (x) {
-          try {
-            const elementoAntigo = JSON.parse(x) as tipoElemento;
-            if (!verificaTipo(elementoAntigo)) throw new Error("");
-            dispatch({
-              type: "addElementoCopiado",
-              elemento: elementoAntigo,
-            });
-          } catch (error) {
-            barraAlerta.showSnackBar({
-              text: "Não é um elemento válido",
-              color: "error",
-            });
-          }
+  const handleKeyDown = React.useCallback(
+    (eventLeaflet) => {
+      console.log("map223");
+      if (
+        eventLeaflet.originalEvent.ctrlKey &&
+        eventLeaflet.originalEvent.keyCode === 67
+      ) {
+        if (elementosSelecionadosRef.current?.length === 1) {
+          const text = JSON.stringify(
+            MapaContextChanger.retornaListaElementosConteudo(mapaContext).find(
+              (x) => x.id === elementosSelecionadosRef.current[0]
+            )
+          );
+          copyToClipboard(text);
         }
-      });
-    }
-  };
+      }
+      if (
+        eventLeaflet.originalEvent.ctrlKey &&
+        eventLeaflet.originalEvent.keyCode === 86
+      ) {
+        console.log("map223 coloio");
+        navigator.clipboard.readText().then((x) => {
+          if (x) {
+            try {
+              const elementoAntigo = JSON.parse(x) as tipoElemento;
+              if (!verificaTipo(elementoAntigo)) throw new Error("");
+              dispatch({
+                type: "addElementoCopiado",
+                elemento: elementoAntigo,
+              });
+            } catch (error) {
+              barraAlerta.showSnackBar({
+                text: "Não é um elemento válido",
+                color: "error",
+              });
+            }
+          }
+        });
+      }
+    },
+    [barraAlerta, dispatch, map, mapaContext]
+  );
 
   function verificaTipo(obj: any): obj is tipoElemento {
     return obj && typeof obj.id === "string" && typeof obj.dataRef === "string";
   }
 
   useEffect(() => {
-    document.addEventListener("keydown", handleKeyDown);
-    return () => {
-      document.removeEventListener("keydown", handleKeyDown);
-    };
-  }, []);
+    if (map) {
+      map.addEventListener("keydown", handleKeyDown);
+      return () => {
+        map.removeEventListener("keydown", handleKeyDown);
+      };
+    }
+  }, [handleKeyDown, map]);
 
   useEffect(() => {
     if (mapaContext.elementosFoco && mapaContext.elementosFoco.length > 0)

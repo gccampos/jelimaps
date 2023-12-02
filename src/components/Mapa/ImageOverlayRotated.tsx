@@ -84,7 +84,6 @@ const ImageOverlayRotated = (props: Props) => {
     }
   });
 
-  // TODO: evitar reposicionamento no modo apresentação
   return (x.draggable &&
     mapaContext.elementosFoco &&
     mapaContext.elementosFoco.length > 0 &&
