@@ -202,11 +202,21 @@ export default function Mapa(propsMapa: {
     useEffect(() => {
       if (map && propsMapa.draw) {
         if (propsConteudoMapa.elemento.draggable) {
-          const ds = propsConteudoMapa.elemento as GeoJSONStoreFeatures;
-          // TODO: inserir cor personalizada ou se estiver selecionado
-
+          const ds = (
+            MapaContextChanger.isElementoSelecionado(
+              mapaContext,
+              propsConteudoMapa.elemento.id
+            )
+              ? {
+                  ...propsConteudoMapa.elemento,
+                  properties: {
+                    ...propsConteudoMapa.elemento.properties,
+                    selected: true,
+                  },
+                }
+              : propsConteudoMapa.elemento
+          ) as GeoJSONStoreFeatures;
           try {
-            ds.bbox;
             propsMapa.draw?.addFeatures([ds]);
             if (
               mapaContext.elementoFoco?.id === propsConteudoMapa.elemento.id &&
@@ -219,7 +229,6 @@ export default function Mapa(propsMapa: {
               ];
             //(props.draw as any)._mode.onSelect(p.el.id);
           } catch (error) {
-            console.error(error);
             dispatch({
               type: "removeElements",
               id: propsConteudoMapa.elemento.id,
@@ -296,6 +305,7 @@ export default function Mapa(propsMapa: {
           zoom={mapaContext.mapOptions?.zoom ?? zoom}
           ref={setMap}
           maxZoom={23}
+          minZoom={mapaContext.modoVisao === MODO_VISAO.mapaProprio ? 9 : 5}
         >
           {mapaContext.modoVisao === MODO_VISAO.openstreetmap && (
             <TileLayer

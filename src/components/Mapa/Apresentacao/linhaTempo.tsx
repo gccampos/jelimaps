@@ -372,7 +372,7 @@ const LinhaTempo = (props: {
                             map.addLayer(im);
                           else map.removeLayer(im);
                         } catch (error) {
-                          console.log(error);
+                          /* empty */
                         }
                       });
                     }

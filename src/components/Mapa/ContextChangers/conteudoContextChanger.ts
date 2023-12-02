@@ -327,14 +327,46 @@ const atualizaLinhaTempoElemento = (
   };
 };
 
+const addElementoCopiado = (
+  oldMapaContext: mapaContextSchema,
+  actionContext: actionContextChange
+): mapaContextSchema => {
+  const propsPadrao = padraoElementoNovoAdicionado(oldMapaContext);
+  const elementoNovo: elementoPadrao = {
+    ...actionContext.elemento,
+    dataRef: actionContext.elemento.dataRef,
+    nome: `${actionContext.elemento.dataRef}#${
+      oldMapaContext.conteudo[actionContext.elemento.dataRef].length + 1 || 1
+    }`,
+    texto: "",
+    id: v4(),
+    type: "Feature",
+    order: propsPadrao.order,
+  };
+  //oldMapaContext.conteudo[actionContext.elemento.dataRef]
+  const newArrayConteudoTipo = [
+    ...oldMapaContext.conteudo[actionContext.elemento.dataRef],
+    elementoNovo,
+  ];
+  return {
+    ...oldMapaContext,
+    elementoFoco: elementoNovo, //null,
+    conteudo: {
+      ...oldMapaContext.conteudo,
+      [actionContext.elemento.dataRef]: [...newArrayConteudoTipo],
+    },
+  };
+};
+
 const conteudoContextChanger = {
+  movendoImagem,
+  removeElemento,
   addElementoPadrao,
   addElementoImagem,
-  alteraCoordinatesElemento,
-  removeElemento,
-  atualizaLinhaTempoElemento,
-  editarPropriedadeElemento,
+  addElementoCopiado,
   addAlteracaoElemento,
-  movendoImagem,
+  alteraCoordinatesElemento,
+  editarPropriedadeElemento,
+  atualizaLinhaTempoElemento,
 };
 export default conteudoContextChanger;

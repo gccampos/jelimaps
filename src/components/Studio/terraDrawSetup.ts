@@ -78,8 +78,21 @@ const terraDrawSetup = (
       selectedPolygonColor: "#222222", // Any hex color you like
       selectedPolygonFillOpacity: 0.7, // 0 - 1
       selectedPolygonOutlineColor: "#333333", // Any hex color you like
-      selectedPolygonOutlineWidth: 2, // Integer
+      selectedPolygonOutlineWidth: 3, // Integer
+      selectionPointWidth: 3,
+      selectionPointColor: "#000000",
+      selectionPointOutlineColor: "#000000",
+      selectionPointOutlineWidth: 3,
+      midPointColor: "#000000",
+      midPointOutlineColor: "#000000",
+      midPointWidth: 2,
+      midPointOutlineWidth: 2,
       selectedPointColor: "#000000",
+      selectedPointWidth: 2,
+      selectedPointOutlineColor: "#000000",
+      selectedPointOutlineWidth: 2,
+      selectedLineStringColor: "#000000",
+      selectedLineStringWidth: 3,
     },
   });
 
@@ -90,7 +103,7 @@ const terraDrawSetup = (
         try {
           oldEvent.apply(mode.origin, [e, f]);
         } catch (error) {
-          console.error(error);
+          /* empty */
         }
       };
     });

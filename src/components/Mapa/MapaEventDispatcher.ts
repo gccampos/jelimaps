@@ -136,6 +136,9 @@ export function mapaReducer(
         action
       );
     }
+    case "addElementoCopiado": {
+      return MapaContextChanger.addElementoCopiado(oldMapaContext, action);
+    }
     default: {
       throw Error("Unknown action: " + action.type);
     }

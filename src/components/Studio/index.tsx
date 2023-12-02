@@ -13,6 +13,7 @@ import { tipoElemento } from "../Mapa/mapaContextTypes";
 import MapaContextChanger from "../Mapa/ContextChangers";
 import terraDrawSetup from "./terraDrawSetup";
 import DraggerResize from "../DraggerResize";
+import useBarraAlerta from "../BarraAlerta/useBarraAlerta";
 // import moment from "moment";
 
 // Define a função para inserir um texto no clipboard
@@ -44,6 +45,7 @@ const Studio = () => {
   const displaYNoneStyle = { display: "none" };
   const [larguraPropriedades, setLargurasPropriedades] = useState(250);
   const dispatch = useMapaDispatch();
+  const barraAlerta = useBarraAlerta();
 
   const handleKeyDown = (event) => {
     if (event.ctrlKey && event.keyCode === 67) {
@@ -58,11 +60,28 @@ const Studio = () => {
     }
     if (event.ctrlKey && event.keyCode === 86) {
       navigator.clipboard.readText().then((x) => {
-        console.log("texto copiado", x);
-        // TODO: Realizar inserção de novo elemento de acordo com o JSON do texto copiado
+        if (x) {
+          try {
+            const elementoAntigo = JSON.parse(x) as tipoElemento;
+            if (!verificaTipo(elementoAntigo)) throw new Error("");
+            dispatch({
+              type: "addElementoCopiado",
+              elemento: elementoAntigo,
+            });
+          } catch (error) {
+            barraAlerta.showSnackBar({
+              text: "Não é um elemento válido",
+              color: "error",
+            });
+          }
+        }
       });
     }
   };
+
+  function verificaTipo(obj: any): obj is tipoElemento {
+    return obj && typeof obj.id === "string" && typeof obj.dataRef === "string";
+  }
 
   useEffect(() => {
     document.addEventListener("keydown", handleKeyDown);
