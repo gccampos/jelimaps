@@ -33,7 +33,7 @@ export type elementoPadrao = tipoGenericoElementoTimeline & {
     type: string;
     coordinates: [number, number] | [number, number][] | [number, number][][];
   };
-  properties?: { createdAt: number; updatedAt: number };
+  properties?: { createdAt: number; updatedAt: number; selected?: boolean };
   texto?: string;
   imagemURL?: string;
   color?: string;

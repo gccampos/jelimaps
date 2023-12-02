@@ -74,6 +74,7 @@ export default function Mapa(propsMapa: {
           }, 100);
         else moveStartedRef.current = false;
       });
+
       setMapa(map);
       setIsMounted(true);
     }
@@ -186,7 +187,7 @@ export default function Mapa(propsMapa: {
       handleInserirImagem();
     }
 
-    // console.log("mapaContext", mapaContext);
+    console.log("mapaContext", mapaContext);
     conteudoElementosRef.current =
       MapaContextChanger.retornaListaElementosConteudoCenaAtual(mapaContext);
   });

@@ -60,8 +60,8 @@ const initialMapaContexto: () => mapaContextSchema = () => {
       margin: { item: { vertical: 20 } },
       zoomable: true,
       moveable: true,
-      order: (a, b) => b.order - a.order,
-      groupOrder: (a, b) => b.order - a.order,
+      // order: (a, b) => b.order - a.order,
+      // groupOrder: (a, b) => b.order - a.order,
       locale: "pt_BR",
     },
   } as mapaContextSchema;

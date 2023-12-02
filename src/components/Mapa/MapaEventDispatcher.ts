@@ -139,6 +139,9 @@ export function mapaReducer(
     case "addElementoCopiado": {
       return MapaContextChanger.addElementoCopiado(oldMapaContext, action);
     }
+    case "selecionarCena": {
+      return MapaContextChanger.selecionarCena(oldMapaContext, action);
+    }
     default: {
       throw Error("Unknown action: " + action.type);
     }

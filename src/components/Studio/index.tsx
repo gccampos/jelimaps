@@ -42,7 +42,6 @@ const Studio = () => {
 
   const handleKeyDown = React.useCallback(
     (eventLeaflet) => {
-      console.log("map223");
       if (
         eventLeaflet.originalEvent.ctrlKey &&
         eventLeaflet.originalEvent.keyCode === 67
@@ -60,7 +59,6 @@ const Studio = () => {
         eventLeaflet.originalEvent.ctrlKey &&
         eventLeaflet.originalEvent.keyCode === 86
       ) {
-        console.log("map223 coloio");
         navigator.clipboard.readText().then((x) => {
           if (x) {
             try {

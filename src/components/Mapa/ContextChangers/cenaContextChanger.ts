@@ -7,6 +7,7 @@ import { v4 } from "uuid";
 import moment from "moment";
 import auxiliadorRetornoContext from "./auxiliadorRetornoContext";
 import { DateType } from "vis-timeline/standalone";
+import contextChangers from ".";
 
 function getRandomColor(oldMapaContext: mapaContextSchema) {
   var letters = "0123456789ABCDEF";
@@ -220,9 +221,26 @@ const pulaTempoCenaOuAlteracaoConteudo = (
   };
 };
 
+const selecionarCena = (
+  oldMapaContext: mapaContextSchema,
+  actionContextChange: actionContextChange
+): mapaContextSchema => {
+  oldMapaContext.conteudo.cenas = oldMapaContext.conteudo.cenas.map((x) => {
+    return { ...x, properties: { ...x.properties, selected: null } };
+  });
+  oldMapaContext = contextChangers.editarPropriedadeElemento(
+    oldMapaContext,
+    actionContextChange
+  );
+  return {
+    ...oldMapaContext,
+  };
+};
+
 const cenaContextChanger = {
   fixarCena,
   deletarCena,
+  selecionarCena,
   adicionarNovaCena,
   changePropriedadeCena,
   pulaTempoCenaOuAlteracaoConteudo,

@@ -117,9 +117,15 @@ const LinhaTempo = (props: {
   }, [dispatch, tempoAtual, timelineSliderControl]);
 
   React.useEffect(() => {
-    if (timelineSliderControl)
+    if (
+      timelineSliderControl &&
+      parseInt(
+        timelineSliderControl.container.getElementsByTagName("input")[0].value
+      ) !== new Date(mapaContext.tempo).getTime()
+    ) {
       timelineSliderControl.setTime(new Date(mapaContext.tempo).getTime());
-  }, [mapaContext.tempo, timelineSliderControl]);
+    }
+  });
 
   return (
     timelineSliderControl && (

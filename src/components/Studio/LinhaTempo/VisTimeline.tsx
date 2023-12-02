@@ -176,6 +176,8 @@ export default function VisTimeline(props: {
   const handleClick = useCallback(
     (item: TimelineEventPropertiesResult) => {
       if (!item.what) {
+        elementosTimelineRef.current = null;
+        dispatch({ ...item, type: "atualizaTempo" });
         // dispatch({
         //   type: "alteraPropriedadeGeral",
         //   tipo: "fit",

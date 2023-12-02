@@ -20,26 +20,28 @@ import { elementoPadrao } from "@/components/Mapa/mapaContextTypes";
 export default function Cenas() {
   const mapaContext = useMapaContext();
   const dispatch = useMapaDispatch();
-  const [cenaSelecionada, setCenaSelecionada] = useState(
-    mapaContext?.conteudo.cenas[0]
+
+  const cenaSelectedRef = React.useRef(
+    mapaContext?.conteudo.cenas.find((x) => x.properties?.selected) ??
+      mapaContext?.conteudo.cenas[0]
   );
   const [index, setIndex] = useState(0);
   const [troca, setTroca] = useState(false);
   React.useEffect(() => {
     const i = mapaContext?.conteudo.cenas.findIndex(
-      (x) => x.id === cenaSelecionada.id
+      (x) => x.id === cenaSelectedRef.current.id
     );
-    if (cenaSelecionada && cenaSelecionada.id && i != index) {
+    if (cenaSelectedRef.current && cenaSelectedRef.current.id && i != index) {
       setIndex(i);
       setTroca(!troca);
     }
-  }, [cenaSelecionada, index, mapaContext?.conteudo.cenas, troca]);
+  }, [index, mapaContext?.conteudo.cenas, troca]);
 
   const CenaSelecionadaComponent = () => {
     return (
       <ListItem>
         <Formik
-          initialValues={cenaSelecionada as elementoPadrao}
+          initialValues={cenaSelectedRef.current as elementoPadrao}
           onSubmit={() => console.log("submtou")}
           validateOnChange={true}
           validationSchema={Yup.object({
@@ -159,7 +161,10 @@ export default function Cenas() {
                 />
                 <Button
                   onClick={() => {
-                    dispatch({ type: "fixarCena", id: cenaSelecionada.id });
+                    dispatch({
+                      type: "fixarCena",
+                      id: cenaSelectedRef.current.id,
+                    });
                   }}
                 >
                   Fixar tela
@@ -171,7 +176,7 @@ export default function Cenas() {
                     onClick={() => {
                       dispatch({
                         type: "deletarCena",
-                        id: cenaSelecionada.id,
+                        id: cenaSelectedRef.current.id,
                       });
                     }}
                   >
@@ -194,13 +199,27 @@ export default function Cenas() {
         <Select
           labelId="demo-simple-select-standard-label"
           id="demo-simple-select-standard"
-          value={cenaSelecionada?.id ?? mapaContext?.conteudo.cenas[0].id}
+          value={
+            cenaSelectedRef.current?.id ?? mapaContext?.conteudo.cenas[0].id
+          }
           onChange={(e, c: any) => {
-            setCenaSelecionada(
-              mapaContext?.conteudo.cenas.find(
-                (x) => x.id.toString() === c.props.value
-              )
-            );
+            dispatch({
+              type: "selecionarCena",
+              id: c.props.value,
+              tipo: "cenas",
+              nomePropriedade: "properties",
+              valorPropriedade: {
+                ...mapaContext?.conteudo.cenas.find(
+                  (x) => x.id.toString() === c.props.value
+                ).properties,
+                selected: true,
+              },
+            });
+            // setCenaSelecionada(
+            //   mapaContext?.conteudo.cenas.find(
+            //     (x) => x.id.toString() === c.props.value
+            //   )
+            // );
           }}
           label="Age"
         >
@@ -216,7 +235,7 @@ export default function Cenas() {
           <Queue />
         </ListItemButton>
       </FormControl>
-      {cenaSelecionada &&
+      {cenaSelectedRef.current &&
         (troca ? <CenaSelecionadaComponent /> : <CenaSelecionadaComponent />)}
     </>
   );
