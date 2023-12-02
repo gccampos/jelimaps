@@ -3,6 +3,10 @@
 @tailwind utilities;
 
 :root {
+  --mui-palette-primary-main: #1976d2;
+  --mui-palette-primary-light: #42a5f5;
+  --mui-palette-primary-dark: #1565c0;
+  --mui-palette-primary-contrastText: #fff;
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
   --background-end-rgb: 255, 255, 255;
@@ -161,4 +165,9 @@ form > *:first-child {
 }
 .leaflet-control.leaflet-timeline-control.playing button.play {
   display: none;
+}
+
+#parentSeletorResize:active,
+.borda-seletora-ativa {
+  background: var(--mui-palette-primary-main) !important;
 }

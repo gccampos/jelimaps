@@ -4,7 +4,8 @@ import moment from "moment";
 import { DateType } from "vis-timeline/standalone";
 
 const retornaListaElementosConteudoCenaAtual = (
-  oldMapaContext: mapaContextSchema
+  oldMapaContext: mapaContextSchema,
+  time?: DateType
 ) =>
   oldMapaContext?.conteudo &&
   Object.keys(oldMapaContext?.conteudo)
@@ -12,8 +13,8 @@ const retornaListaElementosConteudoCenaAtual = (
     .flat()
     .filter(
       (x) =>
-        moment(x.cenaInicio) <= moment(oldMapaContext.tempo) &&
-        moment(x.cenaFim) >= moment(oldMapaContext.tempo)
+        moment(x.cenaInicio) <= moment(time ?? oldMapaContext.tempo) &&
+        moment(x.cenaFim) > moment(time ?? oldMapaContext.tempo)
     );
 
 function removeDuplicates(array: DateType[]): DateType[] {
@@ -74,7 +75,51 @@ const isElementoSelecionado = (oldMapaContext: mapaContextSchema, id: NIL) => {
   );
 };
 
+const bordasDoElemento = (
+  x: tipoElemento,
+  map: any,
+  Leaflet: any,
+  width?: number
+) => {
+  var elementoById = document.getElementById(x.id);
+  var elementoVirtual = null;
+
+  try {
+    elementoVirtual = new Leaflet.GeoJSON(x);
+  } catch (error) {
+    /* empty */
+  }
+
+  return x.dataRef === "ImageOverlay"
+    ? Leaflet.latLngBounds((x as any).positionBL, (x as any).positionTR)
+    : elementoById && !elementoVirtual
+    ? Leaflet.latLngBounds(
+        map.containerPointToLatLng({
+          x: elementoById.getBoundingClientRect().x - (width ? width - 24 : 60),
+          y: elementoById.getBoundingClientRect().y + 6,
+        }),
+        map.containerPointToLatLng({
+          x: elementoById.getBoundingClientRect().x - (width ?? 36),
+          y: elementoById.getBoundingClientRect().y + 30,
+        })
+      )
+    : elementoVirtual?.getBounds();
+};
+
+const elementoFoiClicado = (
+  x: tipoElemento,
+  e: any,
+  map: any,
+  Leaflet: any
+) => {
+  var bordasElementoClicado = bordasDoElemento(x, map, Leaflet);
+
+  return bordasElementoClicado?.contains(e);
+};
+
 const auxiliadorRetornoContext = {
+  bordasDoElemento,
+  elementoFoiClicado,
   isElementoSelecionado,
   retornaListaTemposConteudo,
   retornaListaElementosConteudo,

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import Propriedades from "./Propriedades";
 import LinhaTempo from "./LinhaTempo/Index";
-import { Grid, styled } from "@mui/material";
+import { Grid } from "@mui/material";
 import Mapa from "./MapaAdapter";
 import { Rnd } from "react-rnd";
 import useWindowDimensions from "./useWindowDimensions";
@@ -12,11 +12,8 @@ import { useMapaContext, useMapaDispatch } from "../Mapa/MapaContext";
 import { tipoElemento } from "../Mapa/mapaContextTypes";
 import MapaContextChanger from "../Mapa/ContextChangers";
 import terraDrawSetup from "./terraDrawSetup";
+import DraggerResize from "../DraggerResize";
 // import moment from "moment";
-
-const Dragger = styled("div")`
-  cursor: n-resize;
-`;
 
 // Define a função para inserir um texto no clipboard
 function copyToClipboard(text) {
@@ -50,7 +47,7 @@ const Studio = () => {
 
   const handleKeyDown = (event) => {
     if (event.ctrlKey && event.keyCode === 67) {
-      if (elementosSelecionadosRef.current.length === 1) {
+      if (elementosSelecionadosRef.current?.length === 1) {
         const text = JSON.stringify(
           MapaContextChanger.retornaListaElementosConteudo(mapaContext).find(
             (x) => x.id === elementosSelecionadosRef.current[0]
@@ -143,6 +140,7 @@ const Studio = () => {
               tempoAtualRef={tempoAtualRef}
               larguraPropriedades={larguraPropriedades}
               setLargurasPropriedades={setLargurasPropriedades}
+              map={map}
             />
           </Grid>
           <Rnd
@@ -166,7 +164,8 @@ const Studio = () => {
             position={{ y: height - altura, x: 0 }}
             resizeHandleComponent={{
               top: (
-                <Dragger
+                <DraggerResize
+                  id={"parentSeletorResize"}
                   sx={{
                     borderStyle: "outset",
                     borderBottom: 2,
@@ -174,7 +173,7 @@ const Studio = () => {
                     backgroundColor: "#e2e2e2",
                     marginTop: 0.6,
                   }}
-                ></Dragger>
+                ></DraggerResize>
               ),
             }}
             onResize={(e, dir, ref) => {

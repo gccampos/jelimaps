@@ -59,26 +59,31 @@ const ConteudoMapa = (propsConteudoMapa: {
   return null;
 };
 
-const LinhaTempo = () => {
+const LinhaTempo = (props: {
+  timelineSliderControl: Leaflet.TimelineSliderControl;
+  setTimelineSliderControl: React.Dispatch<
+    React.SetStateAction<Leaflet.TimelineSliderControl>
+  >;
+}) => {
+  const { timelineSliderControl, setTimelineSliderControl } = props;
   const map = useMap();
   const mapaContext = useMapaContext();
   const dispatch = useMapaDispatch();
-  const [timelineSliderControl, setTimelineSliderControl] =
-    useState<Leaflet.TimelineSliderControl>();
   const [tempoAtual, setTempoAtual] = useState(null);
 
   React.useEffect(() => {
     if (!timelineSliderControl) {
       const leafletTimelineSlider = new Leaflet.TimelineSliderControl({});
       leafletTimelineSlider.options.formatOutput = (date) => {
-        return new Date(date).toString();
+        return moment(date).format("DD/MM/yyyy  :mm:ss");
       };
       leafletTimelineSlider.options.waitToUpdateMap = true;
 
       setTimelineSliderControl(leafletTimelineSlider);
+
       leafletTimelineSlider.addTo(map);
     }
-  }, [map, timelineSliderControl]);
+  }, [map, setTimelineSliderControl, timelineSliderControl]);
 
   const handleListenerSlider = React.useCallback(
     (e: any) => {
@@ -255,6 +260,40 @@ const LinhaTempo = () => {
                 />
               );
             })}
+        {mapaContext.conteudo &&
+          mapaContext.conteudo.cenas &&
+          mapaContext.conteudo.cenas.length > 0 &&
+          mapaContext.conteudo.cenas.map((cena, index) => {
+            const featureCollectionTimeline = {
+              type: "FeatureCollection",
+              features: [
+                {
+                  type: "Feature",
+                  properties: {
+                    ...cena.properties,
+                    start: cena.cenaInicio,
+                    end: cena.cenaFim,
+                  },
+                },
+              ],
+            } as { type: "FeatureCollection" };
+
+            const cenaLeaflet = new Leaflet.Timeline(featureCollectionTimeline);
+
+            return (
+              <ConteudoMapa
+                key={`cena#${index}`}
+                functionInit={() => {
+                  if (timelineSliderControl)
+                    timelineSliderControl.addTimelines(cenaLeaflet);
+                }}
+                functionDispose={() => {
+                  if (timelineSliderControl)
+                    timelineSliderControl.removeTimelines(cenaLeaflet);
+                }}
+              />
+            );
+          })}
 
         {mapaContext.conteudo &&
           mapaContext.conteudo.ImageOverlay &&

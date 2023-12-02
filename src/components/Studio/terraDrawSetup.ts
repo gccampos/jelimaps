@@ -10,7 +10,8 @@ import {
   TerraDrawRenderMode,
 } from "terra-draw";
 import { actionContextChange, tipoElemento } from "../Mapa/mapaContextTypes";
-import Leaflet, { Point } from "leaflet";
+import Leaflet from "leaflet";
+import contextChangers from "../Mapa/ContextChangers";
 
 const isMobile = () => {
   return (
@@ -160,34 +161,9 @@ const terraDrawSetup = (
                 // .filter(
                 //   (x) => x.dataRef === "Marker" || x.dataRef === "ImageOverlay"
                 // )
-                .find((x) => {
-                  var elementoById = document.getElementById(x.id);
-                  var elementoVirtual = null;
-
-                  try {
-                    elementoVirtual = new Leaflet.GeoJSON(x);
-                  } catch (error) {
-                    /* empty */
-                  }
-
-                  return x.dataRef === "ImageOverlay"
-                    ? Leaflet.latLngBounds(
-                        (x as any).positionBL,
-                        (x as any).positionTR
-                      ).contains(e)
-                    : elementoById && !elementoVirtual
-                    ? Leaflet.latLngBounds(
-                        map.containerPointToLatLng({
-                          x: elementoById.getBoundingClientRect().x - 60,
-                          y: elementoById.getBoundingClientRect().y + 6,
-                        } as Point),
-                        map.containerPointToLatLng({
-                          x: elementoById.getBoundingClientRect().x - 36,
-                          y: elementoById.getBoundingClientRect().y + 30,
-                        } as Point)
-                      ).contains(e)
-                    : elementoVirtual?.getBounds().contains(e);
-                });
+                .find((x) =>
+                  contextChangers.elementoFoiClicado(x, e, map, Leaflet)
+                );
               if (
                 eleClicado
                 // &&

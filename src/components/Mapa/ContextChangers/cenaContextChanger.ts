@@ -211,13 +211,6 @@ const pulaTempoCenaOuAlteracaoConteudo = (
     temposOrdenados,
     oldMapaContext.tempo
   );
-  console.log(
-    "proximaCenaOuAlteracaoConteudo",
-    indiceElemento,
-    oldMapaContext.tempo,
-    temposOrdenados[indiceElemento],
-    temposOrdenados[indiceElemento + 1]
-  );
   return {
     ...oldMapaContext,
     tempo:

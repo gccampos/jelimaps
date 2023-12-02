@@ -24,11 +24,13 @@ import moment from "moment";
 import MapaContextChanger from "@/components/Mapa/ContextChangers";
 import { Button } from "react-bootstrap";
 import useCaixaDialogo from "@/components/CaixaDialogo/useCaixaDialogo";
+import { Map } from "leaflet";
 import ImageResolver from "@/components/ImageUrlResolver";
 
 const WrapperStyled = styled("div")``;
 
-export default function Elemento() {
+export default function Elemento(props: { map: Map }) {
+  const { map } = props;
   const mapaContext = useMapaContext();
   const dispatch = useMapaDispatch();
   const elementoRef = React.useRef(null);
@@ -197,7 +199,6 @@ export default function Elemento() {
                                   // mapaContext.conteudo[x.dataRef].find(
                                   //   (z) => z.id === x.id
                                   // ).draggable = !formik.values.draggable;
-                                  console.log("onChange");
                                   dispatch({
                                     type: "editarPropriedade",
                                     tipo: x.dataRef,
@@ -212,6 +213,19 @@ export default function Elemento() {
                             }
                             label={"Editar elemento no mapa"}
                           />
+                          <Button
+                            onClick={() => {
+                              dispatch({
+                                type: "editarPropriedade",
+                                tipo: x.dataRef,
+                                id: x.id,
+                                nomePropriedade: "zoom",
+                                valorPropriedade: map.getZoom(),
+                              });
+                            }}
+                          >
+                            Fixar zoom
+                          </Button>
                           <TextField
                             fullWidth
                             id="nome"

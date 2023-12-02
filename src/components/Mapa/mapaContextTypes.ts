@@ -39,6 +39,7 @@ export type elementoPadrao = tipoGenericoElementoTimeline & {
   color?: string;
   opacity?: number;
   alteracoes?: alteracaoElemento[];
+  zoom?: number;
   eventTimeout?: any;
 };
 type periodoInicioFim = {

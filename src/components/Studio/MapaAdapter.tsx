@@ -186,7 +186,7 @@ export default function Mapa(propsMapa: {
       handleInserirImagem();
     }
 
-    console.log("mapaContext", mapaContext);
+    // console.log("mapaContext", mapaContext);
     conteudoElementosRef.current =
       MapaContextChanger.retornaListaElementosConteudoCenaAtual(mapaContext);
   });

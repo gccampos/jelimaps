@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import {
   Grid,
-  styled,
   Chip,
   Tab,
   AppBar,
@@ -28,11 +27,8 @@ import Geral from "./geral";
 import Elemento from "./elemento";
 import moment from "moment";
 import { setInterval, clearInterval } from "timers";
-
-const Dragger = styled("div")`
-  cursor: e-resize;
-  height: 100%;
-`;
+import { Map } from "leaflet";
+import DraggerResize from "@/components/DraggerResize";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -45,8 +41,10 @@ export default function Propriedades(props: {
   tempoAtualRef: any;
   larguraPropriedades: number;
   setLargurasPropriedades: React.Dispatch<React.SetStateAction<number>>;
+  map: Map;
 }) {
   const {
+    map,
     altura,
     tempoAtualRef,
     larguraPropriedades,
@@ -124,6 +122,11 @@ export default function Propriedades(props: {
     setValue(val);
   }, [mapaContext.elementoFoco, mapaContext.elementosFoco]);
 
+  React.useEffect(() => {
+    const elemento = document.getElementById("seletorResize");
+    if (elemento) elemento.parentElement.id = "parentSeletorResize";
+  }, []);
+
   return (
     mapaContext?.slidePropriedade && (
       <Grid
@@ -158,7 +161,7 @@ export default function Propriedades(props: {
             }}
             resizeHandleComponent={{
               left: (
-                <Dragger>
+                <DraggerResize>
                   <Chip
                     color="default"
                     size="small"
@@ -170,7 +173,7 @@ export default function Propriedades(props: {
                       left: 10,
                     }}
                   />
-                </Dragger>
+                </DraggerResize>
               ),
             }}
             size={{ height: altura, width: larguraPropriedades }}
@@ -214,7 +217,7 @@ export default function Propriedades(props: {
               ]
             ).filter((x) => !!x).length > 0 && (
               <TabPanel index={2}>
-                <Elemento />
+                <Elemento map={map} />
               </TabPanel>
             )}
             <TabPanel index={0}>
@@ -227,11 +230,18 @@ export default function Propriedades(props: {
               <Typography>Existe um ou mais elementos selecionados</Typography>
             )} */}
             <Paper
-              sx={{ position: "fixed", bottom: 0, left: 0, right: 0 }}
+              sx={{
+                position: "fixed",
+                bottom: 0,
+                left: 0,
+                right: 0,
+                overflow: "scroll",
+              }}
               elevation={3}
               ref={tocadorRef}
             >
               <BottomNavigation
+                sx={{ minWidth: 230 }}
                 onChange={(e, i) => {
                   if (i == 2)
                     dispatch({
@@ -264,6 +274,7 @@ export default function Propriedades(props: {
                 />
               </BottomNavigation>
               <BottomNavigation
+                sx={{ minWidth: 230 }}
                 value={mapaContext.playStatus}
                 onChange={(e, i) => {
                   dispatch({

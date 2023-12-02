@@ -15,11 +15,16 @@ import { getImageDimensions } from "../MapaUtils";
 import useWindowDimensions from "../../Studio/useWindowDimensions";
 import Legenda from "./legenda";
 import LinhaTempo from "./linhaTempo";
+import Leaflet, { Map } from "leaflet";
 
 const Apresentacao = () => {
   const mapaContext = useMapaContext();
   const dispatch = useMapaDispatch();
   const { height } = useWindowDimensions();
+  const [map, setMap] = useState<Map>(null);
+  const [larguraLegenda, setLarguraLegenda] = useState(250);
+  const [timelineSliderControl, setTimelineSliderControl] =
+    useState<Leaflet.TimelineSliderControl>();
 
   const [bounds, setBounds] = useState<LatLngBounds>(
     new LatLngBounds([0, 0], [1, 1.5])
@@ -34,10 +39,6 @@ const Apresentacao = () => {
       )
     );
   }, [mapaContext.urlMapaProprio]);
-
-  useEffect(() => {
-    console.log("mapaContext", mapaContext);
-  }, [mapaContext]);
 
   const position = React.useMemo(
     () =>
@@ -54,13 +55,24 @@ const Apresentacao = () => {
   return (
     <>
       <Grid item container xs={12}>
-        <Legenda />
+        <Legenda
+          timelineSliderControl={timelineSliderControl}
+          map={map}
+          larguraLegenda={larguraLegenda}
+          setLarguraLegenda={setLarguraLegenda}
+        />
         <Grid item xs>
-          <div style={{ height: height, display: "grid" }}>
+          <div
+            style={{
+              height: height,
+              display: "grid",
+            }}
+          >
             <MapContainer
               center={mapaContext.center ?? center}
               zoom={mapaContext.zoom ?? zoom}
               maxZoom={23}
+              ref={setMap}
               minZoom={mapaContext.modoVisao === MODO_VISAO.mapaProprio ? 9 : 5}
             >
               {mapaContext.modoVisao === MODO_VISAO.openstreetmap && (
@@ -94,7 +106,10 @@ const Apresentacao = () => {
                   <Close />
                 </Fab>
               </CustomControlLeaflet>
-              <LinhaTempo />
+              <LinhaTempo
+                timelineSliderControl={timelineSliderControl}
+                setTimelineSliderControl={setTimelineSliderControl}
+              />
             </MapContainer>
           </div>
         </Grid>
