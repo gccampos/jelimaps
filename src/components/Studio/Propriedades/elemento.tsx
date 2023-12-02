@@ -35,7 +35,6 @@ export default function Elemento(props: { map: Map }) {
   const dispatch = useMapaDispatch();
   const elementoRef = React.useRef(null);
   const carregaElementosFoco = React.useCallback(() => {
-    console.log("render pcarregaElementosFoco");
     return (
       mapaContext?.elementosFoco
         ?.map((x: any) =>
