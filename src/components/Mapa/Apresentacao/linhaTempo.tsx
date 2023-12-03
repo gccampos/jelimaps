@@ -127,6 +127,8 @@ const LinhaTempo = (props: {
     }
   });
 
+  //TODO: setview quando trocar de cena
+
   return (
     timelineSliderControl && (
       <>

@@ -16,6 +16,7 @@ import Leaflet, { Map } from "leaflet";
 import contextChangers from "../ContextChangers";
 import { useMapaContext } from "../MapaContext";
 import DraggerResize from "@/components/DraggerResize";
+import { tipoElemento } from "../mapaContextTypes";
 const displaYNoneStyle = { display: "none" };
 
 const Legenda = (props: {
@@ -29,26 +30,45 @@ const Legenda = (props: {
   const mapaContext = useMapaContext();
   const { width, height } = useWindowDimensions();
   const [rndRef, setRndRef] = useState<Rnd>();
+  const [mountado, setMontado] = useState(false);
   const eventeTimeoutRef = React.useRef(null);
   const eventAlterTimeoutRef = React.useRef(null);
   const [elementosVisiveis, setElementosVisiveis] = React.useState(
     contextChangers.retornaListaElementosConteudoCenaAtual(mapaContext)
   );
+  const [cenaAtual, setCenaAtual] = useState(null);
 
   React.useEffect(() => {
     document.getElementById("seletorResize").parentElement.id =
       "parentSeletorResize";
   }, []);
 
-  var eventify = function (arr, callback) {
+  const eventify = function (arr, callback) {
     arr.push = function (e) {
       Array.prototype.push.call(arr, e);
       callback(arr);
     };
   };
 
+  const moverMapaParaCena = React.useCallback(
+    (cena: tipoElemento) => {
+      if (cena.center) {
+        try {
+          map.setView(cena.center, cena.zoom, {
+            animate: true,
+            duration: 1.5,
+          });
+          setCenaAtual(cena);
+        } catch (error) {
+          /* empty */
+        }
+      }
+    },
+    [map]
+  );
+
   React.useEffect(() => {
-    if (timelineSliderControl?.container) {
+    if (timelineSliderControl?.container && !mountado) {
       eventify(timelineSliderControl.timelines, function () {
         clearTimeout(eventeTimeoutRef.current);
         eventeTimeoutRef.current = setTimeout(() => {
@@ -67,6 +87,8 @@ const Legenda = (props: {
                       )
                     )
                   );
+                if (!cenaAtual || cenaAtual.id !== els[0].id)
+                  moverMapaParaCena(els[0]);
                 setElementosVisiveis(els);
                 eventAlterTimeoutRef.current = null;
               }, 10);
@@ -75,8 +97,15 @@ const Legenda = (props: {
           eventeTimeoutRef.current = null;
         }, 10);
       });
+      setMontado(true);
     }
-  }, [mapaContext, timelineSliderControl]);
+  }, [
+    cenaAtual,
+    mapaContext,
+    mountado,
+    moverMapaParaCena,
+    timelineSliderControl,
+  ]);
   return (
     <Grid
       item

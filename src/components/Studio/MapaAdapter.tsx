@@ -460,23 +460,29 @@ export default function Mapa(propsMapa: {
               );
             })}
 
-          {mapaContext.conteudo &&
+          {mapaContext.exibirLimiteCenas &&
+            mapaContext.conteudo &&
             mapaContext.conteudo.cenas &&
             mapaContext.conteudo.cenas.length > 0 &&
             mapaContext.conteudo.cenas
-              .filter(
-                (cena) =>
-                  !!cena.exibirLimite &&
-                  new Date(cena.cenaInicio) <= new Date(mapaContext.tempo) &&
-                  new Date(cena.cenaFim) >= new Date(mapaContext.tempo)
-              )
+              // .filter(
+              //   (cena) =>
+              //     new Date(cena.cenaInicio) <= new Date(mapaContext.tempo) &&
+              //     new Date(cena.cenaFim) >= new Date(mapaContext.tempo)
+              // )
               .map((cena, index) => {
                 return cena?.bounds ? (
                   <Rectangle
                     {...cena}
-                    bounds={cena.bounds}
+                    fill={false}
+                    bounds={
+                      new LatLngBounds(
+                        (cena.bounds as any)._southWest,
+                        (cena.bounds as any)._northEast
+                      )
+                    }
                     className="background-scene"
-                    key={`Rectangle#${index}`}
+                    key={`cena#${index}`}
                   >
                     {/* <Popup>
                           A pretty CSS3 popup. <br /> Easily customizable.

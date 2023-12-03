@@ -298,7 +298,8 @@ export default function Elemento(props: { map: Map }) {
                               }
                             />
                           )}
-                          {(formik.values as any).positionBL &&
+                          {((formik.values as any).positionBL ||
+                            (formik.values as any).dataRef === "Marker") &&
                             ((formik.values as any).opacity ? (
                               <>
                                 <Typography>Opacidade</Typography>
@@ -338,21 +339,20 @@ export default function Elemento(props: { map: Map }) {
                                   : "Ativar Opacidade"}
                               </Button>
                             ))}
-                          {!(formik.values as any).positionBL && (
-                            <Button
-                              onClick={() => {
-                                elementoRef.current = formik.values;
-                                handleInserirImagem();
-                              }}
-                            >
-                              {(formik.values as any).imagemURL &&
-                              (formik.values as any).imagemURL.length
-                                ? "Trocar imagem"
-                                : "Inserir imagem"}
-                            </Button>
-                          )}
+                          <Button
+                            onClick={() => {
+                              elementoRef.current = formik.values;
+                              handleInserirImagem();
+                            }}
+                          >
+                            {(formik.values as any).imagemURL &&
+                            (formik.values as any).imagemURL.length
+                              ? "Trocar imagem"
+                              : "Inserir imagem"}
+                          </Button>
                           {(formik.values as any).imagemURL &&
                             (formik.values as any).imagemURL.length && (
+                              // eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text
                               <img
                                 src={(formik.values as any).imagemURL}
                                 width={"auto"}

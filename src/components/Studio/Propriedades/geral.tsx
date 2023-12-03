@@ -2,6 +2,8 @@ import React from "react";
 import {
   Button,
   ButtonGroup,
+  FormControlLabel,
+  Switch,
   TextField,
   // FormControlLabel, Switch
 } from "@mui/material";
@@ -86,6 +88,23 @@ export default function Geral() {
                 Exportar
               </Button>
             </ButtonGroup>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={formik.values.exibirLimiteCenas}
+                  onChange={(e, checked) => {
+                    dispatch({
+                      type: "alteraPropriedadeGeral",
+                      nomePropriedade: "exibirLimiteCenas",
+                      valorPropriedade: checked,
+                      formik: formik,
+                    });
+                  }}
+                  name={"exibirLimite"}
+                />
+              }
+              label={"Ver limites das cenas"}
+            />
             <TextField
               fullWidth
               id="cenaInicio"

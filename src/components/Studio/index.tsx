@@ -78,7 +78,7 @@ const Studio = () => {
         });
       }
     },
-    [barraAlerta, dispatch, map, mapaContext]
+    [barraAlerta, dispatch, mapaContext]
   );
 
   function verificaTipo(obj: any): obj is tipoElemento {

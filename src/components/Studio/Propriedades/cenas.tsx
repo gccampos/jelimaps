@@ -199,6 +199,7 @@ export default function Cenas() {
         <Select
           labelId="demo-simple-select-standard-label"
           id="demo-simple-select-standard"
+          sx={{ backgroundColor: cenaSelectedRef.current?.color }}
           value={
             cenaSelectedRef.current?.id ?? mapaContext?.conteudo.cenas[0].id
           }
@@ -225,7 +226,11 @@ export default function Cenas() {
         >
           {mapaContext?.conteudo.cenas &&
             mapaContext?.conteudo.cenas.map((x, i) => (
-              <MenuItem value={x.id} key={`select#${i}`}>
+              <MenuItem
+                style={{ backgroundColor: x.color }}
+                value={x.id}
+                key={`select#${i}`}
+              >
                 {x.nome}
               </MenuItem>
             ))}

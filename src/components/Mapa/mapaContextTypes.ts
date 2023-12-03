@@ -28,20 +28,21 @@ export type tipoGenericoElementoTimeline = periodoInicioFim & {
   order?: any;
 };
 
-export type elementoPadrao = tipoGenericoElementoTimeline & {
-  geometry?: {
-    type: string;
-    coordinates: [number, number] | [number, number][] | [number, number][][];
+export type elementoPadrao = tipoGenericoElementoTimeline &
+  telaMapa & {
+    geometry?: {
+      type: string;
+      coordinates: [number, number] | [number, number][] | [number, number][][];
+    };
+    properties?: { createdAt: number; updatedAt: number; selected?: boolean };
+    texto?: string;
+    imagemURL?: string;
+    color?: string;
+    opacity?: number;
+    alteracoes?: alteracaoElemento[];
+    zoom?: number;
+    eventTimeout?: any;
   };
-  properties?: { createdAt: number; updatedAt: number; selected?: boolean };
-  texto?: string;
-  imagemURL?: string;
-  color?: string;
-  opacity?: number;
-  alteracoes?: alteracaoElemento[];
-  zoom?: number;
-  eventTimeout?: any;
-};
 type periodoInicioFim = {
   cenaFim: DateType;
   cenaInicio: DateType;
@@ -80,8 +81,9 @@ export type mapaContextSchema = periodoInicioFim &
       Circle?: arrayPadraoType;
       Rectangle?: arrayRectangleType;
       ImageOverlay?: arrayRectangleType;
-      cenas: (elementoPadrao & telaMapa & { exibirLimite?: boolean })[];
+      cenas: arrayPadraoType;
     };
+    exibirLimiteCenas?: boolean;
     fit?: boolean;
     tempo: DateType;
     mapOptions: MapOptions;
