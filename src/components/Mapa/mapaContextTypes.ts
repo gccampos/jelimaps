@@ -97,6 +97,7 @@ export type mapaContextSchema = periodoInicioFim &
     // 1  := reproduzindo
     // 2  := apresentando
     playSpeed?: number;
+    simpleTimeline?: boolean;
     caixaDialogo?: string;
   };
 type telaMapa = {

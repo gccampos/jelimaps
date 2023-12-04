@@ -42,6 +42,7 @@ export default function VisTimeline(props: {
   const endMapaContextRef = useRef(mapaContext.cenaFim);
   const fitElementoSelecionadotRef = useRef(false);
   const { width } = useWindowDimensions();
+  const simpleTimelineRef = useRef(mapaContext.simpleTimeline);
   // const elementos = useRef(
   //   useListaElementos().filter((x) => x.visTimelineObject?.type != "background")
   // );
@@ -337,23 +338,29 @@ export default function VisTimeline(props: {
   ]);
 
   const calls = useCallback(() => {
-    const atual = {
-      groups: listaMapeada()
-        .filter((x) => x.visTimelineObject?.type != "background")
-        .map((x) => {
-          return { ...x, style: `width: ${width * 0.25}px;` };
-        }),
-      items: elementosAlteracoesTimeline().filter((x) => !x.collapseTimeline),
-    };
+    const atual = !mapaContext.simpleTimeline
+      ? {
+          groups: listaMapeada()
+            .filter((x) => x.visTimelineObject?.type != "background")
+            .map((x) => {
+              return { ...x, style: `width: ${width * 0.25}px;` };
+            }),
+          items: elementosAlteracoesTimeline(),
+          // .filter((x) => !x.collapseTimeline),
+        }
+      : { items: elementosAlteracoesTimeline() };
     if (
       !elementosTimelineRef.current ||
       atual.items.length !== elementosTimelineRef.current?.items.length ||
-      alturaRef.current !== altura
+      atual.groups?.length !== elementosTimelineRef.current?.groups?.length ||
+      alturaRef.current !== altura ||
+      mapaContext.simpleTimeline !== simpleTimelineRef.current
     ) {
       visTimeline.setData(atual);
       visTimeline.setOptions(optionsVisTimeline());
       elementosTimelineRef.current = atual;
       alturaRef.current = altura;
+      simpleTimelineRef.current = mapaContext.simpleTimeline;
     }
     if (elementosFocadosRef.current !== elementosFocados()) {
       setElementosSelecionados();
@@ -372,44 +379,51 @@ export default function VisTimeline(props: {
     elementosFocados,
     optionsVisTimeline,
     setElementosSelecionados,
+    mapaContext.simpleTimeline,
     elementosAlteracoesTimeline,
   ]);
+
+  const construtor = React.useCallback(() => {
+    const tl =
+      visJsRef.current &&
+      new Timeline(visJsRef.current, null, optionsVisTimeline());
+    tl.addCustomTime(optionsVisTimeline().start, "currentTime");
+    tempoAtualRef.current = moment(optionsVisTimeline().start)
+      .add(1, "seconds")
+      .format("yyyy-MM-DDTHH:mm:ss");
+    setVisTimeline(tl);
+    tl.on("select", handleSeleciona);
+    tl.on("click", handleClick);
+    // tl.on("changed", () => handleChange(tl));
+    tl.on("rangechange", handleChange);
+    tl.on("doubleClick", handleDoubleClick);
+    tl.on("timechanged", (e) => {
+      dispatch({ type: "atualizaTempo", time: e.time });
+      tempoAtualRef.current = e.time;
+    });
+  }, [
+    dispatch,
+    handleChange,
+    handleClick,
+    handleDoubleClick,
+    handleSeleciona,
+    optionsVisTimeline,
+    tempoAtualRef,
+  ]);
+
   useEffect(() => {
     if (!visJsRef.current.style.position)
       if (!visTimeline) {
-        const tl =
-          visJsRef.current &&
-          new Timeline(visJsRef.current, null, optionsVisTimeline());
-        tl.addCustomTime(optionsVisTimeline().start, "currentTime");
-        tempoAtualRef.current = moment(optionsVisTimeline().start)
-          .add(1, "seconds")
-          .format("yyyy-MM-DDTHH:mm:ss");
-        setVisTimeline(tl);
-        tl.on("select", handleSeleciona);
-        tl.on("click", handleClick);
-        // tl.on("changed", () => handleChange(tl));
-        tl.on("rangechange", handleChange);
-        tl.on("doubleClick", handleDoubleClick);
-        tl.on("timechanged", (e) => {
-          dispatch({ type: "atualizaTempo", time: e.time });
-          tempoAtualRef.current = e.time;
-        });
+        construtor();
       } else calls();
-    else if (visJsRef.current.style.position && visTimeline) calls();
-  }, [
-    visJsRef,
-    visTimeline,
-    tempoAtualRef,
-    optionsVisTimeline,
-    calls,
-    dispatch,
-    handleClick,
-    handleChange,
-    listaMapeada,
-    setVisTimeline,
-    handleSeleciona,
-    handleDoubleClick,
-  ]);
+    else if (visJsRef.current.style.position && visTimeline) {
+      if (mapaContext.simpleTimeline !== simpleTimelineRef.current) {
+        simpleTimelineRef.current = mapaContext.simpleTimeline;
+        visTimeline.destroy();
+        construtor();
+      } else calls();
+    }
+  }, [calls, construtor, mapaContext.simpleTimeline, visTimeline]);
 
   const setOptionsTimeline = useCallback(() => {
     if (mapaContext.playStatus === 0)

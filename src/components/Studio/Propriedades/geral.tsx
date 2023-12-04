@@ -193,6 +193,29 @@ export default function Geral() {
                 helperText={formik.touched.cenaFim && formik.errors.cenaFim}
               />
             </Container>
+
+            <Container className="group-frame">
+              <Typography variant="h6" className="title">
+                Linha do Tempo
+              </Typography>
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={!formik.values.simpleTimeline}
+                    onChange={(e, checked) => {
+                      dispatch({
+                        type: "alteraPropriedadeGeral",
+                        nomePropriedade: "simpleTimeline",
+                        valorPropriedade: !checked,
+                        formik: formik,
+                      });
+                    }}
+                    name={"simpleTimeline"}
+                  />
+                }
+                label={"Agrupar por elementos"}
+              />
+            </Container>
             {/* <FormControlLabel
               control={
                 <Switch
