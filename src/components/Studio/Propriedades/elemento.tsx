@@ -290,11 +290,14 @@ export default function Elemento(props: { map: Map }) {
                               (formik.values as any).imagemURL.length && (
                                 <ImageList>
                                   <ImageListItem cols={2}>
-                                    <img
-                                      src={(formik.values as any).imagemURL}
-                                      width={"auto"}
-                                      height={"auto"}
-                                    />
+                                    {
+                                      // eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text
+                                      <img
+                                        src={(formik.values as any).imagemURL}
+                                        width={"auto"}
+                                        height={"auto"}
+                                      />
+                                    }
                                   </ImageListItem>
                                 </ImageList>
                               )}

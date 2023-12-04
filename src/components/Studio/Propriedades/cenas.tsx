@@ -4,7 +4,6 @@ import {
   ListItemText,
   ListItem,
   TextField,
-  Button,
   FormControl,
   InputLabel,
   Select,
@@ -19,6 +18,7 @@ import * as Yup from "yup";
 import moment from "moment";
 import { elementoPadrao } from "@/components/Mapa/mapaContextTypes";
 import useCaixaDialogo from "@/components/CaixaDialogo/useCaixaDialogo";
+import Button from "@/components/Atomic/Button";
 
 export default function Cenas() {
   const mapaContext = useMapaContext();
