@@ -13,8 +13,13 @@ import {
 } from "@/components/Mapa/mapaContextTypes";
 import moment from "moment";
 import { Dialog, IconButton, Stack } from "@mui/material";
-import { Delete, Edit, UnfoldLess, UnfoldMore } from "@mui/icons-material";
+import {
+  Delete,
+  Edit,
+  // UnfoldLess, UnfoldMore
+} from "@mui/icons-material";
 import useCaixaDialogo from "@/components/CaixaDialogo/useCaixaDialogo";
+import useWindowDimensions from "../useWindowDimensions";
 
 export default function VisTimeline(props: {
   tempoAtualRef: React.MutableRefObject<any>;
@@ -36,6 +41,7 @@ export default function VisTimeline(props: {
   const startMapaContextRef = useRef(mapaContext.cenaInicio);
   const endMapaContextRef = useRef(mapaContext.cenaFim);
   const fitElementoSelecionadotRef = useRef(false);
+  const { width } = useWindowDimensions();
   // const elementos = useRef(
   //   useListaElementos().filter((x) => x.visTimelineObject?.type != "background")
   // );
@@ -332,9 +338,11 @@ export default function VisTimeline(props: {
 
   const calls = useCallback(() => {
     const atual = {
-      groups: listaMapeada().filter(
-        (x) => x.visTimelineObject?.type != "background"
-      ),
+      groups: listaMapeada()
+        .filter((x) => x.visTimelineObject?.type != "background")
+        .map((x) => {
+          return { ...x, style: `width: ${width * 0.25}px;` };
+        }),
       items: elementosAlteracoesTimeline().filter((x) => !x.collapseTimeline),
     };
     if (
@@ -357,13 +365,14 @@ export default function VisTimeline(props: {
         }, 100);
     }
   }, [
+    width,
     altura,
     visTimeline,
-    elementosFocados,
-    elementosAlteracoesTimeline,
-    optionsVisTimeline,
     listaMapeada,
+    elementosFocados,
+    optionsVisTimeline,
     setElementosSelecionados,
+    elementosAlteracoesTimeline,
   ]);
   useEffect(() => {
     if (!visJsRef.current.style.position)
@@ -442,7 +451,7 @@ export default function VisTimeline(props: {
     y: 0,
     collapseTimeline: false,
   });
-  const tooltipRef = useRef(null);
+  // const tooltipRef = useRef(null);
   const abrirTooltip = (item: TimelineEventPropertiesResult) => {
     const _listaElementos = elementosTimelineRef.current?.groups;
     setTooltipOptions({
@@ -466,14 +475,14 @@ export default function VisTimeline(props: {
       <Dialog
         open={tooltipOpen}
         hideBackdrop={true}
-        onMouseEnter={() => {
-          if (tooltipRef.current) clearTimeout(tooltipRef.current);
-        }}
-        onMouseLeave={() => {
-          tooltipRef.current = setTimeout(() => {
-            setTooltipOpen(false);
-          }, 700);
-        }}
+        // onMouseEnter={() => {
+        //   if (tooltipRef.current) clearTimeout(tooltipRef.current);
+        // }}
+        // onMouseLeave={() => {
+        //   tooltipRef.current = setTimeout(() => {
+        //     setTooltipOpen(false);
+        //   }, 700);
+        // }}
         sx={{
           position: "absolute",
           left: tooltipOptions.x,
@@ -489,7 +498,7 @@ export default function VisTimeline(props: {
         }}
       >
         <Stack direction="row" spacing={1}>
-          <IconButton
+          {/* <IconButton
             aria-label={
               !tooltipOptions.collapseTimeline
                 ? "diminuir visualização"
@@ -501,7 +510,7 @@ export default function VisTimeline(props: {
             }}
           >
             {!tooltipOptions.collapseTimeline ? <UnfoldLess /> : <UnfoldMore />}
-          </IconButton>
+          </IconButton> */}
           <IconButton
             aria-label="editar"
             onClick={() => {

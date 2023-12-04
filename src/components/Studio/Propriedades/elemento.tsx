@@ -20,6 +20,8 @@ import {
   Select,
   MenuItem,
   Container,
+  ImageList,
+  ImageListItem,
 } from "@mui/material";
 import { useMapaContext, useMapaDispatch } from "@/components/Mapa/MapaContext";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
@@ -27,10 +29,11 @@ import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import moment from "moment";
 import MapaContextChanger from "@/components/Mapa/ContextChangers";
-import { Button } from "react-bootstrap";
 import useCaixaDialogo from "@/components/CaixaDialogo/useCaixaDialogo";
-import { Map } from "leaflet";
+import Leaflet, { Map } from "leaflet";
 import ImageResolver from "@/components/ImageUrlResolver";
+import Button from "@/components/Atomic/Button";
+import contextChangers from "@/components/Mapa/ContextChangers";
 
 const WrapperStyled = styled("div")``;
 
@@ -247,6 +250,54 @@ export default function Elemento(props: { map: Map }) {
                                 (formik.errors as any).texto
                               }
                             />
+                            <Divider sx={{ height: 15 }} />
+                            <Button
+                              onClick={() => {
+                                elementoRef.current = formik.values;
+                                handleInserirImagem();
+                              }}
+                            >
+                              {(formik.values as any).imagemURL &&
+                              (formik.values as any).imagemURL.length
+                                ? "Trocar imagem"
+                                : "Inserir imagem"}
+                            </Button>
+                            {(formik.values as any).imagemURL &&
+                              (formik.values as any).imagemURL.length && (
+                                <Button
+                                  onClick={() => {
+                                    openModalConfirm({
+                                      title: "Deletar item",
+                                      message: "Você tem certeza disso?",
+                                      onConfirm: () => {
+                                        dispatch({
+                                          type: "editarPropriedade",
+                                          tipo: elementoRef.current.dataRef,
+                                          id: elementoRef.current.id,
+                                          nomePropriedade: "imagemURL",
+                                          valorPropriedade: null,
+                                        });
+                                      },
+                                    });
+                                  }}
+                                  variant="contained"
+                                  size="small"
+                                >
+                                  {"Deletar imagem"}
+                                </Button>
+                              )}
+                            {(formik.values as any).imagemURL &&
+                              (formik.values as any).imagemURL.length && (
+                                <ImageList>
+                                  <ImageListItem cols={2}>
+                                    <img
+                                      src={(formik.values as any).imagemURL}
+                                      width={"auto"}
+                                      height={"auto"}
+                                    />
+                                  </ImageListItem>
+                                </ImageList>
+                              )}
                           </Container>
 
                           <Container className="group-frame">
@@ -260,13 +311,15 @@ export default function Elemento(props: { map: Map }) {
                               <Select
                                 labelId="demo-simple-select-standard-label"
                                 id="demo-simple-select-standard"
-                                value={""}
-                                onChange={(e, c: any) => {
-                                  console.log(
-                                    e.target.name,
-                                    e.target.value,
-                                    c.props.value
-                                  );
+                                value={x.cenaSelecionada ?? ""}
+                                sx={{
+                                  backgroundColor: x.cenaSelecionada
+                                    ? mapaContext.conteudo.cenas.find(
+                                        (z) => z.id === x.cenaSelecionada
+                                      ).color
+                                    : "",
+                                }}
+                                onChange={(e) => {
                                   dispatch({
                                     type: "selecionarCenaParaElemento",
                                     elemento: x,
@@ -430,27 +483,20 @@ export default function Elemento(props: { map: Map }) {
                                     : "Ativar Opacidade"}
                                 </Button>
                               ))}
+                            <Button
+                              onClick={() => {
+                                const bordas = contextChangers.bordasDoElemento(
+                                  x,
+                                  map,
+                                  Leaflet,
+                                  0
+                                );
+                                bordas && map.setView(bordas.getCenter());
+                              }}
+                            >
+                              {"Ver no mapa"}
+                            </Button>
                           </Container>
-                          <Button
-                            onClick={() => {
-                              elementoRef.current = formik.values;
-                              handleInserirImagem();
-                            }}
-                          >
-                            {(formik.values as any).imagemURL &&
-                            (formik.values as any).imagemURL.length
-                              ? "Trocar imagem"
-                              : "Inserir imagem"}
-                          </Button>
-                          {(formik.values as any).imagemURL &&
-                            (formik.values as any).imagemURL.length && (
-                              // eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text
-                              <img
-                                src={(formik.values as any).imagemURL}
-                                width={"auto"}
-                                height={"auto"}
-                              />
-                            )}
                         </Form>
                       );
                     }}

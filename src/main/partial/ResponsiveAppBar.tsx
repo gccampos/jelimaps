@@ -13,7 +13,7 @@ import { useRouter } from "next/router";
 const pages = [
   { text: "Home", href: "/" },
   { text: "Sobre", href: "/about" },
-  { text: "Mapa", href: "/mapa" },
+  { text: "Studio", href: "/mapa" },
 ];
 
 function ResponsiveAppBar() {

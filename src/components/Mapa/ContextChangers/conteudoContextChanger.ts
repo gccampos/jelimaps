@@ -365,18 +365,25 @@ const moverElementoParaCenaSelecionada = (
   const cenaSelecionada = oldMapaContext.conteudo.cenas.find(
     (x) => x.id === actionContext.id
   );
-  oldMapaContext = editarPropriedadeElemento(oldMapaContext, {
-    ...actionContext,
-    id: actionContext.elemento.id,
-    nomePropriedade: "cenaInicio",
-    valorPropriedade: cenaSelecionada.cenaInicio,
-  });
-  return editarPropriedadeElemento(oldMapaContext, {
-    ...actionContext,
-    id: actionContext.elemento.id,
-    nomePropriedade: "cenaFim",
-    valorPropriedade: cenaSelecionada.cenaFim,
-  });
+  const { tipo: tipoElemento } = actionContext;
+  const newListaConteudoTipo = oldMapaContext.conteudo[tipoElemento].map(
+    (elemento) =>
+      elemento.id === actionContext.elemento.id
+        ? {
+            ...elemento,
+            cenaInicio: cenaSelecionada.cenaInicio,
+            cenaFim: cenaSelecionada.cenaFim,
+            cenaSelecionada: cenaSelecionada.id,
+          }
+        : elemento
+  );
+  return {
+    ...oldMapaContext,
+    conteudo: {
+      ...oldMapaContext.conteudo,
+      [tipoElemento]: [...newListaConteudoTipo],
+    },
+  };
 };
 
 const conteudoContextChanger = {

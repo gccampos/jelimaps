@@ -12,6 +12,7 @@ import {
 import { actionContextChange, tipoElemento } from "../Mapa/mapaContextTypes";
 import Leaflet from "leaflet";
 import contextChangers from "../Mapa/ContextChangers";
+import { elementos } from "@/main/constants/elementos";
 
 const isMobile = () => {
   return (
@@ -27,7 +28,8 @@ const terraDrawSetup = (
   alterarEventTimeoutConteudoElemento: (index: number, value: any) => void,
   pegarElementosSelecionados: () => any,
   pegarEventRef: () => boolean,
-  alterarEventRef: (x: boolean) => void
+  alterarEventRef: (x: boolean) => void,
+  slideTimeline: () => boolean
 ) => {
   const terraDrawPolygonMode = new TerraDrawPolygonMode({
     allowSelfIntersections: false,
@@ -150,12 +152,20 @@ const terraDrawSetup = (
       posicao: [e.lat, e.lng],
       tipo: "Marker",
     });
+    setTimeout(() => {
+      draw.setMode(elementos.Hand.nome);
+      dispatch({ type: "selecionarElementoInteracao", arg: elementos.Hand });
+    }, 10);
   };
 
   terraDrawImageOverlayMode.onClick = () => {
     dispatch({
       type: "addImageOverlay",
     });
+    setTimeout(() => {
+      draw.setMode(elementos.Hand.nome);
+      dispatch({ type: "selecionarElementoInteracao", arg: elementos.Hand });
+    }, 10);
   };
   (function (modes) {
     modes.forEach((mode) => {
@@ -166,7 +176,13 @@ const terraDrawSetup = (
             e.containerY < 90 &&
             e.containerX > (map as any)._container.offsetWidth - 90
           ) &&
-          !(e.containerX < 60 && e.containerY < 160)
+          !(e.containerX < 60 && e.containerY < 160) &&
+          (slideTimeline()
+            ? !(
+                e.containerY > (map as any)._container.offsetHeight - 113 &&
+                e.containerX > (map as any)._container.offsetWidth - 90
+              )
+            : !(e.containerY > (map as any)._container.offsetHeight - 113))
         ) {
           switch (mode.origin.mode) {
             case terraDrawSelectMode.mode:
@@ -234,6 +250,10 @@ const terraDrawSetup = (
       valor: element,
     });
     draw.removeFeatures([e]);
+    setTimeout(() => {
+      draw.setMode(elementos.Hand.nome);
+      dispatch({ type: "selecionarElementoInteracao", arg: elementos.Hand });
+    }, 10);
   };
 
   terraDrawLineStringMode.onFinish =

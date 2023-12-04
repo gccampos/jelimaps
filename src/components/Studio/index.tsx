@@ -110,9 +110,18 @@ const Studio = () => {
     eventTimeout?: any
   ) => (conteudoElementosRef.current[index].eventTimeout = eventTimeout);
   const pegarElementosSelecionados = () => elementosSelecionadosRef.current;
+
   const eventRef = useRef<boolean>();
   const pegarEventRef = () => eventRef.current;
   const alterarEventRef = (value: boolean) => (eventRef.current = value);
+
+  const slideLinhaTempoRef = useRef<boolean>();
+  const slideTimeline = React.useCallback(() => {
+    return slideLinhaTempoRef.current;
+  }, []);
+  useEffect(() => {
+    slideLinhaTempoRef.current = mapaContext.slideLinhaTempo;
+  }, [mapaContext.slideLinhaTempo]);
 
   useEffect(() => {
     if (map && !draw) {
@@ -124,11 +133,12 @@ const Studio = () => {
           alterarEventTimeoutConteudoElemento,
           pegarElementosSelecionados,
           pegarEventRef,
-          alterarEventRef
+          alterarEventRef,
+          slideTimeline
         )
       );
     }
-  }, [dispatch, draw, map]);
+  }, [dispatch, draw, map, slideTimeline]);
 
   useEffect(() => {
     if (draw)

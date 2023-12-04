@@ -78,12 +78,23 @@ const LinhaTempo = (props: {
         return moment(date).format("DD/MM/yyyy  :mm:ss");
       };
       leafletTimelineSlider.options.waitToUpdateMap = true;
-
+      const diffTempo = moment(
+        mapaContext.conteudo.cenas[mapaContext.conteudo.cenas.length - 1]
+          .cenaFim
+      ).diff(mapaContext.conteudo.cenas[0].cenaInicio, "millisecond");
+      leafletTimelineSlider.options.duration =
+        diffTempo / ((mapaContext.playSpeed ?? 1) * 5);
       setTimelineSliderControl(leafletTimelineSlider);
 
       leafletTimelineSlider.addTo(map);
     }
-  }, [map, setTimelineSliderControl, timelineSliderControl]);
+  }, [
+    map,
+    mapaContext.conteudo.cenas,
+    mapaContext.playSpeed,
+    setTimelineSliderControl,
+    timelineSliderControl,
+  ]);
 
   const handleListenerSlider = React.useCallback(
     (e: any) => {

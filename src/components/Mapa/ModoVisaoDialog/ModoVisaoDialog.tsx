@@ -8,7 +8,6 @@ import {
   styled,
   Button as ButtonMUI,
 } from "@mui/material";
-import { Button } from "react-bootstrap";
 import {
   useMapaContext,
   useMapaDispatch,
@@ -16,6 +15,7 @@ import {
 } from "@/components/Mapa/MapaContext";
 import useCaixaDialogo from "@/components/CaixaDialogo/useCaixaDialogo";
 import ImageResolver from "@/components/ImageUrlResolver";
+import Button from "@/components/Atomic/Button";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",

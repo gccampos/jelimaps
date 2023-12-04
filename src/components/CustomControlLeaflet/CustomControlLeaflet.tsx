@@ -14,12 +14,24 @@ const POSITION_CLASSES = {
   topright: "leaflet-top leaflet-right",
 };
 
-export default function CustomControlLeaflet({ position, children }) {
+export default function CustomControlLeaflet({
+  position,
+  children,
+  classCustom,
+}: {
+  position: any;
+  children: any;
+  classCustom?: any;
+}) {
   const positionClass =
     (position && POSITION_CLASSES[position]) || POSITION_CLASSES.topright;
   return (
     <div className={positionClass}>
-      <div className="leaflet-control leaflet-bar leaflet-speeddial">
+      <div
+        className={
+          classCustom ?? "leaflet-control leaflet-bar leaflet-speeddial"
+        }
+      >
         {children}
       </div>
     </div>

@@ -2,9 +2,12 @@ import React from "react";
 import {
   Button,
   ButtonGroup,
+  Container,
   FormControlLabel,
+  Slider,
   Switch,
   TextField,
+  Typography,
   // FormControlLabel, Switch
 } from "@mui/material";
 import {
@@ -21,6 +24,26 @@ export default function Geral() {
   const { reset } = useMapaUndo();
   const dispatch = useMapaDispatch();
   const { openModalConfirm } = useCaixaDialogo();
+  const playSpeedRef = React.useRef(null);
+
+  const marks = [
+    {
+      value: 0.5,
+      label: "0.5x",
+    },
+    {
+      value: 1,
+      label: "1x",
+    },
+    {
+      value: 1.5,
+      label: "1.5x",
+    },
+    {
+      value: 2,
+      label: "2x",
+    },
+  ];
 
   return (
     <Formik
@@ -88,52 +111,88 @@ export default function Geral() {
                 Exportar
               </Button>
             </ButtonGroup>
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={formik.values.exibirLimiteCenas}
-                  onChange={(e, checked) => {
-                    dispatch({
-                      type: "alteraPropriedadeGeral",
-                      nomePropriedade: "exibirLimiteCenas",
-                      valorPropriedade: checked,
-                      formik: formik,
-                    });
-                  }}
-                  name={"exibirLimite"}
-                />
-              }
-              label={"Ver limites das cenas"}
-            />
-            <TextField
-              fullWidth
-              id="cenaInicio"
-              name="cenaInicio"
-              label="Inicio"
-              type="datetime-local"
-              value={formik.values.cenaInicio}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              error={
-                formik.touched.cenaInicio && Boolean(formik.errors.cenaInicio)
-              }
-              helperText={formik.touched.cenaInicio && formik.errors.cenaInicio}
-            />
-            <TextField
-              fullWidth
-              id="cenaFim"
-              name="cenaFim"
-              label="Final"
-              type="datetime-local"
-              value={formik.values.cenaFim}
-              inputProps={{
-                step: 1,
-              }}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              error={formik.touched.cenaFim && Boolean(formik.errors.cenaFim)}
-              helperText={formik.touched.cenaFim && formik.errors.cenaFim}
-            />
+
+            <Container className="group-frame">
+              <Typography variant="h6" className="title">
+                Mapa
+              </Typography>
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={formik.values.exibirLimiteCenas}
+                    onChange={(e, checked) => {
+                      dispatch({
+                        type: "alteraPropriedadeGeral",
+                        nomePropriedade: "exibirLimiteCenas",
+                        valorPropriedade: checked,
+                        formik: formik,
+                      });
+                    }}
+                    name={"exibirLimite"}
+                  />
+                }
+                label={"Ver limites das cenas"}
+              />
+            </Container>
+            <Container className="group-frame">
+              <Typography variant="h6" className="title">
+                Tempo
+              </Typography>
+
+              <Typography>Velocidade reprodução</Typography>
+              <Slider
+                value={playSpeedRef.current ?? formik.values.playSpeed ?? 1}
+                name=""
+                min={0.5}
+                step={0.05}
+                marks={marks}
+                max={2}
+                onChangeCommitted={(e, checked) => {
+                  dispatch({
+                    type: "alteraPropriedadeGeral",
+                    nomePropriedade: "playSpeed",
+                    valorPropriedade: checked,
+                    formik: formik,
+                  });
+                }}
+                onChange={(e, checked) => {
+                  playSpeedRef.current = checked;
+                }}
+                valueLabelDisplay="auto"
+                aria-labelledby="non-linear-slider"
+              />
+              <TextField
+                fullWidth
+                id="cenaInicio"
+                name="cenaInicio"
+                label="Inicio"
+                type="datetime-local"
+                value={formik.values.cenaInicio}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={
+                  formik.touched.cenaInicio && Boolean(formik.errors.cenaInicio)
+                }
+                helperText={
+                  formik.touched.cenaInicio && formik.errors.cenaInicio
+                }
+              />
+              <TextField
+                fullWidth
+                id="cenaFim"
+                name="cenaFim"
+                label="Final"
+                type="datetime-local"
+                value={formik.values.cenaFim}
+                inputProps={{
+                  step: 1,
+                }}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={formik.touched.cenaFim && Boolean(formik.errors.cenaFim)}
+                helperText={formik.touched.cenaFim && formik.errors.cenaFim}
+              />
+            </Container>
             {/* <FormControlLabel
               control={
                 <Switch

@@ -6,7 +6,7 @@ import {
   Rectangle,
   Popup,
 } from "react-leaflet";
-import L, { LatLngBounds, LatLng, divIcon, Map } from "leaflet";
+import Leaflet, { LatLngBounds, LatLng, divIcon, Map } from "leaflet";
 import { useEffect, useMemo, useRef, useState } from "react";
 import React from "react";
 import CustomControlLeaflet, {
@@ -21,6 +21,8 @@ import {
   DialogTitle,
   Fab,
   Grid,
+  Paper,
+  Slider,
   TextField,
 } from "@mui/material";
 // import Elementos from "./Elementos";
@@ -42,11 +44,13 @@ import { TerraDraw, GeoJSONStoreFeatures } from "terra-draw";
 import MapaContextChanger from "../Mapa/ContextChangers";
 import UndoControl from "./UndoControl";
 import { getImageDimensions } from "../Mapa/MapaUtils";
+import contextChangers from "../Mapa/ContextChangers";
+import moment from "moment";
 
 export default function Mapa(propsMapa: {
   altura: number;
   draw: TerraDraw;
-  setMapa: React.Dispatch<React.SetStateAction<L.Map>>;
+  setMapa: React.Dispatch<React.SetStateAction<Leaflet.Map>>;
   conteudoElementosRef: React.MutableRefObject<tipoElemento[]>;
 }) {
   const { setMapa, conteudoElementosRef } = propsMapa;
@@ -203,7 +207,7 @@ export default function Mapa(propsMapa: {
   };
 
   const ConteudoMapa = (propsConteudoMapa: { elemento: elementoPadrao }) => {
-    const elementoGeoJSON = new L.GeoJSON(propsConteudoMapa.elemento);
+    const elementoGeoJSON = new Leaflet.GeoJSON(propsConteudoMapa.elemento);
     useEffect(() => {
       if (map && propsMapa.draw) {
         if (propsConteudoMapa.elemento.draggable) {
@@ -557,6 +561,46 @@ export default function Mapa(propsMapa: {
             </Fab>
           </CustomControlLeaflet>
           {/* <AddElementoInteracao /> */}
+          {!mapaContext.slideLinhaTempo && (
+            <CustomControlLeaflet
+              position={POSITION_CLASSES_CUSTOM_CONTROL.bottomleft}
+              classCustom={
+                "leaflet-control leaflet-bar leaflet-speeddial leaflet-speeddial-full-width"
+              }
+            >
+              <Paper sx={{ p: "2vw", mr: "100px", mb: "1vw" }} elevation={23}>
+                <Slider
+                  value={new Date(mapaContext.tempo).getTime()}
+                  name=""
+                  min={new Date(
+                    mapaContext.conteudo.cenas[0].cenaInicio
+                  ).getTime()}
+                  step={1}
+                  marks={contextChangers
+                    .retornaListaTemposConteudo(mapaContext)
+                    .map((x) => {
+                      return {
+                        value: new Date(x).getTime(),
+                        label: "",
+                      };
+                    })}
+                  max={new Date(
+                    mapaContext.conteudo.cenas[
+                      mapaContext.conteudo.cenas.length - 1
+                    ].cenaFim
+                  ).getTime()}
+                  onChangeCommitted={(e, checked) => {
+                    dispatch({
+                      type: "atualizaTempo",
+                      time: moment(checked).format("yyyy-MM-DDTHH:mm:ss"),
+                    });
+                  }}
+                  valueLabelDisplay="auto"
+                  aria-labelledby="non-linear-slider"
+                />
+              </Paper>
+            </CustomControlLeaflet>
+          )}
         </MapContainer>
       </div>
     </Grid>

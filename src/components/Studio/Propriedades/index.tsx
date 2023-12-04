@@ -259,13 +259,15 @@ export default function Propriedades(props: {
               <BottomNavigation
                 sx={{ minWidth: 230 }}
                 onChange={(e, i) => {
-                  if (i == 2)
+                  if (i == 2) {
+                    clearInterval(intervalId);
+                    setIntervalId(null);
                     dispatch({
                       type: "alteraPropriedadeGeral",
                       nomePropriedade: "playStatus",
                       valorPropriedade: i,
                     });
-                  else {
+                  } else {
                     dispatch({
                       type: "pulaTempo",
                       valorPropriedade: i,
@@ -302,7 +304,7 @@ export default function Propriedades(props: {
                   if (!intervalId && i > 0) {
                     const idInterval = setInterval(
                       handleIntervaloAtualizaTempo,
-                      1000
+                      1000 / ((mapaContext.playSpeed ?? 1) * 5)
                     );
                     setIntervalId(idInterval);
                   } else {

@@ -44,6 +44,7 @@ export type elementoPadrao = tipoGenericoElementoTimeline &
     eventTimeout?: any;
   };
 type periodoInicioFim = {
+  cenaSelecionada?: NIL;
   cenaFim: DateType;
   cenaInicio: DateType;
 };
@@ -95,6 +96,7 @@ export type mapaContextSchema = periodoInicioFim &
     // 0  := parado
     // 1  := reproduzindo
     // 2  := apresentando
+    playSpeed?: number;
     caixaDialogo?: string;
   };
 type telaMapa = {
