@@ -358,6 +358,27 @@ const addElementoCopiado = (
   };
 };
 
+const moverElementoParaCenaSelecionada = (
+  oldMapaContext: mapaContextSchema,
+  actionContext: actionContextChange
+): mapaContextSchema => {
+  const cenaSelecionada = oldMapaContext.conteudo.cenas.find(
+    (x) => x.id === actionContext.id
+  );
+  oldMapaContext = editarPropriedadeElemento(oldMapaContext, {
+    ...actionContext,
+    id: actionContext.elemento.id,
+    nomePropriedade: "cenaInicio",
+    valorPropriedade: cenaSelecionada.cenaInicio,
+  });
+  return editarPropriedadeElemento(oldMapaContext, {
+    ...actionContext,
+    id: actionContext.elemento.id,
+    nomePropriedade: "cenaFim",
+    valorPropriedade: cenaSelecionada.cenaFim,
+  });
+};
+
 const conteudoContextChanger = {
   movendoImagem,
   removeElemento,
@@ -368,5 +389,6 @@ const conteudoContextChanger = {
   alteraCoordinatesElemento,
   editarPropriedadeElemento,
   atualizaLinhaTempoElemento,
+  moverElementoParaCenaSelecionada,
 };
 export default conteudoContextChanger;

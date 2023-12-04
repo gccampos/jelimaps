@@ -506,7 +506,7 @@ export default function VisTimeline(props: {
             aria-label="editar"
             onClick={() => {
               if (!mapaContext.slidePropriedade)
-                dispatch({ type: "propriedadeToggle" });
+                dispatch({ type: "slideToogle" });
               setTooltipOpen(false);
             }}
           >

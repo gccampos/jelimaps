@@ -15,6 +15,7 @@ const initialMapaContexto: () => mapaContextSchema = () => {
   const newMapaContext = {
     elementoInteracao: elementos.Hand,
     slidePropriedade: false,
+    slideLinhaTempo: true,
     cenaInicio: moment().format("yyyy-MM-DDTHH:mm:ss"),
     cenaFim: moment().add(1, "minutes").format("yyyy-MM-DDTHH:mm:ss"),
     tempo: moment().add(2, "seconds").format("yyyy-MM-DDTHH:mm:ss"),
@@ -40,8 +41,8 @@ const initialMapaContexto: () => mapaContextSchema = () => {
     },
     timelineOptions: {
       editable: { remove: true, updateTime: true },
-      // zoomKey: "ctrlKey",
-      preferZoom: true,
+      zoomKey: "ctrlKey",
+      preferZoom: false,
       start: moment().format("yyyy-MM-DDTHH:mm:ss"),
       end: moment().add(10, "minutes").format("yyyy-MM-DDTHH:mm:ss"),
       autoResize: false,

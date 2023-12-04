@@ -24,7 +24,11 @@ import {
   TextField,
 } from "@mui/material";
 // import Elementos from "./Elementos";
-import { PlaylistPlay, LocationOn } from "@mui/icons-material";
+import {
+  PlaylistPlay,
+  LocationOn,
+  KeyboardDoubleArrowUp,
+} from "@mui/icons-material";
 import ReactDOMServer from "react-dom/server";
 import useCaixaDialogo from "../CaixaDialogo/useCaixaDialogo";
 import ImageResolver from "@/components/ImageUrlResolver";
@@ -521,12 +525,33 @@ export default function Mapa(propsMapa: {
           >
             <Fab
               color="primary"
-              onClick={() => dispatch({ type: "propriedadeToggle" })}
+              onClick={() => dispatch({ type: "slideToogle" })}
               sx={{ zIndex: 100000 }}
             >
               <PlaylistPlay
                 sx={{
                   transform: !mapaContext.slidePropriedade ? "scaleX(-1)" : "",
+                }}
+              />
+            </Fab>
+          </CustomControlLeaflet>
+          <CustomControlLeaflet
+            position={POSITION_CLASSES_CUSTOM_CONTROL.bottomright}
+          >
+            <Fab
+              color="primary"
+              onClick={() =>
+                dispatch({
+                  type: "slideToogle",
+                  nomePropriedade: "slideLinhaTempo",
+                  valorPropriedade: !mapaContext.slideLinhaTempo,
+                })
+              }
+              sx={{ zIndex: 100000 }}
+            >
+              <KeyboardDoubleArrowUp
+                sx={{
+                  transform: !mapaContext.slideLinhaTempo ? "" : "scaleY(-1)",
                 }}
               />
             </Fab>

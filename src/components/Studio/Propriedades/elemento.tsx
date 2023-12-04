@@ -15,6 +15,11 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Container,
 } from "@mui/material";
 import { useMapaContext, useMapaDispatch } from "@/components/Mapa/MapaContext";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
@@ -124,7 +129,6 @@ export default function Elemento(props: { map: Map }) {
       ),
     });
   }, [openModalConfirm, onConfirm, handleDispatchInserirImageOverlay]);
-
   return (
     <List sx={{ height: "100%", pt: 0 }} key={"lista"}>
       {carregaElementosFoco() &&
@@ -179,38 +183,16 @@ export default function Elemento(props: { map: Map }) {
                       return (
                         <Form
                           onBlur={(e: any) => {
-                            dispatch({
-                              type: "editarPropriedade",
-                              tipo: x.dataRef,
-                              id: x.id,
-                              nomePropriedade: e.target.name,
-                              valorPropriedade: e.target.value,
-                            });
+                            if (e.target.name && e.target.value)
+                              dispatch({
+                                type: "editarPropriedade",
+                                tipo: x.dataRef,
+                                id: x.id,
+                                nomePropriedade: e.target.name,
+                                valorPropriedade: e.target.value,
+                              });
                           }}
                         >
-                          <FormControlLabel
-                            control={
-                              <Switch
-                                checked={formik.values.draggable}
-                                value={formik.values.draggable}
-                                onChange={(e) => {
-                                  // mapaContext.conteudo[x.dataRef].find(
-                                  //   (z) => z.id === x.id
-                                  // ).draggable = !formik.values.draggable;
-                                  dispatch({
-                                    type: "editarPropriedade",
-                                    tipo: x.dataRef,
-                                    id: x.id,
-                                    nomePropriedade: "draggable",
-                                    valorPropriedade: !formik.values.draggable,
-                                  });
-                                  formik.handleChange(e);
-                                }}
-                                name={"draggable"}
-                              />
-                            }
-                            label={"Editar elemento no mapa"}
-                          />
                           <Button
                             onClick={() => {
                               dispatch({
@@ -224,60 +206,140 @@ export default function Elemento(props: { map: Map }) {
                           >
                             Fixar zoom
                           </Button>
-                          <TextField
-                            fullWidth
-                            id="nome"
-                            name="nome"
-                            type="text"
-                            label="Nome"
-                            value={formik.values.nome}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            error={
-                              formik.touched.nome && Boolean(formik.errors.nome)
-                            }
-                            helperText={
-                              formik.touched.nome && formik.errors.nome
-                            }
-                          />
-                          <TextField
-                            fullWidth
-                            id="cenaInicio"
-                            name="cenaInicio"
-                            label="Inicio"
-                            type="datetime-local"
-                            value={formik.values.cenaInicio}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            error={
-                              formik.touched.cenaInicio &&
-                              Boolean(formik.errors.cenaInicio)
-                            }
-                            helperText={
-                              formik.touched.cenaInicio &&
-                              formik.errors.cenaInicio
-                            }
-                          />
-                          <TextField
-                            fullWidth
-                            id="cenaFim"
-                            name="cenaFim"
-                            label="Final"
-                            type="datetime-local"
-                            value={formik.values.cenaFim}
-                            inputProps={{
-                              step: 1,
-                            }}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            error={
-                              formik.touched.cenaFim &&
-                              Boolean(formik.errors.cenaFim)
-                            }
-                            helperText={
-                              formik.touched.cenaFim && formik.errors.cenaFim
-                            }
-                          />
+
+                          <Container className="group-frame">
+                            <Typography variant="h6" className="title">
+                              Info
+                            </Typography>
+                            <TextField
+                              fullWidth
+                              id="nome"
+                              name="nome"
+                              type="text"
+                              label="Nome"
+                              value={formik.values.nome}
+                              onChange={formik.handleChange}
+                              onBlur={formik.handleBlur}
+                              error={
+                                formik.touched.nome &&
+                                Boolean(formik.errors.nome)
+                              }
+                              helperText={
+                                formik.touched.nome && formik.errors.nome
+                              }
+                            />
+                            <TextField
+                              fullWidth
+                              id="texto"
+                              name="texto"
+                              label="Texto"
+                              multiline
+                              rows={4}
+                              value={(formik.values as any).texto}
+                              onChange={formik.handleChange}
+                              onBlur={formik.handleBlur}
+                              error={
+                                (formik.touched as any).texto &&
+                                Boolean((formik.errors as any).texto)
+                              }
+                              helperText={
+                                (formik.touched as any).texto &&
+                                (formik.errors as any).texto
+                              }
+                            />
+                          </Container>
+
+                          <Container className="group-frame">
+                            <Typography variant="h6" className="title">
+                              Tempo
+                            </Typography>
+                            <FormControl fullWidth>
+                              <InputLabel id="demo-simple-select-standard-label">
+                                Selecione a cena
+                              </InputLabel>
+                              <Select
+                                labelId="demo-simple-select-standard-label"
+                                id="demo-simple-select-standard"
+                                value={""}
+                                onChange={(e, c: any) => {
+                                  console.log(
+                                    e.target.name,
+                                    e.target.value,
+                                    c.props.value
+                                  );
+                                  dispatch({
+                                    type: "selecionarCenaParaElemento",
+                                    elemento: x,
+                                    tipo: x.dataRef,
+                                    id: e.target.value,
+                                  });
+                                  // dispatch({
+                                  //   type: "selecionarCena",
+                                  //   id: c.props.value,
+                                  //   tipo: "cenas",
+                                  //   nomePropriedade: "properties",
+                                  //   valorPropriedade: {
+                                  //     ...mapaContext?.conteudo.cenas.find(
+                                  //       (x) => x.id.toString() === c.props.value
+                                  //     ).properties,
+                                  //     selected: true,
+                                  //   },
+                                  // });
+                                }}
+                                label="Age"
+                              >
+                                {mapaContext?.conteudo.cenas &&
+                                  mapaContext?.conteudo.cenas.map((x, i) => (
+                                    <MenuItem
+                                      style={{ backgroundColor: x.color }}
+                                      value={x.id}
+                                      key={`select#${i}`}
+                                    >
+                                      {x.nome}
+                                    </MenuItem>
+                                  ))}
+                              </Select>
+                            </FormControl>
+
+                            <TextField
+                              fullWidth
+                              id="cenaInicio"
+                              name="cenaInicio"
+                              label="Inicio"
+                              type="datetime-local"
+                              value={formik.values.cenaInicio}
+                              onChange={formik.handleChange}
+                              onBlur={formik.handleBlur}
+                              error={
+                                formik.touched.cenaInicio &&
+                                Boolean(formik.errors.cenaInicio)
+                              }
+                              helperText={
+                                formik.touched.cenaInicio &&
+                                formik.errors.cenaInicio
+                              }
+                            />
+                            <TextField
+                              fullWidth
+                              id="cenaFim"
+                              name="cenaFim"
+                              label="Final"
+                              type="datetime-local"
+                              value={formik.values.cenaFim}
+                              inputProps={{
+                                step: 1,
+                              }}
+                              onChange={formik.handleChange}
+                              onBlur={formik.handleBlur}
+                              error={
+                                formik.touched.cenaFim &&
+                                Boolean(formik.errors.cenaFim)
+                              }
+                              helperText={
+                                formik.touched.cenaFim && formik.errors.cenaFim
+                              }
+                            />
+                          </Container>
                           {(formik.values as any).radius && (
                             <TextField
                               fullWidth
@@ -298,47 +360,77 @@ export default function Elemento(props: { map: Map }) {
                               }
                             />
                           )}
-                          {((formik.values as any).positionBL ||
-                            (formik.values as any).dataRef === "Marker") &&
-                            ((formik.values as any).opacity ? (
-                              <>
-                                <Typography>Opacidade</Typography>
-                                <Slider
-                                  value={(formik.values as any).opacity}
-                                  name=""
-                                  min={0}
-                                  step={0.1}
-                                  max={1}
-                                  onChange={(e, newV) =>
+
+                          <Container className="group-frame">
+                            <Typography variant="h6" className="title">
+                              Mapa
+                            </Typography>
+                            <FormControlLabel
+                              control={
+                                <Switch
+                                  checked={formik.values.draggable}
+                                  value={formik.values.draggable}
+                                  onChange={(e) => {
+                                    // mapaContext.conteudo[x.dataRef].find(
+                                    //   (z) => z.id === x.id
+                                    // ).draggable = !formik.values.draggable;
+                                    dispatch({
+                                      type: "editarPropriedade",
+                                      tipo: x.dataRef,
+                                      id: x.id,
+                                      nomePropriedade: "draggable",
+                                      valorPropriedade:
+                                        !formik.values.draggable,
+                                    });
+                                    formik.handleChange(e);
+                                  }}
+                                  name={"draggable"}
+                                />
+                              }
+                              label={"Editar elemento no mapa"}
+                            />
+                            {((formik.values as any).positionBL ||
+                              (formik.values as any).dataRef === "Marker") &&
+                              ((formik.values as any).opacity ? (
+                                <>
+                                  <Typography>Opacidade</Typography>
+                                  <Slider
+                                    value={(formik.values as any).opacity}
+                                    name=""
+                                    min={0}
+                                    step={0.1}
+                                    max={1}
+                                    onChange={(e, newV) =>
+                                      dispatch({
+                                        type: "editarPropriedade",
+                                        tipo: x.dataRef,
+                                        id: x.id,
+                                        nomePropriedade: "opacity",
+                                        valorPropriedade: newV,
+                                      })
+                                    }
+                                    valueLabelDisplay="auto"
+                                    aria-labelledby="non-linear-slider"
+                                  />
+                                </>
+                              ) : (
+                                <Button
+                                  onClick={() =>
                                     dispatch({
                                       type: "editarPropriedade",
                                       tipo: x.dataRef,
                                       id: x.id,
                                       nomePropriedade: "opacity",
-                                      valorPropriedade: newV,
+                                      valorPropriedade: 0.9,
                                     })
                                   }
-                                  valueLabelDisplay="auto"
-                                  aria-labelledby="non-linear-slider"
-                                />
-                              </>
-                            ) : (
-                              <Button
-                                onClick={() =>
-                                  dispatch({
-                                    type: "editarPropriedade",
-                                    tipo: x.dataRef,
-                                    id: x.id,
-                                    nomePropriedade: "opacity",
-                                    valorPropriedade: 0.9,
-                                  })
-                                }
-                              >
-                                {(formik.values as any).opacity === 0
-                                  ? "Exibir elemento"
-                                  : "Ativar Opacidade"}
-                              </Button>
-                            ))}
+                                >
+                                  {(formik.values as any).opacity === 0
+                                    ? "Exibir elemento"
+                                    : "Ativar Opacidade"}
+                                </Button>
+                              ))}
+                          </Container>
                           <Button
                             onClick={() => {
                               elementoRef.current = formik.values;
@@ -359,25 +451,6 @@ export default function Elemento(props: { map: Map }) {
                                 height={"auto"}
                               />
                             )}
-                          <TextField
-                            fullWidth
-                            id="texto"
-                            name="texto"
-                            label="Texto"
-                            multiline
-                            rows={4}
-                            value={(formik.values as any).texto}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            error={
-                              (formik.touched as any).texto &&
-                              Boolean((formik.errors as any).texto)
-                            }
-                            helperText={
-                              (formik.touched as any).texto &&
-                              (formik.errors as any).texto
-                            }
-                          />
                         </Form>
                       );
                     }}

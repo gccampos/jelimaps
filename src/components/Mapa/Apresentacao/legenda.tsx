@@ -52,16 +52,16 @@ const Legenda = (props: {
 
   const moverMapaParaCena = React.useCallback(
     (cena: tipoElemento) => {
-      if (cena.center) {
-        try {
+      try {
+        if (cena.center) {
           map.setView(cena.center, cena.zoom, {
             animate: true,
             duration: 1.5,
           });
           setCenaAtual(cena);
-        } catch (error) {
-          /* empty */
         }
+      } catch (error) {
+        /* empty */
       }
     },
     [map]

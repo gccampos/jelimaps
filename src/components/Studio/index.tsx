@@ -151,70 +151,78 @@ const Studio = () => {
       {
         <>
           <Grid item container xs={12}>
-            <ElementosLateral altura={height - altura} draw={draw} />
+            <ElementosLateral
+              altura={mapaContext.slideLinhaTempo ? height - altura : height}
+              draw={draw}
+            />
             <Mapa
-              altura={height - altura}
+              altura={mapaContext.slideLinhaTempo ? height - altura : height}
               setMapa={setMap}
               draw={draw}
               conteudoElementosRef={conteudoElementosRef}
             />
             <Propriedades
-              altura={height - altura}
+              altura={mapaContext.slideLinhaTempo ? height - altura : height}
               tempoAtualRef={tempoAtualRef}
               larguraPropriedades={larguraPropriedades}
               setLargurasPropriedades={setLargurasPropriedades}
               map={map}
             />
           </Grid>
-          <Rnd
-            ref={(c) => {
-              setRndRef(c);
-            }}
-            maxHeight={height * 0.9}
-            minHeight={height * 0.05}
-            resizeHandleStyles={{
-              bottom: displaYNoneStyle,
-              left: displaYNoneStyle,
-              right: displaYNoneStyle,
-              topLeft: displaYNoneStyle,
-              topRight: displaYNoneStyle,
-              bottomLeft: displaYNoneStyle,
-              bottomRight: displaYNoneStyle,
-              top: { height: 25 },
-            }}
-            size={{ height: altura, width: "100%" }}
-            disableDragging
-            position={{ y: height - altura, x: 0 }}
-            resizeHandleComponent={{
-              top: (
-                <DraggerResize
-                  id={"parentSeletorResize"}
-                  sx={{
-                    borderStyle: "outset",
-                    borderBottom: 2,
-                    height: 20,
-                    backgroundColor: "#e2e2e2",
-                    marginTop: 0.6,
-                  }}
-                ></DraggerResize>
-              ),
-            }}
-            onResize={(e, dir, ref) => {
-              if (rndRef && rndRef.updatePosition)
-                rndRef?.updatePosition({ x: 0, y: height - ref.offsetHeight });
-              setAltura(ref.offsetHeight);
-            }}
-          >
-            <Grid
-              item
-              container
-              xs={12}
-              mt={2.2}
-              sx={{ height: "95%", maxHeight: altura }}
+          {mapaContext.slideLinhaTempo && (
+            <Rnd
+              ref={(c) => {
+                setRndRef(c);
+              }}
+              maxHeight={height * 0.9}
+              minHeight={height * 0.05}
+              resizeHandleStyles={{
+                bottom: displaYNoneStyle,
+                left: displaYNoneStyle,
+                right: displaYNoneStyle,
+                topLeft: displaYNoneStyle,
+                topRight: displaYNoneStyle,
+                bottomLeft: displaYNoneStyle,
+                bottomRight: displaYNoneStyle,
+                top: { height: 25 },
+              }}
+              size={{ height: altura, width: "100%" }}
+              disableDragging
+              position={{ y: height - altura, x: 0 }}
+              resizeHandleComponent={{
+                top: (
+                  <DraggerResize
+                    id={"parentSeletorResize"}
+                    sx={{
+                      borderStyle: "outset",
+                      borderBottom: 2,
+                      height: 20,
+                      backgroundColor: "#e2e2e2",
+                      marginTop: 0.6,
+                    }}
+                  ></DraggerResize>
+                ),
+              }}
+              onResize={(e, dir, ref) => {
+                if (rndRef && rndRef.updatePosition)
+                  rndRef?.updatePosition({
+                    x: 0,
+                    y: height - ref.offsetHeight,
+                  });
+                setAltura(ref.offsetHeight);
+              }}
             >
-              <LinhaTempo tempoAtualRef={tempoAtualRef} altura={altura} />
-            </Grid>
-          </Rnd>
+              <Grid
+                item
+                container
+                xs={12}
+                mt={2.2}
+                sx={{ height: "95%", maxHeight: altura }}
+              >
+                <LinhaTempo tempoAtualRef={tempoAtualRef} altura={altura} />
+              </Grid>
+            </Rnd>
+          )}
         </>
       }
     </Grid>

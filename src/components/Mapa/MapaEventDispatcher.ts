@@ -76,12 +76,19 @@ export function mapaReducer(
         action
       );
     }
+    case "selecionarCenaParaElemento": {
+      return MapaContextChanger.moverElementoParaCenaSelecionada(
+        oldMapaContext,
+        action
+      );
+    }
     case "movendoImagem": {
       return MapaContextChanger.movendoImagem(oldMapaContext, action);
     }
-    case "propriedadeToggle": {
-      action.nomePropriedade = "slidePropriedade";
-      action.valorPropriedade = !oldMapaContext.slidePropriedade;
+    case "slideToogle": {
+      action.nomePropriedade = action.nomePropriedade ?? "slidePropriedade";
+      action.valorPropriedade =
+        action.valorPropriedade ?? !oldMapaContext.slidePropriedade;
       return MapaContextChanger.changePropriedadeMapa(oldMapaContext, action);
     }
     case "modoVisao": {

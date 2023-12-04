@@ -171,3 +171,26 @@ form > *:first-child {
 .borda-seletora-ativa {
   background: var(--mui-palette-primary-main) !important;
 }
+
+.group-frame {
+  position: relative;
+  border: 1px solid black;
+  padding: 20px;
+  box-sizing: border-box;
+  .title {
+    position: absolute;
+    top: -13px;
+    left: 10px;
+    background: white;
+    padding: 0 5px;
+  }
+}
+
+.tabPanel-propriedades {
+  .MuiFormControl-root {
+    padding-top: 1vw;
+  }
+  .MuiFormLabel-root {
+    top: 1vw;
+  }
+}

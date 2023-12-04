@@ -80,12 +80,28 @@ export default function Propriedades(props: {
   }, [mapaContext, tempoAtualRef, dispatch, tempoAtual]);
 
   function TabPanel(props: TabPanelProps) {
+    const formRef = React.useRef(null);
+    const scrollRef = React.useRef(0);
+
+    React.useEffect(() => {
+      if ((window as any).scrollRef && formRef.current) {
+        formRef.current.scrollTop = (window as any).scrollRef;
+      }
+      formRef.current.onscrollend = (x) => {
+        scrollRef.current = x.srcElement.scrollTop;
+      };
+      return () => {
+        if (scrollRef.current) (window as any).scrollRef = scrollRef.current;
+      };
+    }, []);
     const { children, index, ...other } = props;
     return (
       <div
+        ref={formRef}
         role="tabpanel"
         hidden={value !== index}
         id={`full-width-tabpanel-${index}`}
+        className={"tabPanel-propriedades"}
         aria-labelledby={`full-width-tab-${index}`}
         style={{
           maxHeight:

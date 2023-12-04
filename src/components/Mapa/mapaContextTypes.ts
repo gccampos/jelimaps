@@ -72,6 +72,7 @@ export type mapaContextSchema = periodoInicioFim &
     elementoFoco?: tipoElemento;
     elementosFoco?: { id: NIL }[];
     slidePropriedade: boolean;
+    slideLinhaTempo: boolean;
     modoVisao?: "OpenStreetMap" | "Mapa Próprio";
     conteudo: conteudoType & {
       Marker?: arrayPadraoType;

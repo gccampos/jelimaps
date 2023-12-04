@@ -9,6 +9,8 @@ import {
   InputLabel,
   Select,
   MenuItem,
+  Container,
+  Typography,
 } from "@mui/material";
 import { useMapaContext, useMapaDispatch } from "@/components/Mapa/MapaContext";
 import { Queue } from "@mui/icons-material";
@@ -16,6 +18,7 @@ import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import moment from "moment";
 import { elementoPadrao } from "@/components/Mapa/mapaContextTypes";
+import useCaixaDialogo from "@/components/CaixaDialogo/useCaixaDialogo";
 
 export default function Cenas() {
   const mapaContext = useMapaContext();
@@ -38,6 +41,7 @@ export default function Cenas() {
   }, [index, mapaContext?.conteudo.cenas, troca]);
 
   const CenaSelecionadaComponent = () => {
+    const { openModalConfirm } = useCaixaDialogo();
     return (
       <ListItem>
         <Formik
@@ -72,56 +76,86 @@ export default function Cenas() {
                   });
                 }}
               >
-                <TextField
-                  fullWidth
-                  id="nome"
-                  name="nome"
-                  label="Título"
-                  value={formik.values.nome}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  error={
-                    (formik.touched as any).nome &&
-                    Boolean((formik.errors as any).nome)
-                  }
-                  helperText={
-                    (formik.touched as any).nome && (formik.errors as any).nome
-                  }
-                />
-                <TextField
-                  fullWidth
-                  id="cenaInicio"
-                  name="cenaInicio"
-                  label="Inicio"
-                  type="datetime-local"
-                  value={formik.values.cenaInicio}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  error={
-                    formik.touched.cenaInicio &&
-                    Boolean(formik.errors.cenaInicio)
-                  }
-                  helperText={
-                    formik.touched.cenaInicio && formik.errors.cenaInicio
-                  }
-                />
-                <TextField
-                  fullWidth
-                  id="cenaFim"
-                  name="cenaFim"
-                  label="Final"
-                  type="datetime-local"
-                  value={formik.values.cenaFim}
-                  inputProps={{
-                    step: 1,
-                  }}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  error={
-                    formik.touched.cenaFim && Boolean(formik.errors.cenaFim)
-                  }
-                  helperText={formik.touched.cenaFim && formik.errors.cenaFim}
-                />
+                <Container className="group-frame">
+                  <Typography variant="h6" className="title">
+                    Info
+                  </Typography>
+                  <TextField
+                    fullWidth
+                    id="nome"
+                    name="nome"
+                    label="Título"
+                    value={formik.values.nome}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    error={
+                      (formik.touched as any).nome &&
+                      Boolean((formik.errors as any).nome)
+                    }
+                    helperText={
+                      (formik.touched as any).nome &&
+                      (formik.errors as any).nome
+                    }
+                  />
+                  <TextField
+                    fullWidth
+                    id="texto"
+                    name="texto"
+                    label="Texto"
+                    multiline
+                    rows={4}
+                    value={formik.values.texto}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    error={
+                      (formik.touched as any).texto &&
+                      Boolean((formik.errors as any).texto)
+                    }
+                    helperText={
+                      (formik.touched as any).texto &&
+                      (formik.errors as any).texto
+                    }
+                  />
+                </Container>
+                <Container className="group-frame">
+                  <Typography variant="h6" className="title">
+                    Tempo
+                  </Typography>
+                  <TextField
+                    fullWidth
+                    id="cenaInicio"
+                    name="cenaInicio"
+                    label="Inicio"
+                    type="datetime-local"
+                    value={formik.values.cenaInicio}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    error={
+                      formik.touched.cenaInicio &&
+                      Boolean(formik.errors.cenaInicio)
+                    }
+                    helperText={
+                      formik.touched.cenaInicio && formik.errors.cenaInicio
+                    }
+                  />
+                  <TextField
+                    fullWidth
+                    id="cenaFim"
+                    name="cenaFim"
+                    label="Final"
+                    type="datetime-local"
+                    value={formik.values.cenaFim}
+                    inputProps={{
+                      step: 1,
+                    }}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    error={
+                      formik.touched.cenaFim && Boolean(formik.errors.cenaFim)
+                    }
+                    helperText={formik.touched.cenaFim && formik.errors.cenaFim}
+                  />
+                </Container>
                 {/* <FormControlLabel
               control={
                 <Switch
@@ -140,25 +174,6 @@ export default function Cenas() {
               }
               label={"Exibir tamanho da cena"}
             /> */}
-                <TextField
-                  fullWidth
-                  id="texto"
-                  name="texto"
-                  label="Texto"
-                  multiline
-                  rows={4}
-                  value={formik.values.texto}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  error={
-                    (formik.touched as any).texto &&
-                    Boolean((formik.errors as any).texto)
-                  }
-                  helperText={
-                    (formik.touched as any).texto &&
-                    (formik.errors as any).texto
-                  }
-                />
                 <Button
                   onClick={() => {
                     dispatch({
@@ -174,9 +189,15 @@ export default function Cenas() {
                     variant="outlined"
                     color="error"
                     onClick={() => {
-                      dispatch({
-                        type: "deletarCena",
-                        id: cenaSelectedRef.current.id,
+                      openModalConfirm({
+                        title: "Deletar item",
+                        message: "Você tem certeza disso?",
+                        onConfirm: () => {
+                          dispatch({
+                            type: "deletarCena",
+                            id: cenaSelectedRef.current.id,
+                          });
+                        },
                       });
                     }}
                   >
