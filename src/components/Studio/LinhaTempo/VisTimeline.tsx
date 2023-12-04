@@ -443,9 +443,13 @@ export default function VisTimeline(props: {
   }, [dispatch, mapaContext, visTimeline]);
 
   useEffect(() => {
-    if (visTimeline)
-      visTimeline.setCustomTime(mapaContext.tempo, "currentTime");
-  }, [visTimeline, mapaContext.tempo]);
+    if (visTimeline) {
+      visTimeline.setCustomTime(
+        mapaContext.tempo ?? mapaContext.conteudo.cenas[0].cenaInicio,
+        "currentTime"
+      );
+    }
+  }, [visTimeline, mapaContext.tempo, mapaContext.conteudo.cenas]);
 
   useEffect(() => {
     if (visTimeline) {
