@@ -17,12 +17,21 @@ import Legenda from "./legenda";
 import LinhaTempo from "./linhaTempo";
 import Leaflet, { Map } from "leaflet";
 
+export const isMobile = (height: number, width: number) => {
+  return (
+    "ontouchstart" in document.documentElement &&
+    !!navigator.userAgent.match(/Mobi/) &&
+    height > width
+  );
+};
+
 const Apresentacao = () => {
   const mapaContext = useMapaContext();
   const dispatch = useMapaDispatch();
-  const { height } = useWindowDimensions();
+  const { height, width } = useWindowDimensions();
   const [map, setMap] = useState<Map>(null);
   const [larguraLegenda, setLarguraLegenda] = useState(250);
+  const [alturaLegenda, setAlturaLegenda] = useState(height * 0.5);
   const [timelineSliderControl, setTimelineSliderControl] =
     useState<Leaflet.TimelineSliderControl>();
 
@@ -55,16 +64,20 @@ const Apresentacao = () => {
   return (
     <>
       <Grid item container xs={12}>
-        <Legenda
-          timelineSliderControl={timelineSliderControl}
-          map={map}
-          larguraLegenda={larguraLegenda}
-          setLarguraLegenda={setLarguraLegenda}
-        />
+        {!isMobile(height, width) && (
+          <Legenda
+            timelineSliderControl={timelineSliderControl}
+            map={map}
+            larguraLegenda={larguraLegenda}
+            setLarguraLegenda={setLarguraLegenda}
+            alturaLegenda={alturaLegenda}
+            setAlturaLegenda={setAlturaLegenda}
+          />
+        )}
         <Grid item xs>
           <div
             style={{
-              height: height,
+              height: isMobile(height, width) ? height - alturaLegenda : height,
               display: "grid",
             }}
           >
@@ -113,6 +126,16 @@ const Apresentacao = () => {
             </MapContainer>
           </div>
         </Grid>
+        {isMobile(height, width) && (
+          <Legenda
+            timelineSliderControl={timelineSliderControl}
+            map={map}
+            larguraLegenda={larguraLegenda}
+            setLarguraLegenda={setLarguraLegenda}
+            alturaLegenda={alturaLegenda}
+            setAlturaLegenda={setAlturaLegenda}
+          />
+        )}
       </Grid>
     </>
   );
