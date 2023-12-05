@@ -1,3 +1,4 @@
+import React from "react";
 import {
   Box,
   Button,
@@ -9,37 +10,36 @@ import {
   Grid,
   Typography,
 } from "@mui/material";
+import DefaultTemplate from "@/main/template/DefaultTemplate";
 
-const { default: DefaultTemplate } = require("@/main/template/DefaultTemplate");
-const { default: React } = require("react");
+const equipe = [
+  {
+    nome: "Guilherme Campos",
+    foto: "/assets/guilherme.jpg",
+    descricao:
+      "Estudante de Sistemas de Informação, com interesse em desenvolvimento web e dados abertos",
+    git: "http://github.com/gccampos",
+    email: "mailto:gcordeiro@id.uff.br",
+  },
+  {
+    nome: "Danilo Siqueira",
+    foto: "/assets/danilo.jpg",
+    descricao:
+      "Estudante de Sistemas de Informação, com interesse em desenvolvimento e segurança da informação",
+    git: "http://github.com/siqueirad",
+    email: "mailto:danilo_siqueira@id.uff.br",
+  },
+  {
+    nome: "Troy Kohwalter",
+    foto: "/assets/troy.jpeg",
+    descricao:
+      "Doutor em Computação pela UFF e professor adjunto da mesma. Seus interesses são Engenharia de Software e Entretenimento Digital",
+    git: "",
+    email: "mailto:troy@ic.uff.br",
+  },
+];
 
 const About = () => {
-  const equipe = [
-    {
-      nome: "Guilherme Campos",
-      foto: "/assets/guilherme.jpg",
-      descricao:
-        "Estudante de Sistemas de Informação, com interesse em desenvolvimento web e dados abertos",
-      git: "http://github.com/gccampos",
-      email: "mailto:gcordeiro@id.uff.br",
-    },
-    {
-      nome: "Danilo Siqueira",
-      foto: "/assets/danilo.jpg",
-      descricao:
-        "Estudante de Sistemas de Informação, com interesse em desenvolvimento e segurança da informação",
-      git: "http://github.com/siqueirad",
-      email: "mailto:danilo_siqueira@id.uff.br",
-    },
-    {
-      nome: "Troy Kohwalter",
-      foto: "/assets/troy.jpeg",
-      descricao:
-        "Doutor em Computação pela UFF e professor adjunto da mesma. Seus interesses são Engenharia de Software e Entretenimento Digital",
-      git: "",
-      email: "mailto:troy@ic.uff.br",
-    },
-  ];
   return (
     <DefaultTemplate>
       <main>
