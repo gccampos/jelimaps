@@ -1,0 +1,624 @@
+{
+  "elementoInteracao": {
+    "nome": "select",
+    "label": "Interagir com elementos",
+    "icon": {
+      "type": { "type": {}, "compare": null },
+      "key": null,
+      "ref": null,
+      "props": {},
+      "_owner": null
+    },
+    "iconComponent": null
+  },
+  "slidePropriedade": true,
+  "cenaInicio": "2023-12-01T13:32:51",
+  "cenaFim": "2023-12-01T13:47:04",
+  "tempo": "2023-12-01T13:36:49",
+  "mapOptions": { "center": [0, 0] },
+  "playStatus": 2,
+  "simpleTimeline": true,
+  "conteudo": {
+    "cenas": [
+      {
+        "cenaInicio": "2023-12-01T13:35:20",
+        "cenaFim": "2023-12-01T13:36:20",
+        "id": "096b6282-52fd-4e17-8054-72790fbdc656",
+        "nome": "Reverse Mountain",
+        "dataRef": "cenas",
+        "visTimelineObject": { "type": "background" },
+        "type": "FeatureCollection",
+        "color": "#df000024",
+        "texto": "Reverse Mountain é uma montanha em um dos pontos onde os quatro oceanos se encontram e é uma das duas entradas conhecidas para o Grand Line. Muitos piratas que  tentam entrar na Grand Line morrem antes mesmo de chegar até o topo da montanha, porque as correntes de águas hostis e tempestades os força a bater contra as paredes da montanha.\n\nEste lugar é único em que os rios dos 4 mares fluem até a montanha, encontram-se no topo, e depois descem para a Grand Line.",
+        "center": { "lat": 0.40691987320453815, "lng": 0.529317855834961 },
+        "zoom": 13,
+        "bounds": {
+          "_southWest": {
+            "lat": 0.345380598720786,
+            "lng": 0.44631958007812506
+          },
+          "_northEast": { "lat": 0.46845867825667575, "lng": 0.612316131591797 }
+        },
+        "properties": { "selected": null }
+      },
+      {
+        "id": "83abdeb1-3e8c-433b-a198-887ef8b5744e",
+        "cenaInicio": "2023-12-01T13:36:20",
+        "cenaFim": "2023-12-01T13:37:20",
+        "nome": "Whisky Peak",
+        "dataRef": "cenas",
+        "color": "rgba(46, 86, 4, 0.8)",
+        "visTimelineObject": { "type": "background" },
+        "texto": "Conduzido pelo misterioso Mr. 9 e Ms. Wednesday, os Chapéus de Palha vão para Whisky Peak, onde as pessoas da cidade iniciam imediatamente uma festa para celebrar a sua chegada. Mas há mais nesta cidade do que parece.",
+        "center": { "lat": 0.33284953771735826, "lng": 0.5810737609863282 },
+        "zoom": 12,
+        "bounds": {
+          "_southWest": {
+            "lat": 0.20976973400311924,
+            "lng": 0.4150772094726563
+          },
+          "_northEast": {
+            "lat": 0.45592780548689615,
+            "lng": 0.7470703125000001
+          }
+        },
+        "properties": { "selected": true }
+      },
+      {
+        "id": "a044b9b7-eedd-444f-9898-882386d21a3d",
+        "cenaInicio": "2023-12-01T13:37:20",
+        "cenaFim": "2023-12-01T13:38:20",
+        "nome": "Little Garden",
+        "dataRef": "cenas",
+        "color": "rgba(97, 167, 78, 0.8)",
+        "visTimelineObject": { "type": "background" },
+        "texto": "Little Garden é a segunda ilha que os Piratas do Chapéu de Palha encontram na Grand Line. É uma ilha de verão, que é populada apenas por dinossauros, Dorry e Brogy.",
+        "center": { "lat": 0.3310363948525228, "lng": 0.6323254108428956 },
+        "zoom": 16,
+        "bounds": {
+          "_southWest": {
+            "lat": 0.32334394483196527,
+            "lng": 0.621950626373291
+          },
+          "_northEast": { "lat": 0.3387288389059526, "lng": 0.6427001953125001 }
+        },
+        "properties": { "selected": null }
+      },
+      {
+        "id": "f1c4a58b-98be-473d-bb36-0e39c5feabd1",
+        "cenaInicio": "2023-12-01T13:38:20",
+        "cenaFim": "2023-12-01T13:39:20",
+        "nome": "Ilha Drum",
+        "dataRef": "cenas",
+        "color": "rgba(210, 82, 234, 0.8)",
+        "visTimelineObject": { "type": "background" },
+        "texto": "lha de Drum é a terceira ilha que os Chapéus de Palha encontraram na Grand Line. É uma ilha de inverno que neva durante todo o ano.",
+        "center": { "lat": 0.29605018487410323, "lng": 0.65993070602417 },
+        "zoom": 15,
+        "bounds": {
+          "_southWest": {
+            "lat": 0.2806652288556329,
+            "lng": 0.6391811370849609
+          },
+          "_northEast": { "lat": 0.31143511954658615, "lng": 0.680680274963379 }
+        },
+        "properties": { "selected": null }
+      },
+      {
+        "id": "9a320406-f20e-406f-8775-d3ec9fb79a27",
+        "cenaInicio": "2023-12-01T13:39:20",
+        "cenaFim": "2023-12-01T13:40:20",
+        "nome": "cena #5",
+        "dataRef": "cenas",
+        "color": "rgba(224, 183, 69, 0.8)",
+        "visTimelineObject": { "type": "background" },
+        "properties": { "selected": null }
+      },
+      {
+        "id": "3aecfc06-c121-4aa9-827b-fc085d09f1ec",
+        "cenaInicio": "2023-12-01T13:40:20",
+        "cenaFim": "2023-12-01T13:41:20",
+        "nome": "cena #6",
+        "dataRef": "cenas",
+        "color": "rgba(19, 24, 126, 0.8)",
+        "visTimelineObject": { "type": "background" },
+        "properties": { "selected": null }
+      },
+      {
+        "id": "61648c12-acfb-4ce3-ba08-1397e6640663",
+        "cenaInicio": "2023-12-01T13:41:20",
+        "cenaFim": "2023-12-01T13:42:20",
+        "nome": "cena #7",
+        "dataRef": "cenas",
+        "color": "rgba(187, 231, 240, 0.8)",
+        "visTimelineObject": { "type": "background" },
+        "properties": { "selected": null }
+      }
+    ],
+    "Marker": [
+      {
+        "geometry": {
+          "coordinates": [0.400305229, 0.558071136],
+          "type": "Marker"
+        },
+        "dataRef": "Marker",
+        "nome": "Entrada da Montanha Reversa",
+        "texto": "Nas \"margens\" do rio há vários portais construídos por alguém desconhecido.",
+        "id": "493e0be4-c339-4215-a966-3bc5c86ae497",
+        "type": "Feature",
+        "cenaInicio": "2023-12-01T13:35:21",
+        "cenaFim": "2023-12-01T13:35:40",
+        "order": 0,
+        "draggable": true,
+        "": "",
+        "imagemURL": "https://onedrive.live.com/embed?resid=9337381634E30E6%211133543&authkey=%21AKEB3gp4SwDVL-E&width=660",
+        "zoom": 13
+      },
+      {
+        "geometry": {
+          "coordinates": [0.32357997546390455, 0.5839920043945314],
+          "type": "Marker"
+        },
+        "dataRef": "Marker",
+        "nome": "Cabos gêmeos",
+        "texto": "A região dos Cabos Gêmeos está localizada na parte inferior da Reverse Mountain, na saída que leva para a Grand Line.\n\nLaboon é uma baleia cachalote muito grande (de tamanho comparável ou maior do que os monstros do Calm Belt), nativo do West Blue, que os Piratas do Chapéu de Palha encontraram imediatamente após entrarem na Grand Line.",
+        "id": "1bb3003f-ffbb-4651-8c17-fb9afec52117",
+        "type": "Feature",
+        "cenaInicio": "2023-12-01T13:35:58",
+        "cenaFim": "2023-12-01T13:36:21",
+        "order": 2,
+        "draggable": true,
+        "": "",
+        "imagemURL": "https://onedrive.live.com/embed?resid=9337381634E30E6%211133545&authkey=%21ANZW_QISos_Hnww&width=660"
+      },
+      {
+        "geometry": {
+          "coordinates": [0.324996159, 0.584871769],
+          "type": "Marker"
+        },
+        "dataRef": "Marker",
+        "nome": "Mr. 9 e Ms. Wednesday (Princesa Vivi)",
+        "texto": "Mr. 9 é um jovem que usa uma coroa dourada no topo de seu cabelo vermelho e tem o seu número de agente escrito em seu rosto.\n\nVivi estreou como uma das principais antagonistas do Arco Reverse Mountain, sendo uma Caçadora de Recompensas da Baroque Works sob o codinome de Miss Wednesday.\n\n",
+        "id": "c9d5e817-1755-41db-94f6-cfd71c90b9ae",
+        "type": "Feature",
+        "cenaInicio": "2023-12-01T13:36:47",
+        "cenaFim": "2023-12-01T13:37:09",
+        "order": 4,
+        "draggable": true,
+        "": "",
+        "imagemURL": "https://onedrive.live.com/embed?resid=9337381634E30E6%211133550&authkey=%21ADRb_61WEw-RZiY&width=660",
+        "zoom": 13
+      },
+      {
+        "geometry": {
+          "coordinates": [0.3319268733424794, 0.6324005126953126],
+          "type": "Marker"
+        },
+        "dataRef": "Marker",
+        "nome": "Brogy",
+        "texto": "Broggy é um gigante que se veste com uma fantasia de viking, que consiste em um macacão vermelho com alças e botões de ouro, com forros de pele, uma tira de couro em torno de seu ombro direito e o outro como um cinto, calça amarela com listras pretas e forros de pele na parte inferior, sapatos amarelos e um capacete vermelho com dois chifres. Broggy tem uma barba loira em forma de lâmona e um machado, olhos redondos e um nariz de porco.",
+        "id": "bc16e219-6b26-4f09-8b29-7c089e0aef75",
+        "type": "Feature",
+        "cenaInicio": "2023-12-01T13:37:21",
+        "cenaFim": "2023-12-01T13:37:47",
+        "order": 7,
+        "draggable": true,
+        "zoom": 17,
+        "": "",
+        "imagemURL": "https://onedrive.live.com/embed?resid=9337381634E30E6%211133552&authkey=%21AIAg93au0Hojp6A&width=640&height=512"
+      },
+      {
+        "geometry": {
+          "coordinates": [0.3313904405267768, 0.6322932243347169],
+          "type": "Marker"
+        },
+        "dataRef": "Marker",
+        "nome": "Dorry",
+        "texto": "Dorry é um gigante bem musculoso, com uma longa barba. Ele geralmente se veste com um traje viking com um capacete que vai sobre os olhos. Ele é tão grande que Luffy pode caber na palma da sua mão. Ele tem 160 anos, o que significa que ele é um gigante no auge de sua vida",
+        "id": "dfbec661-1642-4213-b91e-1ce43430f273",
+        "type": "Feature",
+        "cenaInicio": "2023-12-01T13:37:21",
+        "cenaFim": "2023-12-01T13:37:47",
+        "order": 8,
+        "draggable": true,
+        "zoom": 17,
+        "": "",
+        "imagemURL": "https://onedrive.live.com/embed?resid=9337381634E30E6%211133554&authkey=%21ADQNHnaCqV4wQFM&width=640&height=512"
+      },
+      {
+        "geometry": {
+          "coordinates": [0.299805227, 0.665831566],
+          "type": "Marker"
+        },
+        "dataRef": "Marker",
+        "nome": "Tony Tony Chopper",
+        "texto": "Com a vida isolada de Chopper no Castelo de Drum (que ele e a Dr. Kureha anexaram depois que o Rei Wapol fugiu) um dia terminaria com a chegada de Monkey D. Luffy e sua tripulação pirata. Chopper, naturalmente desconfiado dos humanos, não estava contente especialmente por Luffy e Sanji decidirem cozinhá-lo e comê-lo. Mas quando Chopper os mostrou seus poderes médicos e suas habilidades de luta contra as tropas enviadas pelo Rei Wapol, Luffy o ofereceu (forçou) a posição (ainda vaga) de Médico do Navio na sua tripulação.",
+        "id": "71273734-ec51-4207-af73-d5fa4ce7edc0",
+        "type": "Feature",
+        "cenaInicio": "2023-12-01T13:38:30",
+        "cenaFim": "2023-12-01T13:38:39",
+        "order": 14,
+        "draggable": true,
+        "": "",
+        "imagemURL": "https://onedrive.live.com/embed?resid=9337381634E30E6%211133561&authkey=%21AH14iq12GQhr5QA&width=270&height=285"
+      },
+      {
+        "geometry": {
+          "coordinates": [0.299805227, 0.665831566],
+          "type": "Marker"
+        },
+        "dataRef": "Marker",
+        "nome": "Dra.Kureha",
+        "texto": "Dra.Kureha é uma doutora altamente habilidosa da Ilha de Drum. Ela é referida como uma \"bruxa\" por algumas pessoas. Ela é a mentora de Tony Tony Chopper.",
+        "id": "b9d3b9e2-ef36-4410-b889-5ff8a6891957",
+        "type": "Feature",
+        "cenaInicio": "2023-12-01T13:38:30",
+        "cenaFim": "2023-12-01T13:38:39",
+        "order": 15,
+        "draggable": true,
+        "": "",
+        "imagemURL": "https://onedrive.live.com/embed?resid=9337381634E30E6%211133562&authkey=%21AACBJPOKOWSGczQ&width=250&height=503"
+      },
+      {
+        "geometry": {
+          "coordinates": [0.299805227, 0.665831566],
+          "type": "Marker"
+        },
+        "dataRef": "Marker",
+        "nome": "Tony Tony Chopper",
+        "texto": "Chopper é uma rena com uma anormalidade de um nariz azul que motivou as outra renas a tratá-lo como uma rena problemática (sempre o fazendo seguir o rebanho atrás deles de longe). Porém, quando a jovem rena comeu a Hito Hito no Mi, ele foi até mais afastado do seu rebanho (e com o aumento na inteligência concedida pela fruta, agora muito ciente disso) ele foi abandonado. Infelizmente para Chopper, suas tentativas em se comunicar com os humanos na Ilha de Drum demonstraram ser desastrosas. Ele era ferido por aldeãos que o confundiram com o Abominável Homem das Neves. ",
+        "id": "20effd87-08c4-48f3-9b27-422725abd7de",
+        "type": "Feature",
+        "cenaInicio": "2023-12-01T13:38:21",
+        "cenaFim": "2023-12-01T13:38:30",
+        "order": 16,
+        "draggable": true,
+        "": "",
+        "imagemURL": "https://onedrive.live.com/embed?resid=9337381634E30E6%211133560&authkey=!AL80gpot-Uxbc6g"
+      },
+      {
+        "geometry": {
+          "coordinates": [0.299805227, 0.665831566],
+          "type": "Marker"
+        },
+        "dataRef": "Marker",
+        "nome": "Wapol",
+        "texto": "Wapol de Latão foi o ex-monarca do Reino de Drum, originalmente nomeado a partir das ''Montanhas de Drum'', que suportam o castelo de Wapol. Ele se tornou um pirata depois de fugir de seu país quando Barba Negra e sua tripulação atacaram a ilha.",
+        "id": "6391a675-01b1-4bdb-8a47-22118003a371",
+        "type": "Feature",
+        "cenaInicio": "2023-12-01T13:38:39",
+        "cenaFim": "2023-12-01T13:38:48",
+        "order": 17,
+        "draggable": true,
+        "": "",
+        "imagemURL": "https://onedrive.live.com/embed?resid=9337381634E30E6%211133563&authkey=%21ACT-39Cvw6OoKqY&width=458&height=486"
+      },
+      {
+        "geometry": {
+          "coordinates": [0.2999446996875416, 0.6671619415283203],
+          "type": "Marker"
+        },
+        "dataRef": "Marker",
+        "nome": "Marker#10",
+        "texto": "",
+        "id": "c9890b22-acee-4b06-8fde-58a7afc93bcd",
+        "type": "Feature",
+        "cenaInicio": "2023-12-01T13:38:48",
+        "cenaFim": "2023-12-01T13:39:19",
+        "order": 18,
+        "draggable": true
+      }
+    ],
+    "LineString": [
+      {
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [0.556869507, 0.398251188],
+            [0.552921295, 0.390869923],
+            [0.544681549, 0.38366031],
+            [0.539188385, 0.37353251],
+            [0.532665253, 0.369069408],
+            [0.526828766, 0.363404698],
+            [0.520648956, 0.357911643],
+            [0.51240921, 0.350187029],
+            [0.507259369, 0.34520894],
+            [0.505714417, 0.341775775],
+            [0.498504639, 0.334909439],
+            [0.494041443, 0.332506221],
+            [0.487003326, 0.326326513],
+            [0.492153168, 0.322721682],
+            [0.52734375, 0.321090925],
+            [0.549917221, 0.320919266],
+            [0.563650131, 0.321605901],
+            [0.577640533, 0.323579975]
+          ]
+        },
+        "dataRef": "LineString",
+        "nome": "Subida",
+        "texto": "As correntes de subida são fortes e perigosas causando muitos acidentes nas embarcações.",
+        "properties": {
+          "mode": "linestring",
+          "createdAt": 1701492902454,
+          "updatedAt": 1701492906385
+        },
+        "id": "eef38c41-e25e-40cc-9168-647f029e1e12",
+        "type": "Feature",
+        "cenaInicio": "2023-12-01T13:35:40",
+        "cenaFim": "2023-12-01T13:35:58",
+        "order": 1,
+        "draggable": true,
+        "eventTimeout": null,
+        "": "",
+        "imagemURL": "https://onedrive.live.com/embed?resid=9337381634E30E6%211133544&authkey=%21APqrO-nIloU1BAc&width=660",
+        "zoom": 13
+      },
+      {
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [0.584206581, 0.32242128],
+            [0.59969902, 0.320575949],
+            [0.601136684, 0.320511577],
+            [0.602638721, 0.320146802],
+            [0.604119301, 0.319953686],
+            [0.605299473, 0.320661778],
+            [0.606200695, 0.320554491],
+            [0.607573986, 0.320039515],
+            [0.609397888, 0.320790522],
+            [0.611715317, 0.320468662],
+            [0.624675751, 0.332334562]
+          ]
+        },
+        "dataRef": "LineString",
+        "nome": "Whisky Peak",
+        "texto": "Em sua missão de levar a Princesa Vivi para Alabasta, os Chapéus de Palha pousam em Little Garden, que na verdade é uma enorme ilha que ainda está presa na era pré-histórica. No entanto, há mais do que dinossauros nesta ilha, algo que a tripulação logo descobre quando eles encontram dois gigantes que estão travados em combate por mais de 100 anos e quatro membros de alto escalão da Baroque Works.\n\n",
+        "properties": {
+          "mode": "linestring",
+          "createdAt": 1701496167582,
+          "updatedAt": 1701496177663
+        },
+        "id": "7b96e960-4f61-47de-8d71-12b7728810f9",
+        "type": "Feature",
+        "cenaInicio": "2023-12-01T13:37:09",
+        "cenaFim": "2023-12-01T13:37:21",
+        "order": 5,
+        "draggable": true,
+        "eventTimeout": null,
+        "": "",
+        "imagemURL": "https://onedrive.live.com/embed?resid=9337381634E30E6%211133551&authkey=%21AN4MZAtiWcPa8PA&width=500&height=480"
+      },
+      {
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [0.631370544, 0.318773532],
+            [0.62828064, 0.302465941]
+          ]
+        },
+        "dataRef": "LineString",
+        "nome": "Devorador de ilhas",
+        "texto": "A dupla foi ao oceano para se despedir de seus novos amigos, os Chapéus de Palha. Eles alertaram os piratas para continuarem em linha reta, não importa o que acontecesse, enquanto a tripulação desembarcava da ilha.",
+        "properties": {
+          "mode": "linestring",
+          "createdAt": 1701498686622,
+          "updatedAt": 1701498698039
+        },
+        "id": "ea12b7d2-08db-4506-9f00-343daed32b47",
+        "type": "Feature",
+        "cenaInicio": "2023-12-01T13:38:12",
+        "cenaFim": "2023-12-01T13:38:16",
+        "order": 11,
+        "draggable": true,
+        "": "",
+        "imagemURL": "https://onedrive.live.com/embed?resid=9337381634E30E6%211133558&authkey=%21AId0REDX80EMsoo&width=500&height=375",
+        "zoom": 13
+      },
+      {
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [0.635490417, 0.295084602],
+            [0.651454926, 0.296114557]
+          ]
+        },
+        "dataRef": "LineString",
+        "nome": "Caminho aberto",
+        "texto": "",
+        "properties": {
+          "mode": "linestring",
+          "createdAt": 1701498702902,
+          "updatedAt": 1701498705432
+        },
+        "id": "a6dd3ecc-915f-4034-8166-d8e1e509ca8c",
+        "type": "Feature",
+        "cenaInicio": "2023-12-01T13:38:16",
+        "cenaFim": "2023-12-01T13:38:20",
+        "order": 12,
+        "draggable": true,
+        "": "",
+        "imagemURL": "https://onedrive.live.com/embed?resid=9337381634E30E6%211133559&authkey=%21ABA12_XHrNTA6IA&width=640&height=480"
+      }
+    ],
+    "ImageOverlay": [
+      {
+        "bounds": {
+          "_southWest": {
+            "lat": 0.3350757333823321,
+            "lng": 0.5680596828460694
+          },
+          "_northEast": { "lat": 0.3389219545782607, "lng": 0.5761653184890748 }
+        },
+        "positionTL": [0.35705335338450117, 0.5607318878173829],
+        "positionBL": [0.3221638015865476, 0.5679416656494142],
+        "positionTR": [0.35228985439370425, 0.593862533569336],
+        "dataRef": "ImageOverlay",
+        "nome": "Laboon",
+        "urlImagem": "https://global-img.gamergen.com/one-piece-burning-blood-01-03-2016-personnage-soutien-3_0000830537.jpg",
+        "id": "6a09483d-4e0b-4721-bf6b-693db537b7bb",
+        "type": "Feature",
+        "cenaInicio": "2023-12-01T13:36:21",
+        "cenaFim": "2023-12-01T13:36:53",
+        "order": 3,
+        "draggable": true,
+        "texto": "Mais de cinquenta anos antes, Laboon conheceu os piratas Rumbar após tornar-se perdido e separado do seu grupo social e começou a segui-los em sua solidão. Depois de um tempo eles percebem o quão triste ele olhava e o animavam cantando e, como resultado, continuou a segui-los. A equipe cresceu ligado a ele, porque ele era uma \"baleia bonita\". Eventualmente, enquanto o alimentavam com isca, Brook o nomeou \"Laboon\". Ele foi aceito como membro da tripulação e até mesmo ajudou-os quando um ataque deixou os membros da tripulação caídos ao mar e ninguém mais poderia ajudá-los.\n\nApesar de ser um membro da tripulação, quando os piratas Rumbar decidiram ir para a Grand Line, eles foram forçados a deixar Laboon para trás, porque ele era apenas um bebê. No entanto Laboon se recusou a deixá-los e Yorki, seu capitão, ordenou que os outros ignorasem Laboon. Quando os piratas finalmente entraram na Grand Line, para o seu horror, descobriram que Laboon tinha os seguido. Depois de reparar seu navio a equipe finalmente se despedia de Laboon, prometendo-lhe que voltaria dentro de dois ou três anos, depois de ter viajado por todo o caminho em torno da Grand Line.\n\nDepois de entrar na Grand Line, Laboon foi a primeira coisa que os Chapéu de Palha viram. O atirando com um canhão na esperança de que ele iria atrasá-lo, Luffy, em vez disso, aterrisou na cabeça da cachalote. Depois de salvá-lo de Mr. 9 e Miss Wednesday que estavam tentando caçar Laboon por comida, Crocus explicou a Luffy porque Laboon iria bater a cabeça na Red Line.\n\nLuffy, em um esforço para dar Laboon um senso renovado de esperança, puxa briga com a baleia enfiando o mastro do Merry na cabeça da cachalote. Após a batalha (que Luffy chamou de empate), Luffy prometeu a Laboon que voltaria a vê-lo, sob o pretexto de querer uma revanche, fazendo Laboon ter lágrimas de alegria. Como um sinal da promessa de futuro da revanche, Luffy pinta sua Jolly Roger na cabeça de Laboon, comentando que a insígnia vai sair se Laboon continuar se chocando na montanha. Isso a impede de continuar a bater com a cabeça. Os Chapéus de Palha, em seguida, partem, de bom humor para Grand Line.",
+        "zoom": 14
+      },
+      {
+        "bounds": {
+          "_southWest": { "lat": 0.327377922147381, "lng": 0.6263065338134767 },
+          "_northEast": { "lat": 0.3350703690560329, "lng": 0.6425178050994874 }
+        },
+        "positionTL": [0.33778471778597263, 0.6245470046997071],
+        "positionBL": [0.3242236953412983, 0.6247615814208984],
+        "positionTR": [0.33752723019187847, 0.643301010131836],
+        "dataRef": "ImageOverlay",
+        "nome": "Ilha",
+        "urlImagem": "https://onedrive.live.com/embed?resid=9337381634E30E6%211133507&authkey=%21AEoMQ11rHBdfpAY&width=1080&height=810",
+        "id": "52ce5197-5c67-4c5c-8892-f1ca41404c5b",
+        "type": "Feature",
+        "cenaInicio": "2023-12-01T13:37:24",
+        "cenaFim": "2023-12-01T13:38:11",
+        "order": 6,
+        "draggable": false,
+        "zoom": 14
+      },
+      {
+        "bounds": {
+          "_southWest": {
+            "lat": 0.28845426776503486,
+            "lng": 0.649244785308838
+          },
+          "_northEast": { "lat": 0.3038392131151615, "lng": 0.6816673278808595 }
+        },
+        "positionTL": [0.311590686493561, 0.6429308652877809],
+        "positionBL": [0.2799785915659168, 0.6427001953125001],
+        "positionTR": [0.31133319830147166, 0.6873053312301637],
+        "dataRef": "ImageOverlay",
+        "nome": "A ilha sem rei",
+        "urlImagem": "https://onedrive.live.com/embed?resid=9337381634E30E6%211133504&authkey=%21AGvuOz-a-r1bJ_0&width=4096&height=3072",
+        "id": "2087bbbc-f90b-476c-8fa8-86c1d568e45b",
+        "type": "Feature",
+        "cenaInicio": "2023-12-01T13:38:20",
+        "cenaFim": "2023-12-01T13:39:20",
+        "order": 13,
+        "draggable": false,
+        "opacity": 1,
+        "texto": "Devido às ações do rei anterior, Wapol, resta apenas um médico - uma \"bruxa\" chamada Kureha que mora no topo de uma montanha. Luffy e Sanji devem chegar ao pico, no antigo palácio real e atual morada da \"bruxa jovem\" "
+      }
+    ],
+    "Polygon": [
+      {
+        "geometry": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [0.627465248, 0.32707752],
+              [0.625276566, 0.32971677],
+              [0.62615633, 0.333879489],
+              [0.626993179, 0.334780695],
+              [0.628688335, 0.335767731],
+              [0.635983944, 0.337248285],
+              [0.642635822, 0.335166927],
+              [0.643279552, 0.332634965],
+              [0.643258095, 0.329051593],
+              [0.638151169, 0.325275104],
+              [0.633237362, 0.326262141],
+              [0.630984306, 0.325618422],
+              [0.628623962, 0.325854452],
+              [0.627465248, 0.32707752]
+            ]
+          ]
+        },
+        "dataRef": "Polygon",
+        "nome": "A competição de honra",
+        "texto": "Dorry tinha sido um dos dois líderes na tripulação pirata gigante. Sua equipe foi uma das mais violentas do mundo, pois a tripulação era composta por Gigantes.\n\nSua vida como um pirata terminou quando ele entrou em um concurso de honra com o seu companheiro capitão Brogy sobre os tamanhos dos peixes capturados pelos dois . Foi revelado em um flashback que uma menina tinha perguntado qual tinha sido maior. Os dois foram para a ilha isolada de Little Garden para resolver a contenda com um duelo, e tem sido assim nos últimos 100 anos.",
+        "properties": {
+          "mode": "polygon",
+          "createdAt": 1701498181786,
+          "updatedAt": 1701498195824
+        },
+        "id": "2253ce11-fe8d-4a0e-bd5c-6bca9fdc5a94",
+        "type": "Feature",
+        "cenaInicio": "2023-12-01T13:37:46",
+        "cenaFim": "2023-12-01T13:37:58",
+        "order": 9,
+        "draggable": true,
+        "eventTimeout": null,
+        "zoom": 16,
+        "": "",
+        "imagemURL": "https://onedrive.live.com/embed?resid=9337381634E30E6%211133553&authkey=%21AFoAi5DHK-1xBCY&width=640&height=365"
+      },
+      {
+        "geometry": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [0.627465248, 0.32707752],
+              [0.625276566, 0.32971677],
+              [0.62615633, 0.333879489],
+              [0.626993179, 0.334780695],
+              [0.628688335, 0.335767731],
+              [0.635983944, 0.337248285],
+              [0.642635822, 0.335166927],
+              [0.643279552, 0.332634965],
+              [0.643258095, 0.329051593],
+              [0.638151169, 0.325275104],
+              [0.633237362, 0.326262141],
+              [0.630984306, 0.325618422],
+              [0.628623962, 0.325854452],
+              [0.627465248, 0.32707752]
+            ]
+          ]
+        },
+        "dataRef": "Polygon",
+        "nome": "100 anos depois",
+        "texto": "Os dois foram para a ilha isolada de Little Garden para resolver a contenda com um duelo, e tem sido assim nos últimos 100 anos.",
+        "properties": {
+          "mode": "polygon",
+          "createdAt": 1701498181786,
+          "updatedAt": 1701498195824
+        },
+        "id": "1208bdb9-baa3-422e-96cb-b53d9cfa6dc9",
+        "type": "Feature",
+        "cenaInicio": "2023-12-01T13:37:57",
+        "cenaFim": "2023-12-01T13:38:10",
+        "order": 10,
+        "draggable": true,
+        "eventTimeout": null,
+        "": "",
+        "imagemURL": "https://onedrive.live.com/embed?resid=9337381634E30E6%211133555&authkey=%21ANayXQKr-h7nKSQ&width=270&height=187"
+      }
+    ]
+  },
+  "timelineOptions": {
+    "editable": { "remove": true, "updateTime": true },
+    "preferZoom": true,
+    "start": "2023-12-01T13:35:20",
+    "end": "2023-12-01T13:45:20",
+    "autoResize": false,
+    "selectable": true,
+    "multiselect": false,
+    "orientation": { "axis": "top" },
+    "longSelectPressTime": 777,
+    "rollingMode": { "offset": 0, "follow": false },
+    "showCurrentTime": false,
+    "groupHeightMode": "fitItems",
+    "verticalScroll": true,
+    "margin": { "item": { "vertical": 20 } },
+    "zoomable": true,
+    "moveable": true,
+    "locale": "pt_BR"
+  },
+  "modoVisao": "Mapa Próprio",
+  "urlMapaProprio": "https://onedrive.live.com/embed?resid=9337381634E30E6%211133508&authkey=%21AEGlax_ukejjssE&width=3080",
+  "center": { "lat": 0.33284953771735826, "lng": 0.5810737609863282 },
+  "zoom": 12,
+  "bounds": {
+    "_southWest": { "lat": 0.20976973400311924, "lng": 0.4150772094726563 },
+    "_northEast": { "lat": 0.45592780548689615, "lng": 0.7470703125000001 }
+  },
+  "elementosFoco": null,
+  "elementoFoco": null,
+  "caixaDialogo": ""
+}

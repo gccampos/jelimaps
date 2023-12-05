@@ -9,6 +9,7 @@ import Button from "@mui/material/Button";
 import MenuItem from "@mui/material/MenuItem";
 import { Public } from "@mui/icons-material";
 import { useRouter } from "next/router";
+import useCaixaDialogo from "@/components/CaixaDialogo/useCaixaDialogo";
 
 const pages = [
   { text: "Home", href: "/" },
@@ -20,6 +21,7 @@ function ResponsiveAppBar() {
   const router = useRouter();
   const Logo = "JeliMaps";
   const [anchorElNav, setAnchorElNav] = React.useState(null);
+  const { openModalConfirm } = useCaixaDialogo();
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -30,7 +32,20 @@ function ResponsiveAppBar() {
   };
 
   const handleRouter = (path) => {
-    router.push(path);
+    path == "/mapa" && localStorage.getItem("mapaContext")
+      ? openModalConfirm({
+          title: "Você tem um projeto em andamento",
+          message: "Deseja continuar ou começar do zero?",
+          onConfirm: () => {
+            router.push("/mapa?novo");
+          },
+          onCancel: () => {
+            router.push("/mapa");
+          },
+          cancelarTitle: "Continuar um projeto",
+          confirmarTitle: "Começar um novo",
+        })
+      : router.push(path);
     handleCloseNavMenu();
   };
 
@@ -90,7 +105,9 @@ function ResponsiveAppBar() {
               {pages.map((page) => (
                 <MenuItem
                   key={page.text}
-                  onClick={() => handleRouter(page.href)}
+                  onClick={() => {
+                    handleRouter(page.href);
+                  }}
                 >
                   <Typography textAlign="center">{page.text}</Typography>
                 </MenuItem>

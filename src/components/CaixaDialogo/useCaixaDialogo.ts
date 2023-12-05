@@ -5,7 +5,10 @@ type OpenModalConfirmParams = {
   title: string;
   message: string;
   onConfirm: () => void;
+  onCancel?: () => void;
   onClosed?: () => void;
+  cancelarTitle?: string;
+  confirmarTitle?: string;
   cancelarNotVisible?: boolean;
   componentMessage?: ReactNode;
   confirmarNotVisible?: boolean;
@@ -26,7 +29,10 @@ const useCaixaDialogo = create<ModalConfirmProps>((set, value) => ({
   open: false,
   title: "",
   message: "",
+  // cancelarTitle: "",
+  // confirmarTitle: "",
   onConfirm: () => {},
+  onCancel: () => {},
   openModalConfirm: (parametros: OpenModalConfirmParams) => {
     set(() => ({
       open: true,

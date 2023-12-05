@@ -1,20 +1,23 @@
-import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import useCaixaDialogo from "./useCaixaDialogo";
+import Button from "../Atomic/Button";
 
 export default function CaixaDialogoProvider() {
   const {
     open,
     title,
     message,
+    cancelarTitle,
+    confirmarTitle,
     cancelarNotVisible,
     confirmarNotVisible,
     componentMessage: ComponentMessage,
     onConfirm,
+    onCancel,
     closeModalConfirm,
   } = useCaixaDialogo();
 
@@ -33,12 +36,17 @@ export default function CaixaDialogoProvider() {
         </DialogContent>
         <DialogActions>
           {!cancelarNotVisible && (
-            <Button onClick={() => closeModalConfirm(null, null)}>
-              Cancelar
+            <Button
+              onClick={() => {
+                closeModalConfirm(null, null);
+                onCancel();
+              }}
+            >
+              {cancelarTitle ?? "Cancelar"}
             </Button>
           )}
           {!confirmarNotVisible && (
-            <Button onClick={onConfirm}>Confirmar</Button>
+            <Button onClick={onConfirm}>{confirmarTitle ?? "Confirmar"}</Button>
           )}
         </DialogActions>
       </Dialog>

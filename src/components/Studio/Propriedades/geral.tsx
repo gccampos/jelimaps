@@ -18,6 +18,7 @@ import {
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import useCaixaDialogo from "@/components/CaixaDialogo/useCaixaDialogo";
+import { useRouter } from "next/router";
 
 export default function Geral() {
   const mapaContext = useMapaContext();
@@ -25,7 +26,7 @@ export default function Geral() {
   const dispatch = useMapaDispatch();
   const { openModalConfirm } = useCaixaDialogo();
   const playSpeedRef = React.useRef(null);
-
+  const router = useRouter();
   const marks = [
     {
       value: 0.5,
@@ -76,6 +77,7 @@ export default function Geral() {
             }}
           >
             <ButtonGroup variant="outlined" aria-label="outlined button group">
+              <Button onClick={() => router.push("/")}>Sair</Button>
               <Button
                 onClick={() => {
                   openModalConfirm({

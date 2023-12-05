@@ -11,10 +11,34 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { useRouter } from "next/router";
+import useCaixaDialogo from "@/components/CaixaDialogo/useCaixaDialogo";
 
-const cards = [1, 2, 3, 4];
+const cards = [
+  {
+    imageUrl:
+      "/assets/tour-pequena-africa-no-rio-de-janeiro-morro-conceicao-rua.jpg",
+    nome: "Pequena África",
+    descricao: "Processo de diáspora africana num passeio pelo Rio de Janeiro",
+    url: "/mapa?pequena-africa",
+  },
+  {
+    imageUrl: "/assets/one-piece.jpeg",
+    nome: "One Piece - Saga Alabasta",
+    descricao: "Resumo da primeira saga da grand line (não finalizado)",
+    url: "/mapa?one-piece",
+  },
+  // {
+  //   imageUrl:
+  //     "/assets/tour-pequena-africa-no-rio-de-janeiro-morro-conceicao-rua.jpg",
+  //   nome: "Pequena África",
+  //   descricao: "Processo de diáspora africana num passeio pelo Rio de Janeiro",
+  //   url: "/",
+  // },
+];
 export default function Home() {
   const router = useRouter();
+  const { openModalConfirm } = useCaixaDialogo();
+
   return (
     <DefaultTemplate>
       <main>
@@ -87,7 +111,25 @@ export default function Home() {
               spacing={2}
               justifyContent="center"
             >
-              <Button variant="contained" onClick={() => router.push("/mapa")}>
+              <Button
+                variant="contained"
+                onClick={() => {
+                  if (localStorage.getItem("mapaContext"))
+                    openModalConfirm({
+                      title: "Você tem um projeto em andamento",
+                      message: "Deseja continuar ou começar do zero?",
+                      onConfirm: () => {
+                        router.push("/mapa?novo");
+                      },
+                      onCancel: () => {
+                        router.push("/mapa");
+                      },
+                      cancelarTitle: "Continuar um projeto",
+                      confirmarTitle: "Começar um novo",
+                    });
+                  else router.push("/mapa");
+                }}
+              >
                 Começe agora
               </Button>
               <Button variant="outlined" href="#exemplos">
@@ -99,8 +141,8 @@ export default function Home() {
         <Container sx={{ py: 8 }} maxWidth="md" id="exemplos">
           {/* End hero unit */}
           <Grid container spacing={4}>
-            {cards.map((card) => (
-              <Grid item key={card} xs={12} sm={6} md={4}>
+            {cards.map((card, index) => (
+              <Grid item key={index} xs={12} sm={6} md={4}>
                 <Card
                   sx={{
                     height: "100%",
@@ -114,20 +156,19 @@ export default function Home() {
                       // 16:9
                       pt: "56.25%",
                     }}
-                    image="https://source.unsplash.com/random?wallpapers"
+                    image={card.imageUrl}
                   />
                   <CardContent sx={{ flexGrow: 1 }}>
                     <Typography gutterBottom variant="h5" component="h2">
-                      Heading
+                      {card.nome}
                     </Typography>
-                    <Typography>
-                      This is a media card. You can use this section to describe
-                      the content.
-                    </Typography>
+                    <Typography>{card.descricao}</Typography>
                   </CardContent>
                   <CardActions>
-                    <Button size="small">View</Button>
-                    <Button size="small">Edit</Button>
+                    <Button size="small" onClick={() => router.push(card.url)}>
+                      Ver
+                    </Button>
+                    {/* <Button size="small">Edi</Button> */}
                   </CardActions>
                 </Card>
               </Grid>

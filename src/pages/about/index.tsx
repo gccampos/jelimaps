@@ -15,9 +15,30 @@ const { default: React } = require("react");
 
 const About = () => {
   const equipe = [
-    { nome: "Guilherme Campos",foto:"https://source.unsplash.com/random?wallpapers" ,descricao: "Estudante de Sistemas de Informação, com interesse em desenvolvimento web e dados abertos", git: "http://github.com/gccampos", email: "mailto:gcordeiro@id.uff.br" },
-    { nome: "Danilo Siqueira",foto:"https://source.unsplash.com/random?wallpapers" ,descricao: "Estudante de Sistemas de Informação, com interesse em desenvolvimento frontend e segurança da informação", git: "http://github.com/siqueirad", email: "mailto:danilo_siqueira@id.uff.br" },
-    { nome: "Troy Kohwalter",foto:"https://source.unsplash.com/random?wallpapers" ,descricao: "Doutor em Computação pela UFF e professor adjunto da mesma. Seus interesses são Engenharia de Software e Entretenimento Digital", git: "", email: "mailto:troy@ic.uff.br" }
+    {
+      nome: "Guilherme Campos",
+      foto: "/assets/guilherme.jpg",
+      descricao:
+        "Estudante de Sistemas de Informação, com interesse em desenvolvimento web e dados abertos",
+      git: "http://github.com/gccampos",
+      email: "mailto:gcordeiro@id.uff.br",
+    },
+    {
+      nome: "Danilo Siqueira",
+      foto: "/assets/danilo.jpg",
+      descricao:
+        "Estudante de Sistemas de Informação, com interesse em desenvolvimento e segurança da informação",
+      git: "http://github.com/siqueirad",
+      email: "mailto:danilo_siqueira@id.uff.br",
+    },
+    {
+      nome: "Troy Kohwalter",
+      foto: "/assets/troy.jpeg",
+      descricao:
+        "Doutor em Computação pela UFF e professor adjunto da mesma. Seus interesses são Engenharia de Software e Entretenimento Digital",
+      git: "",
+      email: "mailto:troy@ic.uff.br",
+    },
   ];
   return (
     <DefaultTemplate>
@@ -63,7 +84,7 @@ const About = () => {
             <Typography variant="h3" align="center" color="text.primary">
               Quem Somos?
             </Typography>
-              <Grid container spacing={4}>
+            <Grid container spacing={4}>
               {equipe.map((membro) => (
                 <Grid item key={membro.nome} xs={12} sm={6} md={4}>
                   <Card
@@ -73,7 +94,7 @@ const About = () => {
                       flexDirection: "column",
                     }}
                   >
-                    <CardMedia  
+                    <CardMedia
                       component="div"
                       sx={{
                         // 16:9
@@ -85,24 +106,19 @@ const About = () => {
                       <Typography gutterBottom variant="h5" component="h2">
                         {membro.nome}
                       </Typography>
-                      <Typography>
-                        {membro.descricao}
-                      </Typography>
+                      <Typography>{membro.descricao}</Typography>
                     </CardContent>
                     <CardActions>
                       <Button size="small" href={membro.git}>
                         Github
                       </Button>
-                      <Button
-                        size="small"
-                        href={membro.email}
-                      >
+                      <Button size="small" href={membro.email}>
                         Contato
                       </Button>
                     </CardActions>
                   </Card>
-                </Grid>    
-                ))}        
+                </Grid>
+              ))}
             </Grid>
           </Container>
         </Box>

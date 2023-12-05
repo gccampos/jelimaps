@@ -128,6 +128,7 @@ export function MapaProvider({ children }) {
             }
           : initialMapaContexto();
       if (action.type !== "use-undo") set(newContext, false);
+      console.log("vai setar localStorage");
       localStorage.setItem("mapaContext", JSON.stringify(newContext));
       return newContext;
     },
