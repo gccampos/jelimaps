@@ -213,7 +213,7 @@ export default function Geral() {
                     name={"simpleTimeline"}
                   />
                 }
-                label={"Agrupar por elementos"}
+                label={"Separar por elementos"}
               />
             </Container>
             {/* <FormControlLabel

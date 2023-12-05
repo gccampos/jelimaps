@@ -13,6 +13,7 @@ const initialMapaContexto: () => mapaContextSchema = () => {
       ? localStorage?.getItem("mapaContext")
       : "false";
   const newMapaContext = {
+    simpleTimeline: true,
     elementoInteracao: elementos.Hand,
     slidePropriedade: false,
     slideLinhaTempo: true,
@@ -61,6 +62,7 @@ const initialMapaContexto: () => mapaContextSchema = () => {
       margin: { item: { vertical: 20 } },
       zoomable: true,
       moveable: true,
+
       // order: (a, b) => b.order - a.order,
       // groupOrder: (a, b) => b.order - a.order,
       locale: "pt_BR",

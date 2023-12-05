@@ -420,6 +420,7 @@ export default function VisTimeline(props: {
       if (mapaContext.simpleTimeline !== simpleTimelineRef.current) {
         simpleTimelineRef.current = mapaContext.simpleTimeline;
         visTimeline.destroy();
+        setVisTimeline(null);
         construtor();
       } else calls();
     }
@@ -444,10 +445,14 @@ export default function VisTimeline(props: {
 
   useEffect(() => {
     if (visTimeline) {
-      visTimeline.setCustomTime(
-        mapaContext.tempo ?? mapaContext.conteudo.cenas[0].cenaInicio,
-        "currentTime"
-      );
+      try {
+        visTimeline.setCustomTime(
+          mapaContext.tempo ?? mapaContext.conteudo.cenas[0].cenaInicio,
+          "currentTime"
+        );
+      } catch (error) {
+        /* empty */
+      }
     }
   }, [visTimeline, mapaContext.tempo, mapaContext.conteudo.cenas]);
 
