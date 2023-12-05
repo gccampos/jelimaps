@@ -4,6 +4,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { GoogleAnalytics } from "nextjs-google-analytics";
 import CaixaDialogoProvider from "@/components/CaixaDialogo/CaixaDialogoProvider";
 import { BarraAlertaProvider } from "@/components/BarraAlerta/BarraAlertaProvider";
+import { Analytics } from "@vercel/analytics/react";
 
 export default function App({ Component, pageProps }) {
   return (
@@ -12,6 +13,7 @@ export default function App({ Component, pageProps }) {
       <Component {...pageProps} />
       <CaixaDialogoProvider />
       <BarraAlertaProvider />
+      <Analytics />
     </>
   );
 }

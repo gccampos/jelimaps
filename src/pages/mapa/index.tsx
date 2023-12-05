@@ -5,25 +5,28 @@ import React from "react";
 import { MapaProvider } from "@/components/Mapa/MapaContext";
 import Decider from "./decider";
 import { useRouter } from "next/router";
+import { useSearchParams } from "next/navigation";
 
 const ModoVisaoDialog = dynamic(
   () => import("@/components/Mapa/ModoVisaoDialog/ModoVisaoDialog"),
   { ssr: false }
 );
-type Repo = {
-  name: string;
-  stargazers_count: number;
-};
 
-export default function Mapa(repo?: Repo) {
+export default function Mapa() {
   const router = useRouter();
-  if (repo?.name && typeof localStorage !== "undefined") {
-    localStorage.clear();
-    if (repo.name !== "novo") {
-      const su = require(`@/pages/examples/${repo.name}.json`);
-      localStorage.setItem("mapaContext", JSON.stringify(su));
-    }
-    router.push("/mapa");
+  const searchParams = useSearchParams();
+  const exemplos = ["one-piece", "pequena-africa", "novo"];
+  for (let index = 0; index < exemplos.length; index++) {
+    const element = exemplos[index];
+    if (searchParams.get(element) !== null)
+      if (typeof localStorage !== "undefined") {
+        localStorage.clear();
+        if (element !== "novo") {
+          const su = require(`@/pages/examples/${element}.json`);
+          localStorage.setItem("mapaContext", JSON.stringify(su));
+        }
+        router.push("/mapa");
+      }
   }
   return (
     <main style={{ height: "100%" }}>
@@ -34,14 +37,3 @@ export default function Mapa(repo?: Repo) {
     </main>
   );
 }
-
-export const getServerSideProps = async (context) => {
-  const exemplos = ["one-piece", "pequena-africa", "novo"];
-  for (let index = 0; index < exemplos.length; index++) {
-    const element = exemplos[index];
-    if (typeof context.query[element] !== "undefined")
-      return { props: { name: element } };
-  }
-  // if(context.query['one-piece'])
-  return { props: {} };
-};
