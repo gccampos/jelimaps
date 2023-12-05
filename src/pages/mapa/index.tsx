@@ -18,12 +18,10 @@ type Repo = {
 export default function Mapa(repo?: Repo) {
   const router = useRouter();
   if (repo?.name && typeof localStorage !== "undefined") {
+    localStorage.clear();
     if (repo.name !== "novo") {
       const su = require(`@/pages/examples/${repo.name}.json`);
-      localStorage.clear();
       localStorage.setItem("mapaContext", JSON.stringify(su));
-    } else {
-      localStorage.clear();
     }
     router.push("/mapa");
   }
@@ -41,7 +39,7 @@ export const getServerSideProps = async (context) => {
   const exemplos = ["one-piece", "pequena-africa", "novo"];
   for (let index = 0; index < exemplos.length; index++) {
     const element = exemplos[index];
-    if (context.query[element] != undefined)
+    if (typeof context.query[element] !== "undefined")
       return { props: { name: element } };
   }
   // if(context.query['one-piece'])
