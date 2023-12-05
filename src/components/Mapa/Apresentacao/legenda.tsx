@@ -54,11 +54,16 @@ const Legenda = (props: {
     (cena: tipoElemento) => {
       try {
         if (cena.center) {
-          map.setView(cena.center, cena.zoom, {
-            animate: true,
-            duration: 1.5,
+          setCenaAtual((c) => {
+            if (c?.center !== cena.center) {
+              map.flyTo(cena.center, cena.zoom, {
+                animate: true,
+                duration: 1.5,
+                easeLinearity: 1,
+              });
+            }
+            return cena;
           });
-          setCenaAtual(cena);
         }
       } catch (error) {
         /* empty */
@@ -176,13 +181,17 @@ const Legenda = (props: {
                   <Card sx={{}} key={x.id}>
                     <CardActionArea
                       onClick={() => {
-                        const bordas = contextChangers.bordasDoElemento(
-                          x,
-                          map,
-                          Leaflet,
-                          larguraLegenda
-                        );
-                        bordas && map.setView(bordas.getCenter(), x.zoom);
+                        if (!x.center) {
+                          const bordas = contextChangers.bordasDoElemento(
+                            x,
+                            map,
+                            Leaflet,
+                            larguraLegenda
+                          );
+                          bordas && map.flyToBounds(bordas);
+                        } else {
+                          map.flyTo(x.center, x.zoom);
+                        }
                       }}
                     >
                       {x.imagemURL && (
