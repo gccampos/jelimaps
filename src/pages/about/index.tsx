@@ -23,7 +23,7 @@ const equipe = [
   },
   {
     nome: "Danilo Siqueira",
-    foto: "/assets/danilo.jpg",
+    foto: "/assets/danilo2.jpg",
     descricao:
       "Estudante de Sistemas de Informação, com interesse em desenvolvimento e segurança da informação",
     git: "http://github.com/siqueirad",
