@@ -2,8 +2,6 @@
 
 JeliMaps é uma aplicação web que permite criar mapas interativos e conectados a uma linha do tempo
 
-<!-- This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app). -->
-
 ## Executando
 
 Para executar o programa em local de desenvolvimento, você precisa ter instalado o Node.js e o npm na sua máquina. Depois, siga os seguintes passos:
