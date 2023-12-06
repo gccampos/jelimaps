@@ -1,38 +1,34 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# JeliMaps
 
-## Getting Started
+JeliMaps é uma aplicação web que permite criar mapas interativos e conectados a uma linha do tempo
 
-First, run the development server:
+<!-- This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app). -->
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-```
+## Executando
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Para executar o programa em local de desenvolvimento, você precisa ter instalado o Node.js e o npm na sua máquina. Depois, siga os seguintes passos:
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+1. Clone o repositório do projeto no GitHub: `git clone https://github.com/gccampos/jelimaps.git`
+2. Entre na pasta do projeto: `cd jelimaps`
+3. Instale as dependências do projeto: `npm install`
+4. Execute o comando `npm run dev` para iniciar o servidor de desenvolvimento
+5. Abra o seu navegador e acesse [http://localhost:3000](http://localhost:3000) para ver a aplicação rodando
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+## Mais informações
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+As tecnologias utilizadas foram:
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+- [React](https://react.dev/) - learn about Next.js features and API.
+- [Next.js](https://nextjs.org/) - an interactive Next.js tutorial.
+- [Material-UI](https://mui.com/material-ui/) - an interactive Next.js tutorial.
+- [Leaflet](https://leafletjs.com/) - an.
+  - [OpenStreetMap](https://www.openstreetmap.org/) - an.
+  - [Leaflet.timeline](https://skeate.dev/Leaflet.timeline/) - an.
+  - [Leaflet.ImageOverlay.Rotated](https://ivansanchez.github.io/Leaflet.ImageOverlay.Rotated/) - an.
+  - [Terra Draw](https://terradraw.io/) - an.
+- [vis-timeline](https://visjs.github.io/vis-timeline/docs/timeline/) - an.
+- [Next.js](https://nextjs.org/) - an.
 
-## Learn More
+## Licença
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+Projeto com licença [GNU General Public License v3.0](https://github.com/gccampos/jelimaps/blob/main/LICENSE)
