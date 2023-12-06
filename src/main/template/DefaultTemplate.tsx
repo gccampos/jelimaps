@@ -6,12 +6,12 @@ import Link from "@mui/material/Link";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import ResponsiveAppBar from "../partial/ResponsiveAppBar";
 
-function Copyright() {
+function Copyleft() {
   return (
     <Typography variant="body2" color="text.secondary" align="center">
-      {"Copyright © "}
-      <Link color="inherit" href="https://mui.com/">
-        Our Code
+      {"Copyleft © "}
+      <Link color="inherit" href="https://github.com/gccampos/jelimaps">
+        Nosso código
       </Link>{" "}
       {new Date().getFullYear()}
       {"."}
@@ -40,9 +40,9 @@ const DefaultTemplate = ({ children }) => {
             color="text.secondary"
             component="p"
           >
-            Uma
+            Danilo e Guilherme
           </Typography>
-          <Copyright />
+          <Copyleft />
         </Box>
         {/* End footer */}
       </div>
