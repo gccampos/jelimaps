@@ -31,7 +31,7 @@ const Alert = ({ item }: { item: SnackBarItemType }) => {
     setTimeout(() => {
       handleClose();
     }, item.autoHideDuration || 8000);
-  }, []);
+  }, [handleClose, item.autoHideDuration, item.color]);
 
   return (
     <Grow key={item.key} timeout={500} in={open} style={{ marginBottom: 10 }}>
