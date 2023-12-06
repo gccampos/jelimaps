@@ -16,16 +16,15 @@ Para executar o programa em local de desenvolvimento, você precisa ter instalad
 
 As tecnologias utilizadas foram:
 
-- [React](https://react.dev/) - learn about Next.js features and API.
-- [Next.js](https://nextjs.org/) - an interactive Next.js tutorial.
-- [Material-UI](https://mui.com/material-ui/) - an interactive Next.js tutorial.
-- [Leaflet](https://leafletjs.com/) - an.
-  - [OpenStreetMap](https://www.openstreetmap.org/) - an.
-  - [Leaflet.timeline](https://skeate.dev/Leaflet.timeline/) - an.
-  - [Leaflet.ImageOverlay.Rotated](https://ivansanchez.github.io/Leaflet.ImageOverlay.Rotated/) - an.
-  - [Terra Draw](https://terradraw.io/) - an.
-- [vis-timeline](https://visjs.github.io/vis-timeline/docs/timeline/) - an.
-- [Next.js](https://nextjs.org/) - an.
+- [React](https://react.dev/) - A biblioteca para interfaces de usuário web e nativas.
+- [Next.js](https://nextjs.org/) - Um framework react otimizado para Web.
+- [Material-UI](https://mui.com/material-ui/) - Componentes de Material Design prontos para uso.
+- [Leaflet](https://leafletjs.com/) - Biblioteca para interação com mapas.
+  - [OpenStreetMap](https://www.openstreetmap.org/) - Fornecedor de mapas colaborativo.
+  - [Leaflet.timeline](https://skeate.dev/Leaflet.timeline/) - Biblioteca de integração _geo_ e _time_.
+  - [Leaflet.ImageOverlay.Rotated](https://ivansanchez.github.io/Leaflet.ImageOverlay.Rotated/) - Biblioteca para girar e torcer imagens em mapas.
+- [Terra Draw](https://terradraw.io/) - Adaptador de geojson para bibliotecas de interação com mapas.
+- [vis-timeline](https://visjs.github.io/vis-timeline/docs/timeline/) - Biblioteca de visualização e interação de dados no tempo.
 
 ## Licença
 
