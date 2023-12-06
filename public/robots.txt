@@ -1,0 +1,11 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://www.jelimaps.com.br
+
+# Sitemaps
+Sitemap: https://www.jelimaps.com.br/sitemap.xml
+Sitemap: https://www.jelimaps.com.br/about
+Sitemap: https://www.jelimaps.com.br/mapa
