@@ -7,6 +7,7 @@ import { BarraAlertaProvider } from "@/components/BarraAlerta/BarraAlertaProvide
 import { Analytics } from "@vercel/analytics/react";
 
 export default function App({ Component, pageProps }) {
+  console.log("teste", process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID);
   return (
     <>
       <GoogleAnalytics trackPageViews />
