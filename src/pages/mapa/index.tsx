@@ -15,7 +15,7 @@ const ModoVisaoDialog = dynamic(
 export default function Mapa() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const exemplos = ["one-piece", "pequena-africa", "novo"];
+  const exemplos = ["one-piece", "pequena-africa", "golpe-64", "novo"];
   for (let index = 0; index < exemplos.length; index++) {
     const element = exemplos[index];
     if (searchParams.get(element) !== null)

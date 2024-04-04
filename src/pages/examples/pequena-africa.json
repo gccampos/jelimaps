@@ -3,7 +3,10 @@
     "nome": "select",
     "label": "Interagir com elementos",
     "icon": {
-      "type": { "type": {}, "compare": null },
+      "type": {
+        "type": {},
+        "compare": null
+      },
       "key": null,
       "ref": null,
       "props": {},
@@ -15,8 +18,10 @@
   "slideLinhaTempo": true,
   "cenaInicio": "2023-12-04T14:49:58",
   "cenaFim": "2023-12-04T14:56:57",
-  "tempo": "2023-12-04T14:50:00",
-  "mapOptions": { "center": [0, 0] },
+  "tempo": "2023-12-04T14:49:57",
+  "mapOptions": {
+    "center": [0, 0]
+  },
   "playStatus": 2,
   "simpleTimeline": true,
   "conteudo": {
@@ -27,23 +32,30 @@
         "id": "9263caad-a819-48a1-a0e6-6a32d26a6e45",
         "nome": "Pequena África",
         "dataRef": "cenas",
-        "visTimelineObject": { "type": "background" },
+        "visTimelineObject": {
+          "type": "background"
+        },
         "type": "FeatureCollection",
         "color": "#df000024",
         "texto": "No Brasil, o processo de diáspora africana se inicia com o ciclo econômico da cana de\naçúcar. Esse processo pode ser definido como uma imigração forçada de negros africanos\npara serem usados como mão de obra escrava. Os portos que receberam esses negros no\nBrasil foram Recife, Salvador e Rio de Janeiro.\nAlguns historiadores acreditam que cerca de 4 milhões de africanos chegaram aos portos\nbrasileiros e mais de 1 milhão só no porto do Rio de Janeiro. É com a chegada deles que se\ninicia o processo de formação do que hoje chamamos de “Pequena África”.",
-        "center": { "lat": -22.897467066245976, "lng": -43.18450793623925 },
-        "zoom": 19,
+        "center": {
+          "lat": -22.898276214311984,
+          "lng": -43.18395674228668
+        },
+        "zoom": 17,
         "bounds": {
           "_southWest": {
-            "lat": -22.89833309918851,
-            "lng": -43.18666845560074
+            "lat": -22.90316839561983,
+            "lng": -43.192062377929695
           },
           "_northEast": {
-            "lat": -22.896601027774572,
-            "lng": -43.182347416877754
+            "lat": -22.893383856561893,
+            "lng": -43.175851106643684
           }
         },
-        "properties": { "selected": true }
+        "properties": {
+          "selected": true
+        }
       },
       {
         "id": "3edfb013-8f77-4bf6-b4e4-1519a47875a1",
@@ -52,14 +64,27 @@
         "nome": "Cais do Valongo e da Imperatriz",
         "dataRef": "cenas",
         "color": "rgba(42, 210, 243, 0.8)",
-        "visTimelineObject": { "type": "background" },
-        "properties": { "selected": null },
+        "visTimelineObject": {
+          "type": "background"
+        },
+        "properties": {
+          "selected": null
+        },
         "texto": "Localizado no centro histórico do Rio De Janeiro, é um\nsítio arqueológico que ganhou notoriedade como um dos vestígios mais significativos do\nperíodo de tráfico transatlântico de escravizados. O Cais do Valongo foi construído no final\ndo século XVIII para receber e desembarcar africanos trazidos como escravizados para o\nBrasil. Durante o auge do tráfico transatlântico, entre os séculos XVIII e XIX, o Rio de\nJaneiro foi um dos principais portos receptores de africanos escravizados nas Américas.\nCom a proibição do comércio, o cais foi remodelado em 1843 para receber a futura esposa\nde D. Pedro II, a princesa Teresa Cristina, e por essa razão passou a se chamar Cais da\nImperatriz.",
-        "center": { "lat": -22.89695559064172, "lng": -43.187777549028404 },
+        "center": {
+          "lat": -22.89695559064172,
+          "lng": -43.187777549028404
+        },
         "zoom": 19,
         "bounds": {
-          "_southWest": { "lat": -22.89782162684959, "lng": -43.1899380683899 },
-          "_northEast": { "lat": -22.89608954890508, "lng": -43.1856170296669 }
+          "_southWest": {
+            "lat": -22.89782162684959,
+            "lng": -43.1899380683899
+          },
+          "_northEast": {
+            "lat": -22.89608954890508,
+            "lng": -43.1856170296669
+          }
         }
       },
       {
@@ -69,17 +94,27 @@
         "nome": "Largo de São Francisco da Prainha",
         "dataRef": "cenas",
         "color": "rgba(28, 182, 19, 0.8)",
-        "visTimelineObject": { "type": "background" },
-        "properties": { "selected": null },
+        "visTimelineObject": {
+          "type": "background"
+        },
+        "properties": {
+          "selected": null
+        },
         "texto": "A área onde o Largo de São Francisco da Prainha\nestá localizado foi um local de desembarque de escravizados durante o período colonial.\nAfricanos trazidos como escravos desembarcavam no Cais do Valongo, que ficava próximo,\ncontribuindo para a formação de uma comunidade afrodescendente na região. Ao longo do\ntempo, a área se tornou um centro para a comunidade afro-brasileira, onde se\ndesenvolveram tradições culturais, práticas religiosas afro-brasileiras, como o Candomblé e\na Umbanda, e formas de expressão artística, incluindo o samba.\nO nome \"São Francisco\" faz referência à Igreja de São Francisco da Prainha, que está\nsituada no largo. A igreja, construída no século XIX, tornou-se um importante ponto de\nreferência na região.",
-        "center": { "lat": -22.897686184261374, "lng": -43.184155896306045 },
+        "center": {
+          "lat": -22.897686184261374,
+          "lng": -43.184155896306045
+        },
         "zoom": 20,
         "bounds": {
           "_southWest": {
             "lat": -22.898119200724317,
             "lng": -43.185236155986786
           },
-          "_northEast": { "lat": -22.897253166416203, "lng": -43.1830756366253 }
+          "_northEast": {
+            "lat": -22.897253166416203,
+            "lng": -43.1830756366253
+          }
         }
       },
       {
@@ -89,17 +124,27 @@
         "nome": "Jardins Suspensos do Valongo",
         "dataRef": "cenas",
         "color": "rgba(8, 219, 90, 0.8)",
-        "visTimelineObject": { "type": "background" },
-        "properties": { "selected": null },
+        "visTimelineObject": {
+          "type": "background"
+        },
+        "properties": {
+          "selected": null
+        },
         "texto": "Era o caminho que os recém-chegados utilizavam para ir\ndo porto às Casas de Engorda, onde permaneciam até que se recuperasse para serem\nvendidos como escravos no mercado. De tal modo, muitas casas na região serviram a este\npropósito. O centro desta atividade era o Largo do Depósito, hoje Praça dos Estivadores.",
-        "center": { "lat": -22.89867963017505, "lng": -43.18748518824578 },
+        "center": {
+          "lat": -22.89867963017505,
+          "lng": -43.18748518824578
+        },
         "zoom": 19,
         "bounds": {
           "_southWest": {
             "lat": -22.899545655376137,
             "lng": -43.18964570760727
           },
-          "_northEast": { "lat": -22.89781359944487, "lng": -43.18532466888428 }
+          "_northEast": {
+            "lat": -22.89781359944487,
+            "lng": -43.18532466888428
+          }
         }
       },
       {
@@ -109,10 +154,17 @@
         "nome": "Cemitério dos Pretos Novos",
         "dataRef": "cenas",
         "color": "rgba(141, 65, 52, 0.8)",
-        "visTimelineObject": { "type": "background" },
-        "properties": { "selected": null },
+        "visTimelineObject": {
+          "type": "background"
+        },
+        "properties": {
+          "selected": null
+        },
         "texto": "O local, que aparecia em mapas antigos da cidade, datados\ndo século XVIII, foi outro que caiu no esquecimento proposital, similar ao ocorrido com o\ncais. Após seu fechamento, muitas construções foram erguidas sobre a área onde\nenterravam quem não conseguia completar com vida a travessia do oceano.\nEm 1996, ao conduzir uma reforma em um destes sobrados, um casal encontrou vestígios\ndo antigo cemitério sob o piso de sua casa. Com a descoberta, a casa foi transformada em\nsitio arqueológico. Posteriormente, no mesmo local, foi fundado pelo casal o Instituto de\nPesquisa e Memória dos Pretos Novos (IPN) como forma de estimular a reflexão e divulgar\na história do que ali ocorria",
-        "center": { "lat": -22.895970167544515, "lng": -43.19303400814534 },
+        "center": {
+          "lat": -22.895970167544515,
+          "lng": -43.19303400814534
+        },
         "zoom": 20,
         "bounds": {
           "_southWest": {
@@ -132,10 +184,17 @@
         "nome": "Casa da Tia Ciata",
         "dataRef": "cenas",
         "color": "rgba(89, 181, 213, 0.8)",
-        "visTimelineObject": { "type": "background" },
-        "properties": { "selected": null },
+        "visTimelineObject": {
+          "type": "background"
+        },
+        "properties": {
+          "selected": null
+        },
         "texto": "A Casa da Tia Ciata foi um importante centro de preservação da cultura negra, onde a música, a dança e a religião se encontravam. Tia Ciata, também conhecida como a Matriarca do Samba, era uma baiana de Santo Amaro da Purificação, no Recôncavo Baiano, que se mudou para o Rio de Janeiro e aqui fez história. Sendo uma das mais famosas quituteiras da época, promoveu grandes encontros de sambistas em sua casa e mudou o cenário até então estabelecido. Tia Ciata é considerada uma figura importante da cultura negra no Brasil e deixou um legado político-cultural eterno.",
-        "center": { "lat": -22.898014980089208, "lng": -43.18718545138836 },
+        "center": {
+          "lat": -22.898014980089208,
+          "lng": -43.18718545138836
+        },
         "zoom": 20,
         "bounds": {
           "_southWest": {
@@ -155,10 +214,17 @@
         "nome": "Pedra do sal",
         "dataRef": "cenas",
         "color": "rgba(238, 105, 226, 0.8)",
-        "visTimelineObject": { "type": "background" },
-        "properties": { "selected": null },
+        "visTimelineObject": {
+          "type": "background"
+        },
+        "properties": {
+          "selected": null
+        },
         "texto": "A Pedra do Sal é um local histórico e culturalmente significativo para o Rio de Janeiro. O local foi um dos primeiros espaços ligados à herança cultural popular e negra no Brasil, sendo o primeiro no Rio de Janeiro e no Sudeste. A Pedra do Sal era considerada um local sagrado para despachos e oferendas das religiões africanas e foi ali que nasceu o samba urbano carioca, que surgiram sambistas populares e antigos ranchos carnavalescos\nA Pedra do Sal é um símbolo da herança e resistência cultural negra e, já no século XXI, passou a ser reivindicada como território do Quilombo Pedra do Sal, sendo certificado como quilombo urbano pela Fundação Palmares em 2005. Hoje, a Pedra do Sal mantém a tradição de reduto das expressões culturais negras e rodas de samba, sendo um importante ponto turístico e cultural da cidade do Rio de Janeiro.",
-        "center": { "lat": -22.89782103468205, "lng": -43.18524353206159 },
+        "center": {
+          "lat": -22.89782103468205,
+          "lng": -43.18524353206159
+        },
         "zoom": 20,
         "bounds": {
           "_southWest": {
@@ -328,7 +394,10 @@
     ]
   },
   "timelineOptions": {
-    "editable": { "remove": true, "updateTime": true },
+    "editable": {
+      "remove": true,
+      "updateTime": true
+    },
     "zoomKey": "ctrlKey",
     "preferZoom": false,
     "start": "2023-12-04T14:49:57",
@@ -336,26 +405,44 @@
     "autoResize": false,
     "selectable": true,
     "multiselect": false,
-    "orientation": { "axis": "top" },
+    "orientation": {
+      "axis": "top"
+    },
     "longSelectPressTime": 777,
-    "rollingMode": { "offset": 0, "follow": false },
+    "rollingMode": {
+      "offset": 0,
+      "follow": false
+    },
     "showCurrentTime": false,
     "groupHeightMode": "fitItems",
     "verticalScroll": true,
-    "margin": { "item": { "vertical": 20 } },
+    "margin": {
+      "item": {
+        "vertical": 20
+      }
+    },
     "zoomable": true,
     "moveable": true,
     "locale": "pt_BR"
   },
   "modoVisao": "OpenStreetMap",
   "urlMapaProprio": "",
-  "center": { "lat": -22.897467066245976, "lng": -43.18450793623925 },
-  "zoom": 19,
+  "center": {
+    "lat": -22.899767610395802,
+    "lng": -43.18394064903259
+  },
+  "zoom": 16,
   "bounds": {
-    "_southWest": { "lat": -22.89833309918851, "lng": -43.18666845560074 },
-    "_northEast": { "lat": -22.896601027774572, "lng": -43.182347416877754 }
+    "_southWest": {
+      "lat": -22.907110676852657,
+      "lng": -43.192148208618164
+    },
+    "_northEast": {
+      "lat": -22.8924241463889,
+      "lng": -43.17573308944702
+    }
   },
   "elementosFoco": null,
   "elementoFoco": null,
-  "exibirLimiteCenas": false
+  "exibirLimiteCenas": true
 }

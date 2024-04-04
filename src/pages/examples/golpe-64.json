@@ -1,0 +1,442 @@
+{
+  "simpleTimeline": true,
+  "elementoInteracao": {
+    "nome": "select",
+    "label": "Interagir com elementos",
+    "icon": {
+      "type": { "type": {}, "compare": null },
+      "key": null,
+      "ref": null,
+      "props": {},
+      "_owner": null,
+      "_store": {}
+    },
+    "iconComponent": null
+  },
+  "slidePropriedade": true,
+  "slideLinhaTempo": true,
+  "cenaInicio": "1964-03-31T03:43:25",
+  "cenaFim": "1964-04-03T05:31:36",
+  "tempo": "1964-03-31T03:43:30",
+  "mapOptions": { "center": [0, 0] },
+  "playStatus": 2,
+  "conteudo": {
+    "cenas": [
+      {
+        "cenaInicio": "1964-03-31T00:15:04",
+        "cenaFim": "1964-03-31T12:00",
+        "id": "6892f820-bffb-4a66-8f45-2803d549a674",
+        "nome": "Contextualização",
+        "dataRef": "cenas",
+        "visTimelineObject": { "type": "background" },
+        "type": "FeatureCollection",
+        "color": "#df000024",
+        "properties": { "selected": null },
+        "center": { "lat": 38.74337300148126, "lng": -77.51678466796876 },
+        "zoom": 8,
+        "bounds": {
+          "_southWest": { "lat": 37.19095471582608, "lng": -80.17272949218751 },
+          "_northEast": { "lat": 40.26276066437183, "lng": -74.86083984375001 }
+        }
+      },
+      {
+        "id": "d688f3db-c6b4-423d-a25b-dd23d5516982",
+        "cenaInicio": "1964-03-31T12:00",
+        "cenaFim": "1964-03-31T17:40:10",
+        "nome": "Início operação Brother Sam",
+        "dataRef": "cenas",
+        "color": "rgba(24, 224, 55, 0.8)",
+        "visTimelineObject": { "type": "background" },
+        "properties": { "selected": null },
+        "texto": "",
+        "center": { "lat": 23.664650731631625, "lng": -68.22509765625001 },
+        "zoom": 5,
+        "bounds": {
+          "_southWest": { "lat": 8.581021215641854, "lng": -89.47265625 },
+          "_northEast": { "lat": 37.19533058280065, "lng": -46.97753906250001 }
+        }
+      },
+      {
+        "id": "861193a7-16b5-4a01-aa48-2b3318b5700f",
+        "cenaInicio": "1964-03-31T17:40:10",
+        "cenaFim": "1964-03-31T23:41:10",
+        "nome": "Fim do dia 31/03/1964",
+        "dataRef": "cenas",
+        "color": "rgba(206, 71, 75, 0.8)",
+        "visTimelineObject": { "type": "background" },
+        "properties": { "selected": null },
+        "center": { "lat": -12.340001834116316, "lng": -52.77832031250001 },
+        "zoom": 4,
+        "bounds": {
+          "_southWest": {
+            "lat": -40.178873314346966,
+            "lng": -95.27343750000001
+          },
+          "_northEast": {
+            "lat": 18.729501999072138,
+            "lng": -10.283203125000002
+          }
+        }
+      },
+      {
+        "id": "bfa58596-adb8-4bf0-887b-8c84db025e6b",
+        "cenaInicio": "1964-03-31T23:41:10",
+        "cenaFim": "1964-04-01T12:42:10",
+        "nome": "Início do dia dos tolos",
+        "dataRef": "cenas",
+        "color": "rgba(62, 69, 237, 0.8)",
+        "visTimelineObject": { "type": "background" },
+        "properties": { "selected": true },
+        "center": { "lat": -19.797717490704724, "lng": -41.42944335937501 },
+        "zoom": 6,
+        "bounds": {
+          "_southWest": {
+            "lat": -27.01998400798257,
+            "lng": -58.02978515625001
+          },
+          "_northEast": {
+            "lat": -12.232654837013472,
+            "lng": -24.829101562500004
+          }
+        }
+      },
+      {
+        "id": "1a9600a6-5c3a-4213-9c3a-9195e09a27fe",
+        "cenaInicio": "1964-04-01T12:42:10",
+        "cenaFim": "1964-04-01T23:43:10",
+        "nome": "Fim operação Brother Sam",
+        "dataRef": "cenas",
+        "color": "rgba(199, 214, 99, 0.8)",
+        "visTimelineObject": { "type": "background" },
+        "properties": { "selected": null },
+        "center": { "lat": -22.391983666602783, "lng": -43.696746826171875 },
+        "zoom": 9,
+        "bounds": {
+          "_southWest": {
+            "lat": -23.29937854799373,
+            "lng": -45.77178955078126
+          },
+          "_northEast": { "lat": -21.4786293099784, "lng": -41.62170410156251 }
+        }
+      },
+      {
+        "id": "a34934c3-6087-4443-a02d-d59fb9c2ee52",
+        "cenaInicio": "1964-04-01T23:43:10",
+        "cenaFim": "1964-04-02T12:00:10",
+        "nome": "A fuga de Jango",
+        "dataRef": "cenas",
+        "color": "rgba(87, 234, 202, 0.8)",
+        "visTimelineObject": { "type": "background" },
+        "properties": { "selected": null },
+        "center": { "lat": -23.82555130688476, "lng": -50.86669921875001 },
+        "zoom": 5,
+        "bounds": {
+          "_southWest": {
+            "lat": -37.335224359306395,
+            "lng": -72.11425781250001
+          },
+          "_northEast": {
+            "lat": -8.754794702435618,
+            "lng": -29.619140625000004
+          }
+        }
+      },
+      {
+        "id": "757dec1c-9e2f-4db6-b7f2-a41143895729",
+        "cenaInicio": "1964-04-02T12:00:10",
+        "cenaFim": "1964-04-02T23:48:52",
+        "nome": "Golpe consumado",
+        "dataRef": "cenas",
+        "color": "rgba(43, 62, 185, 0.8)",
+        "visTimelineObject": { "type": "background" },
+        "properties": { "selected": null },
+        "center": { "lat": -12.85464890558895, "lng": -52.69042968750001 },
+        "zoom": 4,
+        "bounds": {
+          "_southWest": {
+            "lat": -40.58058466412763,
+            "lng": -95.18554687500001
+          },
+          "_northEast": { "lat": 18.22935133838668, "lng": -10.195312500000002 }
+        }
+      }
+    ],
+    "ImageOverlay": [
+      {
+        "bounds": {
+          "_southWest": {
+            "lat": -40.178873314346966,
+            "lng": -95.27343750000001
+          },
+          "_northEast": {
+            "lat": 18.729501999072138,
+            "lng": -10.283203125000002
+          }
+        },
+        "positionTL": [-3.697948762563038, -58.35937500000001],
+        "positionBL": [-33.76997562028518, -58.53515625000001],
+        "positionTR": [-3.688855143147035, -31.992187500000004],
+        "dataRef": "ImageOverlay",
+        "nome": "Deslocamentos militares simplificados",
+        "urlImagem": "https://upload.wikimedia.org/wikipedia/commons/b/bc/Deslocamentos_militares_no_golpe_de_Estado_no_Brasil_em_1964.png",
+        "id": "1e54c0e5-a529-4bbd-9735-a90c20761c33",
+        "type": "Feature",
+        "cenaInicio": "1964-03-31T18:03:37",
+        "cenaFim": "1964-03-31T20:45:25",
+        "order": 0,
+        "draggable": true,
+        "opacity": 1,
+        "cenaSelecionada": "861193a7-16b5-4a01-aa48-2b3318b5700f"
+      },
+      {
+        "bounds": {
+          "_southWest": {
+            "lat": -22.986209684312335,
+            "lng": -44.80224609375001
+          },
+          "_northEast": {
+            "lat": -21.161361200807214,
+            "lng": -42.14630126953125
+          }
+        },
+        "positionTL": [-21.552126383546373, -45.01167297363282],
+        "positionBL": [-23.010791737012273, -45.0102996826172],
+        "positionTR": [-21.55723546491263, -42.51777648925782],
+        "dataRef": "ImageOverlay",
+        "nome": "Operações militares interior do Rio de Janeiro",
+        "urlImagem": "https://upload.wikimedia.org/wikipedia/commons/c/c9/Golpe_de_1964_12h00_01_04.png",
+        "id": "b756cb9d-9b7e-42ce-9b8b-a1d82c6b94a5",
+        "type": "Feature",
+        "cenaInicio": "1964-04-01T13:31:28",
+        "cenaFim": "1964-04-01T22:18:10",
+        "order": 2,
+        "draggable": true,
+        "opacity": 1,
+        "cenaSelecionada": "bfa58596-adb8-4bf0-887b-8c84db025e6b"
+      },
+      {
+        "bounds": {
+          "_southWest": {
+            "lat": -24.342091906998917,
+            "lng": -48.63098144531251
+          },
+          "_northEast": {
+            "lat": -20.704738720055513,
+            "lng": -43.31909179687501
+          }
+        },
+        "positionTL": [-21.184692746636294, -47.82211303710939],
+        "positionBL": [-24.113025132010076, -47.817993164062514],
+        "positionTR": [-21.186972714123762, -42.835693359375],
+        "dataRef": "ImageOverlay",
+        "nome": "Situação militar eixo São Paulo-Juiz de Fora-Rio de Janeiro",
+        "urlImagem": "https://upload.wikimedia.org/wikipedia/commons/9/98/RJ-SP-JF_noite_31_de_mar%C3%A7o_64.png",
+        "id": "0ad1ea85-2392-4c5e-8656-c8d20314c798",
+        "type": "Feature",
+        "cenaInicio": "1964-03-31T21:00:55",
+        "cenaFim": "1964-04-01T03:28:01",
+        "order": 3,
+        "draggable": false,
+        "opacity": 1,
+        "cenaSelecionada": "bfa58596-adb8-4bf0-887b-8c84db025e6b"
+      },
+      {
+        "bounds": {
+          "_southWest": {
+            "lat": -31.287939892641734,
+            "lng": -58.65600585937501
+          },
+          "_northEast": {
+            "lat": -24.327076540018634,
+            "lng": -42.05566406250001
+          }
+        },
+        "positionTL": [-23.422820125908427, -57.3101806640625],
+        "positionBL": [-30.732392734006098, -57.2607421875],
+        "positionTR": [-23.463246331550348, -46.46118164062501],
+        "dataRef": "ImageOverlay",
+        "nome": "Operações 5ª Região Militar",
+        "urlImagem": "https://upload.wikimedia.org/wikipedia/commons/e/e4/Opera%C3%A7%C3%B5es_da_e_contra_a_5a_Regi%C3%A3o_Militar_em_01-03.04.1964.png",
+        "id": "525e4de8-fe0b-459f-ad2b-2a498f197c7e",
+        "type": "Feature",
+        "cenaInicio": "1964-04-02T05:14:22",
+        "cenaFim": "1964-04-02T12:00:10",
+        "order": 5,
+        "draggable": true,
+        "opacity": 1,
+        "cenaSelecionada": "a34934c3-6087-4443-a02d-d59fb9c2ee52"
+      }
+    ],
+    "Marker": [
+      {
+        "geometry": {
+          "coordinates": [38.8782049970615, -77.0416259765625],
+          "type": "Marker"
+        },
+        "dataRef": "Marker",
+        "nome": "Washington",
+        "texto": "",
+        "id": "12c3c4ed-24ca-45f5-b117-8e2c54dfbc1c",
+        "type": "Feature",
+        "cenaInicio": "1964-03-31T02:07:31",
+        "cenaFim": "1964-03-31T10:29:56",
+        "order": 3,
+        "draggable": true,
+        "cenaSelecionada": "6892f820-bffb-4a66-8f45-2803d549a674"
+      }
+    ],
+    "LineString": [
+      {
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [-77.10205078, 33.508242492],
+            [-75.959472655, 32.995888554],
+            [-74.46533203, 32.184640115],
+            [-72.399902342, 31.141456247],
+            [-71.12548828, 30.313542345],
+            [-69.587402342, 28.905059806],
+            [-68.093261717, 27.438036878],
+            [-66.643066405, 25.595871614],
+            [-65.764160155, 23.804629026],
+            [-65.544433592, 22.899361109],
+            [-65.017089842, 21.417732284],
+            [-64.226074217, 20.106016164],
+            [-65.14892578, 19.114759919],
+            [-65.90698242, 18.242428329],
+            [-64.291992186, 19.992966484],
+            [-64.302978515, 17.992017443],
+            [-64.456787109, 16.998243961],
+            [-64.676513672, 16.210230426],
+            [-65.7421875, 15.239185845],
+            [-67.37915039, 14.114096461],
+            [-69.829101562, 12.609099111],
+            [-67.368164062, 14.114096461],
+            [-65.654296874, 15.291813815],
+            [-64.654541015, 16.220738705],
+            [-64.456787108, 16.956486034],
+            [-64.27001953, 17.992017443],
+            [-64.291992186, 20.003054478],
+            [-64.237060545, 20.090576304],
+            [-60.534667967, 18.616852894],
+            [-37.001953125, 4.565473551],
+            [-34.541015625, 1.669685501],
+            [-33.3984375, -1.581830264],
+            [-33.002929688, -6.751896465],
+            [-33.310546875, -13.838079936],
+            [-34.013671875, -17.434510552],
+            [-35.15625, -20.468189223],
+            [-37.79296875, -22.998851594],
+            [-40.341796875, -24.527134823],
+            [-43.681640625, -25.720735134]
+          ]
+        },
+        "dataRef": "LineString",
+        "nome": "Rota da frota",
+        "texto": "",
+        "properties": {
+          "mode": "linestring",
+          "createdAt": 1712171831636,
+          "updatedAt": 1712171871176
+        },
+        "id": "9c0d1efe-5c6c-421c-8e49-1c1632d6eb14",
+        "type": "Feature",
+        "cenaInicio": "1964-03-31T12:02:25",
+        "cenaFim": "1964-03-31T18:00:14",
+        "order": 5,
+        "draggable": true,
+        "eventTimeout": null,
+        "cenaSelecionada": "d688f3db-c6b4-423d-a25b-dd23d5516982",
+        "imagemURL": "https://upload.wikimedia.org/wikipedia/commons/6/6c/USS_Forrestal_%28CVA-59%29_underway_at_sea_on_31_May_1962_%28KN-4507%29.jpg"
+      },
+      {
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [-43.330078125, -22.755920681],
+            [-47.790527344, -16.003575734],
+            [-47.8125, -17.119792501],
+            [-47.768554687, -16.024695712],
+            [-46.801757812, -16.341225619]
+          ]
+        },
+        "dataRef": "LineString",
+        "nome": "Jango vai para Brasília",
+        "texto": "",
+        "properties": {
+          "mode": "linestring",
+          "createdAt": 1712179198938,
+          "updatedAt": 1712179211547
+        },
+        "id": "6e5aae46-8461-46bf-9721-d0d43d1e1939",
+        "type": "Feature",
+        "cenaInicio": "1964-04-01T06:42:24",
+        "cenaFim": "1964-04-01T12:42:10",
+        "order": 6,
+        "draggable": true,
+        "cenaSelecionada": "bfa58596-adb8-4bf0-887b-8c84db025e6b"
+      },
+      {
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [-47.900390625, -15.961329082],
+            [-51.240234375, -29.95493455],
+            [-49.921875, -28.806173509],
+            [-51.229248047, -29.950175057],
+            [-51.943359375, -28.656851034]
+          ]
+        },
+        "dataRef": "LineString",
+        "nome": "Fazenda Goulart",
+        "texto": "",
+        "properties": {
+          "mode": "linestring",
+          "createdAt": 1712179274132,
+          "updatedAt": 1712179294114
+        },
+        "id": "270f42ad-a30f-466b-a85f-2b03dda0f5d4",
+        "type": "Feature",
+        "cenaInicio": "1964-04-01T23:51:00",
+        "cenaFim": "1964-04-02T03:34:41",
+        "order": 7,
+        "draggable": true,
+        "cenaSelecionada": "1a9600a6-5c3a-4213-9c3a-9195e09a27fe"
+      }
+    ]
+  },
+  "timelineOptions": {
+    "editable": { "remove": true, "updateTime": true },
+    "zoomKey": "ctrlKey",
+    "preferZoom": false,
+    "start": "1964-03-31T23:38:10",
+    "end": "1964-03-31T23:48:10",
+    "autoResize": false,
+    "selectable": true,
+    "multiselect": false,
+    "orientation": { "axis": "top" },
+    "longSelectPressTime": 777,
+    "rollingMode": { "offset": 0, "follow": false },
+    "showCurrentTime": false,
+    "groupHeightMode": "fitItems",
+    "verticalScroll": true,
+    "margin": { "item": { "vertical": 20 } },
+    "zoomable": true,
+    "moveable": true,
+    "locale": "pt_BR"
+  },
+  "modoVisao": "OpenStreetMap",
+  "urlMapaProprio": "",
+  "center": { "lat": -22.62415215809041, "lng": -44.51660156250001 },
+  "zoom": 7,
+  "bounds": {
+    "_southWest": { "lat": -27.381523191705053, "lng": -49.15283203125001 },
+    "_northEast": { "lat": -17.69636196540331, "lng": -39.88037109375001 }
+  },
+  "elementosFoco": [{ "id": "0ad1ea85-2392-4c5e-8656-c8d20314c798" }],
+  "elementoFoco": null,
+  "exibirLimiteCenas": true,
+  "caixaDialogo": "",
+  "playSpeed": 2,
+  "duracaoApresentacao": 32000
+}

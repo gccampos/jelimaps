@@ -69,7 +69,15 @@ export default function Propriedades(props: {
   const handleIntervaloAtualizaTempo = React.useCallback(() => {
     const time = mapaContext.playStatus
       ? moment(tempoAtual.current)
-          .add(1, "seconds")
+          .add(
+            moment(mapaContext.cenaFim).diff(
+              mapaContext.cenaInicio,
+              "milliseconds"
+            ) /
+              (mapaContext.duracaoApresentacao ?? 10000) /
+              12.3,
+            "seconds"
+          )
           .format("yyyy-MM-DDTHH:mm:ss")
       : mapaContext.cenaInicio;
     dispatch({

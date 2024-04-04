@@ -314,15 +314,14 @@ export default function Mapa(propsMapa: {
           zoom={mapaContext.mapOptions?.zoom ?? zoom}
           ref={setMap}
           maxZoom={23}
-          minZoom={mapaContext.modoVisao === MODO_VISAO.mapaProprio ? 9 : 5}
+          minZoom={mapaContext.modoVisao === MODO_VISAO.mapaProprio ? 9 : 3}
         >
           {mapaContext.modoVisao === MODO_VISAO.openstreetmap && (
             <TileLayer
-              attribution='&copy; <a href="https://www.stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; <a href="https://www.stamen.com/" target="_blank">Stamen Design</a> &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-              url="https://tiles.stadiamaps.com/tiles/stamen_terrain/{z}/{x}/{y}{r}.png"
+              attribution='&copy; <a href="https://stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; <a href="https://stamen.com/" target="_blank">Stamen Design</a> &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>'
+              url="https://tiles.stadiamaps.com/tiles/stamen_toner_lite/{z}/{x}/{y}{r}.png"
               maxNativeZoom={19}
               maxZoom={23}
-              //  https://tiles.stadiamaps.com/tiles/stamen_terrain/{z}/{x}/{y}{r}.{ext}
             />
           )}
           {mapaContext.modoVisao === MODO_VISAO.mapaProprio && (

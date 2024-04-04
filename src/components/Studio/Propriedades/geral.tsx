@@ -4,12 +4,11 @@ import {
   ButtonGroup,
   Container,
   FormControlLabel,
-  Slider,
   Switch,
   TextField,
   Typography,
-  // FormControlLabel, Switch
 } from "@mui/material";
+import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import {
   useMapaContext,
   useMapaDispatch,
@@ -19,32 +18,14 @@ import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import useCaixaDialogo from "@/components/CaixaDialogo/useCaixaDialogo";
 import { useRouter } from "next/router";
+import moment from "moment";
 
 export default function Geral() {
   const mapaContext = useMapaContext();
   const { reset } = useMapaUndo();
   const dispatch = useMapaDispatch();
   const { openModalConfirm } = useCaixaDialogo();
-  const playSpeedRef = React.useRef(null);
   const router = useRouter();
-  const marks = [
-    {
-      value: 0.5,
-      label: "0.5x",
-    },
-    {
-      value: 1,
-      label: "1x",
-    },
-    {
-      value: 1.5,
-      label: "1.5x",
-    },
-    {
-      value: 2,
-      label: "2x",
-    },
-  ];
 
   return (
     <Formik
@@ -141,27 +122,30 @@ export default function Geral() {
                 Tempo
               </Typography>
 
-              <Typography>Velocidade reprodução</Typography>
-              <Slider
-                value={playSpeedRef.current ?? formik.values.playSpeed ?? 1}
-                name=""
-                min={0.5}
-                step={0.05}
-                marks={marks}
-                max={2}
-                onChangeCommitted={(e, checked) => {
-                  dispatch({
-                    type: "alteraPropriedadeGeral",
-                    nomePropriedade: "playSpeed",
-                    valorPropriedade: checked,
-                    formik: formik,
-                  });
+              <Typography>Duração apresentação</Typography>
+              <TimePicker
+                views={["minutes", "seconds"]}
+                format="mm:ss"
+                value={moment(0, "milliseconds").add(
+                  formik.values.duracaoApresentacao ?? 10000,
+                  "milliseconds"
+                )}
+                onChange={(newValue) => {
+                  formik.setFieldValue(
+                    "duracaoApresentacao",
+                    newValue.minute() * 60000 + newValue.second() * 1000
+                  );
                 }}
-                onChange={(e, checked) => {
-                  playSpeedRef.current = checked;
+                onSelectedSectionsChange={(nv) => {
+                  if (nv === null) {
+                    dispatch({
+                      type: "alteraPropriedadeGeral",
+                      nomePropriedade: "duracaoApresentacao",
+                      valorPropriedade: formik.values.duracaoApresentacao,
+                      formik: formik,
+                    });
+                  }
                 }}
-                valueLabelDisplay="auto"
-                aria-labelledby="non-linear-slider"
               />
               <TextField
                 fullWidth

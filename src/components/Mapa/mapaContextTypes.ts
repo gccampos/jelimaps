@@ -96,7 +96,7 @@ export type mapaContextSchema = periodoInicioFim &
     // 0  := parado
     // 1  := reproduzindo
     // 2  := apresentando
-    playSpeed?: number;
+    duracaoApresentacao?: number;
     simpleTimeline?: boolean;
     caixaDialogo?: string;
   };

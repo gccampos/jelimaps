@@ -27,13 +27,13 @@ const cards = [
     descricao: "Resumo da primeira saga da grand line (não finalizado)",
     url: "/mapa?one-piece",
   },
-  // {
-  //   imageUrl:
-  //     "/assets/tour-pequena-africa-no-rio-de-janeiro-morro-conceicao-rua.jpg",
-  //   nome: "Pequena África",
-  //   descricao: "Processo de diáspora africana num passeio pelo Rio de Janeiro",
-  //   url: "/",
-  // },
+  {
+    imageUrl: "/assets/OIP.jpeg",
+    nome: "Golpe de 64",
+    descricao:
+      "Baseado em informações do documentário o dia que durou 21 anos e dados da Wikipedia",
+    url: "/mapa?golpe-64",
+  },
 ];
 export default function Home() {
   const router = useRouter();
