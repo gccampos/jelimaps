@@ -312,7 +312,7 @@ export default function Propriedades(props: {
                   if (!intervalId && i > 0) {
                     const idInterval = setInterval(
                       handleIntervaloAtualizaTempo,
-                      1000 / ((mapaContext.playSpeed ?? 1) * 5)
+                      1000 / 5
                     );
                     setIntervalId(idInterval);
                   } else {
