@@ -3,7 +3,7 @@ function UrlResolver(url: string): string {
     /https:\/\/drive\.google\.com\/file\/d\/([^/]+)\/view/;
   switch (true) {
     case regeXGoogleDrive.test(url):
-      url = `https://drive.google.com/uc?export=view&id=${
+      url = `https://lh3.googleusercontent.com/d/${
         url.match(regeXGoogleDrive)[1]
       }`;
       break;
