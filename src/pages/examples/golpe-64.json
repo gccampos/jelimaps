@@ -17,7 +17,7 @@
   "slideLinhaTempo": true,
   "cenaInicio": "1964-03-31T03:43:25",
   "cenaFim": "1964-04-03T05:31:36",
-  "tempo": "1964-03-31T03:43:30",
+  "tempo": "1964-03-31T00:15:04",
   "mapOptions": { "center": [0, 0] },
   "playStatus": 2,
   "conteudo": {
@@ -37,7 +37,8 @@
         "bounds": {
           "_southWest": { "lat": 37.19095471582608, "lng": -80.17272949218751 },
           "_northEast": { "lat": 40.26276066437183, "lng": -74.86083984375001 }
-        }
+        },
+        "texto": "Desde 1962 os EUA financiavam ações para desestabilizar o governo Jango"
       },
       {
         "id": "d688f3db-c6b4-423d-a25b-dd23d5516982",
@@ -48,7 +49,7 @@
         "color": "rgba(24, 224, 55, 0.8)",
         "visTimelineObject": { "type": "background" },
         "properties": { "selected": null },
-        "texto": "",
+        "texto": "Castelo Branco já tinha sido escolhido pelos EUA como próximo representante, já tinham o plano completo: remover Jango e por Castelo Branco no lugar.",
         "center": { "lat": 23.664650731631625, "lng": -68.22509765625001 },
         "zoom": 5,
         "bounds": {
@@ -76,7 +77,8 @@
             "lat": 18.729501999072138,
             "lng": -10.283203125000002
           }
-        }
+        },
+        "texto": "Após todos incentivos para realização do golpe, General Mourão Filho sai em direção ao Rio de Janeiro."
       },
       {
         "id": "bfa58596-adb8-4bf0-887b-8c84db025e6b",
@@ -86,7 +88,7 @@
         "dataRef": "cenas",
         "color": "rgba(62, 69, 237, 0.8)",
         "visTimelineObject": { "type": "background" },
-        "properties": { "selected": true },
+        "properties": { "selected": null },
         "center": { "lat": -19.797717490704724, "lng": -41.42944335937501 },
         "zoom": 6,
         "bounds": {
@@ -98,7 +100,8 @@
             "lat": -12.232654837013472,
             "lng": -24.829101562500004
           }
-        }
+        },
+        "texto": "A contradição de um agente que propõe realizar as \"reformas de base\" e enfrentar o imperialismo americano, mas que foi fácil impedi-lo para nem tentar."
       },
       {
         "id": "1a9600a6-5c3a-4213-9c3a-9195e09a27fe",
@@ -186,7 +189,8 @@
         "order": 0,
         "draggable": true,
         "opacity": 1,
-        "cenaSelecionada": "861193a7-16b5-4a01-aa48-2b3318b5700f"
+        "cenaSelecionada": "861193a7-16b5-4a01-aa48-2b3318b5700f",
+        "texto": "Haviam poucos legalistas, mas não houve confronto."
       },
       {
         "bounds": {
@@ -238,7 +242,8 @@
         "order": 3,
         "draggable": false,
         "opacity": 1,
-        "cenaSelecionada": "bfa58596-adb8-4bf0-887b-8c84db025e6b"
+        "cenaSelecionada": "bfa58596-adb8-4bf0-887b-8c84db025e6b",
+        "texto": "João Goulart deve ter percebido a fraqueza do esquema militar dele. "
       },
       {
         "bounds": {
@@ -275,7 +280,7 @@
         },
         "dataRef": "Marker",
         "nome": "Washington",
-        "texto": "",
+        "texto": "Organizaram as forças políticas e militares conspiracionistas",
         "id": "12c3c4ed-24ca-45f5-b117-8e2c54dfbc1c",
         "type": "Feature",
         "cenaInicio": "1964-03-31T02:07:31",
@@ -333,7 +338,7 @@
         },
         "dataRef": "LineString",
         "nome": "Rota da frota",
-        "texto": "",
+        "texto": "Uma frota naval com petroleiros e suprimentos são enviadas para apoiar as forças anti-Goulart.",
         "properties": {
           "mode": "linestring",
           "createdAt": 1712171831636,
@@ -362,7 +367,7 @@
         },
         "dataRef": "LineString",
         "nome": "Jango vai para Brasília",
-        "texto": "",
+        "texto": "Acuado no Rio sem segurança decide ir para Brasília, onde teria uma estrutura melhor.",
         "properties": {
           "mode": "linestring",
           "createdAt": 1712179198938,
@@ -427,13 +432,13 @@
   },
   "modoVisao": "OpenStreetMap",
   "urlMapaProprio": "",
-  "center": { "lat": -22.62415215809041, "lng": -44.51660156250001 },
-  "zoom": 7,
+  "center": { "lat": 38.74337300148126, "lng": -77.51678466796876 },
+  "zoom": 8,
   "bounds": {
-    "_southWest": { "lat": -27.381523191705053, "lng": -49.15283203125001 },
-    "_northEast": { "lat": -17.69636196540331, "lng": -39.88037109375001 }
+    "_southWest": { "lat": 37.19095471582608, "lng": -80.17272949218751 },
+    "_northEast": { "lat": 40.26276066437183, "lng": -74.86083984375001 }
   },
-  "elementosFoco": [{ "id": "0ad1ea85-2392-4c5e-8656-c8d20314c798" }],
+  "elementosFoco": [],
   "elementoFoco": null,
   "exibirLimiteCenas": true,
   "caixaDialogo": "",
