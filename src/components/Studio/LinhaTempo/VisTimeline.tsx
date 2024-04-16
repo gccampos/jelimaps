@@ -311,6 +311,7 @@ export default function VisTimeline(props: {
   const optionsVisTimeline: () => TimelineOptions = useCallback(() => {
     return {
       ...mapaContext.timelineOptions,
+      locale: "en",
       onRemove: handleRemoveConteudo,
       onMove: handleAtualizaConteudo,
       onMoving: handleOnMoving,

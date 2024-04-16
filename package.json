@@ -47,8 +47,7 @@
     "terra-draw": "^0.0.1-alpha.48",
     "use-undo": "^1.1.1",
     "uuid": "^9.0.0",
-    "vis": "^4.21.0-EOL",
-    "vis-timeline": "^7.7.2",
+    "vis-timeline": "^7.7.3",
     "yup": "^1.2.0",
     "zustand": "^4.4.1"
   },
