@@ -58,6 +58,7 @@ export default function Propriedades(props: {
   const tocadorRef = useRef(null);
   const headerTabRef = useRef(null);
   const [intervalId, setIntervalId] = React.useState(null);
+  const timeOutIdRef = useRef(null);
   const tempoAtual = React.useRef(mapaContext.tempo);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -206,6 +207,14 @@ export default function Propriedades(props: {
               if (rndRef && rndRef.updatePosition)
                 rndRef?.updatePosition({ x: width - ref.offsetWidth, y: 0 });
               setLargurasPropriedades(ref.offsetWidth);
+              if (timeOutIdRef.current) clearTimeout(timeOutIdRef.current);
+              timeOutIdRef.current = setTimeout(() => {
+                dispatch({
+                  type: "alteraPropriedadeGeral",
+                  nomePropriedade: "larguraPropriedades",
+                  valorPropriedade: ref.offsetWidth,
+                });
+              }, 250);
             }}
           >
             <AppBar

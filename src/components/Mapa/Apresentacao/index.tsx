@@ -1,5 +1,5 @@
 "use client";
-import { MapContainer, TileLayer, ImageOverlay } from "react-leaflet";
+import { MapContainer, ImageOverlay } from "react-leaflet";
 import { LatLng, LatLngBounds } from "leaflet";
 import { useEffect, useState } from "react";
 import React from "react";
@@ -16,7 +16,7 @@ import useWindowDimensions from "../../Studio/useWindowDimensions";
 import Legenda from "./legenda";
 import LinhaTempo from "./linhaTempo";
 import Leaflet, { Map } from "leaflet";
-import Image from "next/image";
+import PlanoFundoMapaComum from "@/components/Mapa/PlanoFundoMapaComum/PlanoFundoMapaComum";
 
 export const isMobile = (height: number, width: number) => {
   return (
@@ -90,26 +90,7 @@ const Apresentacao = () => {
               minZoom={mapaContext.modoVisao === MODO_VISAO.mapaProprio ? 9 : 3}
             >
               {mapaContext.modoVisao === MODO_VISAO.openstreetmap && (
-                <TileLayer
-                  attribution="Map data ©2023"
-                  url="http://{s}.google.com/vt?lyrs=s,h&x={x}&y={y}&z={z}"
-                  maxNativeZoom={20}
-                  subdomains={["mt0", "mt1", "mt2", "mt3"]}
-                  maxZoom={23}
-                />
-              )}
-
-              {mapaContext.modoVisao === MODO_VISAO.openstreetmap && (
-                <CustomControlLeaflet
-                  position={POSITION_CLASSES_CUSTOM_CONTROL.bottomleft}
-                >
-                  <Image
-                    src={"/assets/google_on_white.png"}
-                    alt="logo google"
-                    width={width * 0.07 > 60 ? 60 : width * 0.07}
-                    height={height * 0.05 > 20 ? 20 : height * 0.05}
-                  />
-                </CustomControlLeaflet>
+                <PlanoFundoMapaComum />
               )}
               {mapaContext.modoVisao === MODO_VISAO.mapaProprio && (
                 <ImageOverlay

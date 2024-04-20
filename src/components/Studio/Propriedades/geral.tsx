@@ -3,7 +3,11 @@ import {
   Button,
   ButtonGroup,
   Container,
+  FormControl,
   FormControlLabel,
+  InputLabel,
+  MenuItem,
+  Select,
   Switch,
   TextField,
   Typography,
@@ -19,6 +23,8 @@ import * as Yup from "yup";
 import useCaixaDialogo from "@/components/CaixaDialogo/useCaixaDialogo";
 import { useRouter } from "next/router";
 import moment from "moment";
+import { MODO_VISAO } from "@/components/Mapa/mapaContextTypes";
+import tiposPlanoFundo from "@/components/Mapa/PlanoFundoMapaComum/tiposPlanoFundo";
 
 export default function Geral() {
   const mapaContext = useMapaContext();
@@ -99,6 +105,34 @@ export default function Geral() {
               <Typography variant="h6" className="title">
                 Mapa
               </Typography>
+              {mapaContext.modoVisao === MODO_VISAO.openstreetmap && (
+                <FormControl fullWidth>
+                  <InputLabel id="simple-select-tile-label">
+                    Selecione o plano de fundo
+                  </InputLabel>
+                  <Select
+                    labelId="simple-select-tile-label"
+                    id="simple-select-tile"
+                    value={mapaContext.tipoMapaComum?.url ?? ""}
+                    onChange={(e) => {
+                      dispatch({
+                        type: "alteraPropriedadeGeral",
+                        nomePropriedade: "tipoMapaComum",
+                        valorPropriedade: tiposPlanoFundo.find(
+                          (x) => x.url === e.target.value
+                        ),
+                      });
+                    }}
+                    label="Plano de Fundo"
+                  >
+                    {tiposPlanoFundo.map((x, i) => (
+                      <MenuItem value={x.url} key={`select#${i}`}>
+                        {x.nome}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              )}
               <FormControlLabel
                 control={
                   <Switch

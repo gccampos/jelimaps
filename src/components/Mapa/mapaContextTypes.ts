@@ -99,13 +99,25 @@ export type mapaContextSchema = periodoInicioFim &
     duracaoApresentacao?: number;
     simpleTimeline?: boolean;
     caixaDialogo?: string;
+    larguraPropriedades?: number;
   };
 type telaMapa = {
   center?: LatLng;
   zoom?: number;
   bounds?: LatLngBoundsExpression;
   urlMapaProprio?: string;
+  tipoMapaComum?: tipoMapaComum;
 };
+
+export type tipoMapaComum = {
+  nome: string;
+  attribution: string;
+  url: string;
+  subdomains?: string | string[];
+  maxZoom?: number;
+  maxNativeZoom?: number;
+};
+
 type conteudoType = {
   [key: string]: arrayElemento;
 };

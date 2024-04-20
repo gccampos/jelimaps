@@ -36,7 +36,9 @@ const Studio = () => {
   const [draw, setDraw] = useState<TerraDraw>(null);
   const [altura, setAltura] = useState(height * 0.25);
   const displaYNoneStyle = { display: "none" };
-  const [larguraPropriedades, setLargurasPropriedades] = useState(250);
+  const [larguraPropriedades, setLargurasPropriedades] = useState(
+    mapaContext.larguraPropriedades ?? 250
+  );
   const dispatch = useMapaDispatch();
   const barraAlerta = useBarraAlerta();
 

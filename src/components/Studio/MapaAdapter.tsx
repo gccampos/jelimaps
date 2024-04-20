@@ -1,6 +1,5 @@
 import {
   MapContainer,
-  TileLayer,
   Marker,
   ImageOverlay,
   Rectangle,
@@ -46,8 +45,7 @@ import UndoControl from "./UndoControl";
 import { getImageDimensions } from "../Mapa/MapaUtils";
 import contextChangers from "../Mapa/ContextChangers";
 import moment from "moment";
-import Image from "next/image";
-import useWindowDimensions from "./useWindowDimensions";
+import PlanoFundoMapaComum from "../Mapa/PlanoFundoMapaComum/PlanoFundoMapaComum";
 
 export default function Mapa(propsMapa: {
   altura: number;
@@ -55,7 +53,6 @@ export default function Mapa(propsMapa: {
   setMapa: React.Dispatch<React.SetStateAction<Leaflet.Map>>;
   conteudoElementosRef: React.MutableRefObject<tipoElemento[]>;
 }) {
-  const { width } = useWindowDimensions();
   const { setMapa, conteudoElementosRef } = propsMapa;
   const [isMounted, setIsMounted] = React.useState(false);
   const [map, setMap] = useState<Map>(null);
@@ -320,28 +317,7 @@ export default function Mapa(propsMapa: {
           minZoom={mapaContext.modoVisao === MODO_VISAO.mapaProprio ? 9 : 3}
         >
           {mapaContext.modoVisao === MODO_VISAO.openstreetmap && (
-            <TileLayer
-              attribution="Map data ©2023"
-              url="http://{s}.google.com/vt?lyrs=s,h&x={x}&y={y}&z={z}"
-              maxNativeZoom={20}
-              subdomains={["mt0", "mt1", "mt2", "mt3"]}
-              maxZoom={23}
-            />
-          )}
-
-          {mapaContext.modoVisao === MODO_VISAO.openstreetmap && (
-            <CustomControlLeaflet
-              position={POSITION_CLASSES_CUSTOM_CONTROL.bottomleft}
-            >
-              <Image
-                src={"/assets/google_on_white.png"}
-                alt="logo google"
-                width={width * 0.07 > 60 ? 60 : width * 0.07}
-                height={
-                  propsMapa.altura * 0.05 > 20 ? 20 : propsMapa.altura * 0.05
-                }
-              />
-            </CustomControlLeaflet>
+            <PlanoFundoMapaComum />
           )}
           {mapaContext.modoVisao === MODO_VISAO.mapaProprio && (
             <ImageOverlay bounds={bounds} url={mapaContext.urlMapaProprio} />
