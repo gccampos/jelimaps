@@ -226,7 +226,17 @@ export default function Propriedades(props: {
               ref={headerTabRef}
             >
               <Tabs
-                value={value}
+                value={
+                  (
+                    mapaContext.elementosFoco?.concat(
+                      mapaContext.elementoFoco
+                    ) ?? [mapaContext.elementoFoco]
+                  ).filter((x) => !!x).length > 0
+                    ? value
+                    : value > 1
+                    ? 0
+                    : value
+                }
                 onChange={handleChange}
                 sx={{ bgcolor: "#e5e7eb" }}
                 indicatorColor="secondary"

@@ -11,25 +11,13 @@ import {
 } from "terra-draw";
 import { actionContextChange, tipoElemento } from "../Mapa/mapaContextTypes";
 import Leaflet from "leaflet";
-import contextChangers from "../Mapa/ContextChangers";
 import { elementos } from "@/main/constants/elementos";
-
-const isMobile = () => {
-  return (
-    "ontouchstart" in document.documentElement &&
-    !!navigator.userAgent.match(/Mobi/)
-  );
-};
 
 const terraDrawSetup = (
   dispatch: React.Dispatch<actionContextChange>,
   map: Leaflet.Map,
   pegarConteudoElementos: () => tipoElemento[],
-  alterarEventTimeoutConteudoElemento: (index: number, value: any) => void,
-  pegarElementosSelecionados: () => any,
-  pegarEventRef: () => boolean,
-  alterarEventRef: (x: boolean) => void,
-  slideTimeline: () => boolean
+  alterarEventTimeoutConteudoElemento: (index: number, value: any) => void
 ) => {
   const terraDrawPolygonMode = new TerraDrawPolygonMode({
     allowSelfIntersections: false,
@@ -167,76 +155,6 @@ const terraDrawSetup = (
       dispatch({ type: "selecionarElementoInteracao", arg: elementos.Hand });
     }, 10);
   };
-  (function (modes) {
-    modes.forEach((mode) => {
-      var oldEvent = mode.onClick;
-      mode.origin.onClick = (e: any) => {
-        if (
-          !(
-            e.containerY < 90 &&
-            e.containerX > (map as any)._container.offsetWidth - 90
-          ) &&
-          !(e.containerX < 60 && e.containerY < 160) &&
-          (slideTimeline()
-            ? !(
-                e.containerY > (map as any)._container.offsetHeight - 113 &&
-                e.containerX > (map as any)._container.offsetWidth - 90
-              )
-            : !(e.containerY > (map as any)._container.offsetHeight - 113))
-        ) {
-          switch (mode.origin.mode) {
-            case terraDrawSelectMode.mode:
-              var eleClicado = pegarConteudoElementos()
-                // .filter(
-                //   (x) => x.dataRef === "Marker" || x.dataRef === "ImageOverlay"
-                // )
-                .find((x) =>
-                  contextChangers.elementoFoiClicado(x, e, map, Leaflet)
-                );
-              if (
-                eleClicado
-                // &&
-                // pegarElementosSelecionados().some((x) => eleClicado.id === x)
-              ) {
-                alterarEventRef(true);
-              } else {
-                alterarEventRef(false);
-                dispatch({
-                  type: "selecionarElementoFoco",
-                });
-              }
-
-              break;
-            case terraDrawCircleMode.mode:
-              if (isMobile()) {
-                (mode.origin as any).clickCount =
-                  (mode.origin as any).clickCount ?? 0;
-                if ((mode.origin as any).clickCount === 1)
-                  mode.origin.onMouseMove(e);
-              }
-              break;
-            default:
-              break;
-          }
-          oldEvent.apply(mode.origin, [e]);
-        }
-      };
-    });
-  })([
-    { origin: terraDrawCircleMode, onClick: terraDrawCircleMode.onClick },
-    {
-      origin: terraDrawLineStringMode,
-      onClick: terraDrawLineStringMode.onClick,
-    },
-    { origin: terraDrawPointMode, onClick: terraDrawPointMode.onClick },
-    { origin: terraDrawPolygonMode, onClick: terraDrawPolygonMode.onClick },
-    { origin: terraDrawSelectMode, onClick: terraDrawSelectMode.onClick },
-    { origin: terraDrawMarkerMode, onClick: terraDrawMarkerMode.onClick },
-    {
-      origin: terraDrawImageOverlayMode,
-      onClick: terraDrawImageOverlayMode.onClick,
-    },
-  ]);
 
   const onFinishModesExistents = (e: any) => {
     const element = draw.getSnapshot().find((x) => x.id === e);
@@ -261,23 +179,6 @@ const terraDrawSetup = (
     terraDrawPointMode.onFinish =
     terraDrawPolygonMode.onFinish =
       onFinishModesExistents;
-
-  draw.on("select", (id: string) => {
-    dispatch({
-      type: "selecionarElementoFoco",
-      id: id,
-    });
-  });
-
-  draw.on("deselect", () => {
-    if (!pegarEventRef()) {
-      if (pegarElementosSelecionados()) {
-        dispatch({
-          type: "selecionarElementoFoco",
-        });
-      }
-    } else alterarEventRef(false);
-  });
 
   draw.on("change", (e: string[], type: string) => {
     const listaEl = pegarConteudoElementos();
@@ -338,6 +239,7 @@ const terraDrawSetup = (
   draw.start();
   // Set the mode to polygon
   draw.setMode("select");
+
   return draw;
 };
 export default terraDrawSetup;

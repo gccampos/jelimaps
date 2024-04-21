@@ -23,6 +23,7 @@ import {
   ImageList,
   ImageListItem,
 } from "@mui/material";
+import { HexColorPicker } from "react-colorful";
 import { useMapaContext, useMapaDispatch } from "@/components/Mapa/MapaContext";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import { Form, Formik } from "formik";
@@ -342,7 +343,7 @@ export default function Elemento(props: { map: Map }) {
                                   //   },
                                   // });
                                 }}
-                                label="Age"
+                                label="Cena"
                               >
                                 {mapaContext?.conteudo.cenas &&
                                   mapaContext?.conteudo.cenas.map((x, i) => (
@@ -445,6 +446,24 @@ export default function Elemento(props: { map: Map }) {
                               }
                               label={"Editar elemento no mapa"}
                             />
+
+                            <FormControl fullWidth>
+                              <InputLabel id="simple-select-tile-label">
+                                Selecione a cor
+                              </InputLabel>
+                              <HexColorPicker
+                                color={(formik.values as any).color}
+                                onChange={(newColor) => {
+                                  dispatch({
+                                    type: "editarPropriedade",
+                                    tipo: x.dataRef,
+                                    id: x.id,
+                                    nomePropriedade: "color",
+                                    valorPropriedade: newColor,
+                                  });
+                                }}
+                              />
+                            </FormControl>
                             {((formik.values as any).positionBL ||
                               (formik.values as any).dataRef === "Marker") &&
                               ((formik.values as any).opacity ? (

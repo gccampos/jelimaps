@@ -111,36 +111,25 @@ const Studio = () => {
     index: number,
     eventTimeout?: any
   ) => (conteudoElementosRef.current[index].eventTimeout = eventTimeout);
-  const pegarElementosSelecionados = () => elementosSelecionadosRef.current;
-
-  const eventRef = useRef<boolean>();
-  const pegarEventRef = () => eventRef.current;
-  const alterarEventRef = (value: boolean) => (eventRef.current = value);
-
-  const slideLinhaTempoRef = useRef<boolean>();
-  const slideTimeline = React.useCallback(() => {
-    return slideLinhaTempoRef.current;
-  }, []);
-  useEffect(() => {
-    slideLinhaTempoRef.current = mapaContext.slideLinhaTempo;
-  }, [mapaContext.slideLinhaTempo]);
 
   useEffect(() => {
     if (map && !draw) {
-      setDraw(
-        terraDrawSetup(
-          dispatch,
-          map,
-          pegarConteudoElementos,
-          alterarEventTimeoutConteudoElemento,
-          pegarElementosSelecionados,
-          pegarEventRef,
-          alterarEventRef,
-          slideTimeline
-        )
+      const _draw = terraDrawSetup(
+        dispatch,
+        map,
+        pegarConteudoElementos,
+        alterarEventTimeoutConteudoElemento
       );
+      setDraw(_draw);
+
+      map.on("click", () => {
+        if (_draw.getSnapshot().length === 1)
+          dispatch({
+            type: "selecionarElementoFoco",
+          });
+      });
     }
-  }, [dispatch, draw, map, slideTimeline]);
+  }, [dispatch, draw, map]);
 
   useEffect(() => {
     if (draw)

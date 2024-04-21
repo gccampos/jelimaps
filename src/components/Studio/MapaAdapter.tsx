@@ -34,18 +34,16 @@ import ReactDOMServer from "react-dom/server";
 import useCaixaDialogo from "../CaixaDialogo/useCaixaDialogo";
 import ImageResolver from "@/components/ImageUrlResolver";
 import ImageOverlayRotated from "../Mapa/ImageOverlayRotated";
-import {
-  MODO_VISAO,
-  elementoPadrao,
-  tipoElemento,
-} from "../Mapa/mapaContextTypes";
-import { TerraDraw, GeoJSONStoreFeatures } from "terra-draw";
+import { MODO_VISAO, tipoElemento } from "../Mapa/mapaContextTypes";
+import { TerraDraw } from "terra-draw";
 import MapaContextChanger from "../Mapa/ContextChangers";
 import UndoControl from "./UndoControl";
 import { getImageDimensions } from "../Mapa/MapaUtils";
 import contextChangers from "../Mapa/ContextChangers";
 import moment from "moment";
 import PlanoFundoMapaComum from "../Mapa/PlanoFundoMapaComum/PlanoFundoMapaComum";
+import ConteudoMapa from "./ConteudoMapa";
+import { elementos } from "@/main/constants/elementos";
 
 export default function Mapa(propsMapa: {
   altura: number;
@@ -116,7 +114,7 @@ export default function Mapa(propsMapa: {
       tipo: "ImageOverlay",
       valor: ImageResolver.UrlResolver(urlImageRef.current),
     });
-    propsMapa.draw.setMode("select");
+    propsMapa.draw.setMode(elementos.Hand.nome);
     closeModalConfirm(null, null);
     caixaDialogoRef.current = urlImageRef.current = null;
   }, [dispatch, closeModalConfirm, propsMapa.draw]);
@@ -204,92 +202,6 @@ export default function Mapa(propsMapa: {
     return MapaContextChanger.isElementoSelecionado(mapaContext, elemento.id)
       ? "#000000"
       : elemento.color ?? "#0d6efd";
-  };
-
-  const ConteudoMapa = (propsConteudoMapa: { elemento: elementoPadrao }) => {
-    const elementoGeoJSON = new Leaflet.GeoJSON(propsConteudoMapa.elemento);
-    useEffect(() => {
-      if (map && propsMapa.draw) {
-        if (propsConteudoMapa.elemento.draggable) {
-          const ds = (
-            MapaContextChanger.isElementoSelecionado(
-              mapaContext,
-              propsConteudoMapa.elemento.id
-            )
-              ? {
-                  ...propsConteudoMapa.elemento,
-                  properties: {
-                    ...propsConteudoMapa.elemento.properties,
-                    selected: true,
-                  },
-                }
-              : propsConteudoMapa.elemento
-          ) as GeoJSONStoreFeatures;
-          try {
-            propsMapa.draw?.addFeatures([ds]);
-            if (
-              mapaContext.elementoFoco?.id === propsConteudoMapa.elemento.id &&
-              !(propsMapa.draw as any)._mode.selected?.some(
-                (x) => x === propsConteudoMapa.elemento.id
-              )
-            )
-              (propsMapa.draw as any)._mode.selected = [
-                propsConteudoMapa.elemento.id,
-              ];
-            //(props.draw as any)._mode.onSelect(p.el.id);
-          } catch (error) {
-            dispatch({
-              type: "removeElements",
-              id: propsConteudoMapa.elemento.id,
-            });
-          }
-        } else {
-          elementoGeoJSON.on("click", () => {
-            dispatch({
-              type: "selecionarElementoFoco",
-              id: propsConteudoMapa.elemento.id,
-            });
-          });
-          elementoGeoJSON.setStyle({
-            color: corItemSelecionadoFoco(propsConteudoMapa.elemento),
-          });
-          map.addLayer(elementoGeoJSON);
-        }
-        return () => {
-          // props.draw.removeFeatures([p.el.id.toString()]);
-          if (
-            propsConteudoMapa.elemento.draggable ||
-            Object.keys((propsMapa.draw as any)._store.store).some(
-              (x) => x === propsConteudoMapa.elemento.id
-            )
-          ) {
-            // if (mapaContext.elementoFoco?.id === p.el.id)
-            //   (props.draw as any)._mode.deselect();
-            if (
-              MapaContextChanger.retornaListaElementosConteudo(
-                mapaContext
-              ).some(
-                (elemento) => elemento.id === propsConteudoMapa.elemento.id
-              )
-            ) {
-              // props.draw.removeFeatures([p.el.id.toString()]);
-              if (
-                (propsMapa.draw as any)._store &&
-                (propsMapa.draw as any)._store.store[
-                  propsConteudoMapa.elemento.id.toString()
-                ]
-              )
-                propsMapa.draw.removeFeatures([
-                  propsConteudoMapa.elemento.id.toString(),
-                ]);
-            }
-          } else {
-            map.removeLayer(elementoGeoJSON);
-          }
-        };
-      }
-    });
-    return null;
   };
 
   const [bounds, setBounds] = useState<LatLngBounds>(
@@ -421,7 +333,13 @@ export default function Mapa(propsMapa: {
                 new Date(point.cenaInicio) <= new Date(mapaContext.tempo) &&
                 new Date(point.cenaFim) >= new Date(mapaContext.tempo)
             ).map((point, index) => {
-              return <ConteudoMapa elemento={point} key={`Pointer#${index}`} />;
+              return (
+                <ConteudoMapa
+                  draw={propsMapa.draw}
+                  elemento={point}
+                  key={`Pointer#${index}`}
+                />
+              );
             })}
           {mapaContext.conteudo &&
             mapaContext.conteudo.Circle &&
@@ -431,7 +349,13 @@ export default function Mapa(propsMapa: {
                 new Date(circle.cenaInicio) <= new Date(mapaContext.tempo) &&
                 new Date(circle.cenaFim) >= new Date(mapaContext.tempo)
             ).map((circle, index) => {
-              return <ConteudoMapa elemento={circle} key={`Circle#${index}`} />;
+              return (
+                <ConteudoMapa
+                  draw={propsMapa.draw}
+                  elemento={circle}
+                  key={`Circle#${index}`}
+                />
+              );
             })}
           {mapaContext.conteudo &&
             mapaContext.conteudo.LineString &&
@@ -444,6 +368,7 @@ export default function Mapa(propsMapa: {
             ).map((lineString, index) => {
               return (
                 <ConteudoMapa
+                  draw={propsMapa.draw}
                   elemento={lineString}
                   key={`LineString#${index}`}
                 />
@@ -459,7 +384,11 @@ export default function Mapa(propsMapa: {
                 new Date(polygon.cenaFim) >= new Date(mapaContext.tempo)
             ).map((polygon, index) => {
               return (
-                <ConteudoMapa elemento={polygon} key={`polygon#${index}`} />
+                <ConteudoMapa
+                  draw={propsMapa.draw}
+                  elemento={polygon}
+                  key={`polygon#${index}`}
+                />
               );
             })}
 

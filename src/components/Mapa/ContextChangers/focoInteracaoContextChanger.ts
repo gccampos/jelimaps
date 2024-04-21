@@ -1,4 +1,4 @@
-import { elementoProto } from "@/main/constants/elementos";
+import { elementoProto, elementos } from "@/main/constants/elementos";
 import {
   actionContextChange,
   mapaContextSchema,
@@ -35,6 +35,7 @@ const changeElementoFoco = (
     ...oldMapaContext,
     elementosFoco: null,
     elementoFoco: newElemntoFoco,
+    elementoInteracao: elementos.Hand,
   };
 };
 
@@ -59,6 +60,7 @@ const changeElementosFoco = (
     ...oldMapaContext,
     elementoFoco: actionContextChange.elemento,
     elementosFoco: newElementsFoco,
+    elementoInteracao: elementos.Hand,
   };
 };
 
