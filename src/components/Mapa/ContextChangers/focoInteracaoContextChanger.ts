@@ -17,6 +17,8 @@ const changeElementoInteracao = (
       ...elemento,
       iconComponent: null,
     },
+    elementosFoco: null,
+    elementoFoco: null,
   };
 };
 
@@ -36,6 +38,9 @@ const changeElementoFoco = (
     elementosFoco: null,
     elementoFoco: newElemntoFoco,
     elementoInteracao: elementos.Hand,
+    bounds: actionContextChange.mapContext?.bounds ?? oldMapaContext.bounds,
+    center: actionContextChange.mapContext?.center ?? oldMapaContext.center,
+    zoom: actionContextChange.mapContext?.zoom ?? oldMapaContext.zoom,
   };
 };
 

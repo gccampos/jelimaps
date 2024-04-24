@@ -5,7 +5,13 @@ import {
   Rectangle,
   Popup,
 } from "react-leaflet";
-import Leaflet, { LatLngBounds, LatLng, divIcon, Map } from "leaflet";
+import Leaflet, {
+  LatLngBounds,
+  LatLng,
+  divIcon,
+  Map,
+  LatLngBoundsExpression,
+} from "leaflet";
 import { useEffect, useMemo, useRef, useState } from "react";
 import React from "react";
 import CustomControlLeaflet, {
@@ -101,7 +107,31 @@ export default function Mapa(propsMapa: {
   const cliqueElementoNoMapa = (elemento, evento) => {
     if (evento.originalEvent.shiftKey || evento.originalEvent.ctrlKey)
       dispatch({ type: "adicionarElementoFoco", elemento: elemento });
-    else dispatch({ type: "selecionarElementoFoco", elemento: elemento });
+    else
+      dispatch({
+        type: "selecionarElementoFoco",
+        elemento: elemento,
+        mapContext:
+          elemento.dataRef === "Marker"
+            ? {
+                ...mapaContext,
+                bounds: elemento.geometry.coordinates as LatLngBoundsExpression,
+                center: new Leaflet.LatLng(
+                  elemento.geometry.coordinates[0] as number,
+                  elemento.geometry.coordinates[1] as number
+                ),
+                zoom: elemento.zoom,
+              }
+            : {
+                ...mapaContext,
+                bounds: elemento.bounds,
+                center: Leaflet.latLngBounds(
+                  elemento.bounds._northEast,
+                  elemento.bounds._southWest
+                ).getCenter(),
+                zoom: elemento.zoom,
+              },
+      });
   };
 
   const urlImageRef = useRef<string>();
@@ -197,6 +227,9 @@ export default function Mapa(propsMapa: {
     conteudoElementosRef.current =
       MapaContextChanger.retornaListaElementosConteudoCenaAtual(mapaContext);
   });
+  if (propsMapa.draw) {
+    propsMapa.draw.clear();
+  }
 
   const corItemSelecionadoFoco = (elemento) => {
     return MapaContextChanger.isElementoSelecionado(mapaContext, elemento.id)

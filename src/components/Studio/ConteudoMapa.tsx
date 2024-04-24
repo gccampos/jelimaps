@@ -58,12 +58,19 @@ const ConteudoMapa = (propsConteudoMapa: {
         dispatch({
           type: "selecionarElementoFoco",
           id: propsConteudoMapa.elemento.id,
+          mapContext: {
+            ...mapaContext,
+            bounds: elementoGeoJSON.getBounds(),
+            center: elementoGeoJSON.getBounds().getCenter(),
+            zoom: propsConteudoMapa.elemento.zoom,
+          },
         });
 
-        // para evitar de arrastar o elemento no mapa sem querer
-        setTimeout(() => {
-          propsConteudoMapa.draw.setMode(elementos.Hand.nome);
-        }, 100);
+        // // para evitar de arrastar o elemento no mapa sem querer
+        // setTimeout(() => {
+        //   // propsConteudoMapa.draw.setMode(elementos.Hand.nome);
+        //   propsConteudoMapa.draw.selectFeature(propsConteudoMapa.elemento.id);
+        // }, 500);
       });
       elementoGeoJSON.setStyle({
         color: corItemSelecionadoFoco(propsConteudoMapa.elemento),

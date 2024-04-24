@@ -107,26 +107,24 @@ const Studio = () => {
   }, [mapaContext.elementosFoco, mapaContext.elementoFoco]);
 
   const pegarConteudoElementos = () => conteudoElementosRef.current;
-  const alterarEventTimeoutConteudoElemento = (
-    index: number,
-    eventTimeout?: any
-  ) => (conteudoElementosRef.current[index].eventTimeout = eventTimeout);
 
   useEffect(() => {
     if (map && !draw) {
-      const _draw = terraDrawSetup(
-        dispatch,
-        map,
-        pegarConteudoElementos,
-        alterarEventTimeoutConteudoElemento
-      );
+      const _draw = terraDrawSetup(dispatch, map, pegarConteudoElementos);
       setDraw(_draw);
 
       map.on("click", () => {
-        if (_draw.getSnapshot().length === 1)
-          dispatch({
-            type: "selecionarElementoFoco",
-          });
+        const modeDraw = (_draw as any)._mode;
+        if (modeDraw?._state == "selecting")
+          setTimeout(() => {
+            const features = _draw.getSnapshot();
+            _draw.clear();
+            _draw.addFeatures(features);
+            if (features?.length > 0 && features[0].id)
+              setTimeout(() => {
+                _draw.selectFeature(features[0].id);
+              }, 250);
+          }, 100);
       });
     }
   }, [dispatch, draw, map]);

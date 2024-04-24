@@ -16,8 +16,7 @@ import { elementos } from "@/main/constants/elementos";
 const terraDrawSetup = (
   dispatch: React.Dispatch<actionContextChange>,
   map: Leaflet.Map,
-  pegarConteudoElementos: () => tipoElemento[],
-  alterarEventTimeoutConteudoElemento: (index: number, value: any) => void
+  pegarConteudoElementos: () => tipoElemento[]
 ) => {
   const terraDrawPolygonMode = new TerraDrawPolygonMode({
     allowSelfIntersections: false,
@@ -129,11 +128,6 @@ const terraDrawSetup = (
     ],
   });
 
-  // var oldEvent = terraDrawLeafletAdapter.render;
-  // terraDrawLeafletAdapter.render = (e, c) => {
-  //   oldEvent.apply(terraDrawLeafletAdapter, [e, c]);
-  // };
-
   (terraDrawMarkerMode.onClick as any) = (e: any) => {
     dispatch({
       type: "addElemento",
@@ -146,6 +140,29 @@ const terraDrawSetup = (
     }, 10);
   };
 
+  var oldEventOnClick = terraDrawSelectMode.onClick;
+  terraDrawSelectMode.onClick = (e) => {
+    const featuresInClick = draw.getFeaturesAtLngLat({
+      lat: e.lat,
+      lng: e.lng,
+    });
+    oldEventOnClick.apply(terraDrawSelectMode, [e]);
+    if (e.button === "right") {
+      const element = draw.getSnapshot()[0];
+      dispatch({
+        type: "alteraCoordinatesElemento",
+        posicao: element.geometry.coordinates as
+          | [number, number]
+          | [number, number][]
+          | [number, number][][],
+        id: element.id,
+      });
+    } else if (featuresInClick.length === 0 && e.button === "left")
+      dispatch({
+        type: "selecionarElementoFoco",
+      });
+  };
+
   terraDrawImageOverlayMode.onClick = () => {
     dispatch({
       type: "addImageOverlay",
@@ -156,83 +173,40 @@ const terraDrawSetup = (
     }, 10);
   };
 
-  const onFinishModesExistents = (e: any) => {
-    const element = draw.getSnapshot().find((x) => x.id === e);
-    dispatch({
-      type: "addElemento",
-      posicao: element.geometry.coordinates as
-        | [number, number]
-        | [number, number][],
-      tipo: element.geometry.type,
-      id: element.id,
-      valor: element,
-    });
-    draw.removeFeatures([e]);
+  draw.on("finish", (e) => {
     setTimeout(() => {
-      draw.setMode(elementos.Hand.nome);
-      dispatch({ type: "selecionarElementoInteracao", arg: elementos.Hand });
-    }, 10);
-  };
-
-  terraDrawLineStringMode.onFinish =
-    terraDrawCircleMode.onFinish =
-    terraDrawPointMode.onFinish =
-    terraDrawPolygonMode.onFinish =
-      onFinishModesExistents;
-
-  draw.on("change", (e: string[], type: string) => {
-    const listaEl = pegarConteudoElementos();
-    if (listaEl.some((x) => e.some((z) => z === x.id))) {
-      switch (type) {
-        case "update":
-          {
-            const element = draw
-              .getSnapshot()
-              .find(
-                (x) =>
-                  e.some((z) => z === x.id) &&
-                  listaEl.some((z) => z.id === x.id)
-              );
-            const oldElement = listaEl.find((x) => x.id === element.id);
-            if (oldElement)
-              if (
-                JSON.stringify(oldElement.geometry.coordinates.flat()) !==
-                JSON.stringify(element.geometry.coordinates.flat())
-              ) {
-                if (oldElement.eventTimeout) {
-                  clearTimeout(oldElement.eventTimeout);
-                }
-                alterarEventTimeoutConteudoElemento(
-                  listaEl.findIndex((x) => x.id === oldElement.id),
-                  setTimeout(() => {
-                    if (
-                      listaEl[listaEl.findIndex((x) => x.id === oldElement.id)]
-                        .eventTimeout !== null
-                    ) {
-                      dispatch({
-                        type: "alteraCoordinatesElemento",
-                        posicao: element.geometry.coordinates as
-                          | [number, number]
-                          | [number, number][]
-                          | [number, number][][],
-                        id: element.id,
-                      });
-                      alterarEventTimeoutConteudoElemento(
-                        listaEl.findIndex((x) => x.id === oldElement.id),
-                        null
-                      );
-                    }
-                  }, 100)
-                );
-              }
-            // });
-          }
-          break;
-
-        default:
-          break;
-      }
-    }
+      const element = draw.getSnapshot().find((x) => x.id === e);
+      const listaEl = pegarConteudoElementos();
+      if (element)
+        if (listaEl.some((x) => x.id === element.id))
+          dispatch({
+            type: "alteraCoordinatesElemento",
+            posicao: element.geometry.coordinates as
+              | [number, number]
+              | [number, number][]
+              | [number, number][][],
+            id: element.id,
+          });
+        else {
+          dispatch({
+            type: "addElemento",
+            posicao: element.geometry.coordinates as
+              | [number, number]
+              | [number, number][],
+            tipo: element.geometry.type,
+            id: element.id,
+            valor: element,
+          });
+          draw.removeFeatures([e]);
+          setTimeout(() => {
+            draw.setMode(elementos.Hand.nome);
+            dispatch({
+              type: "selecionarElementoInteracao",
+              arg: elementos.Hand,
+            });
+          }, 10);
+        }
+    }, 100);
   });
 
   // Start drawing

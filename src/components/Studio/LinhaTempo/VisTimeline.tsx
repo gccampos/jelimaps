@@ -5,6 +5,7 @@ import {
   TimelineItem,
   TimelineOptions,
 } from "vis-timeline/standalone";
+import Leaflet, { LatLngBoundsExpression } from "leaflet";
 import { useMapaContext, useMapaDispatch } from "@/components/Mapa/MapaContext";
 import {
   elementoPadrao,
@@ -133,15 +134,60 @@ export default function VisTimeline(props: {
         item.event.srcEvent.type === "pointerup" ||
         item.event.srcEvent.type === "pointerdown"
       ) {
-        dispatch({
-          type: "selecionarElementosFocoPorId",
-          ids: item.items,
-        });
+        const _listaElementos = elementosTimelineRef.current?.items;
+        const elementConteudo = _listaElementos?.find((x) =>
+          item.items.includes(x.id)
+        );
+        if (elementConteudo) {
+          try {
+            const elementoGeoJSON = new Leaflet.GeoJSON({
+              ...elementConteudo,
+              type: "Feature",
+            });
+
+            dispatch({
+              type: "selecionarElementoFoco",
+              id: item.items[0],
+              mapContext: {
+                ...mapaContext,
+                bounds: elementoGeoJSON.getBounds(),
+                center: elementoGeoJSON.getBounds().getCenter(),
+                zoom: elementConteudo.zoom,
+              },
+            });
+          } catch (error) {
+            dispatch({
+              type: "selecionarElementoFoco",
+              id: item.items[0],
+              mapContext:
+                elementConteudo.dataRef === "Marker"
+                  ? {
+                      ...mapaContext,
+                      bounds: elementConteudo.geometry
+                        .coordinates as LatLngBoundsExpression,
+                      center: new Leaflet.LatLng(
+                        elementConteudo.geometry.coordinates[0] as number,
+                        elementConteudo.geometry.coordinates[1] as number
+                      ),
+                      zoom: elementConteudo.zoom,
+                    }
+                  : {
+                      ...mapaContext,
+                      bounds: elementConteudo.bounds,
+                      center: Leaflet.latLngBounds(
+                        elementConteudo.bounds._northEast,
+                        elementConteudo.bounds._southWest
+                      ).getCenter(),
+                      zoom: elementConteudo.zoom,
+                    },
+            });
+          }
+        }
       } else {
         item.event.preventDefault();
       }
     },
-    [dispatch]
+    [dispatch, mapaContext]
   );
 
   const handleRemoveConteudo = useCallback(
@@ -197,16 +243,26 @@ export default function VisTimeline(props: {
       }
       if (item.what === "group-label") {
         abrirTooltip(item);
+        const elementConteudo = Object.keys(mapaContext?.conteudo)
+          .flatMap((x) => mapaContext?.conteudo[x])
+          .find((x) => x.id === item.group);
+        const elementoGeoJSON = new Leaflet.GeoJSON(elementConteudo);
         dispatch({
           type: "selecionarElementoFoco",
           id: item.group,
           //  elementosAlteracoesTimeline().find(
           //   (x) => x.id === item.group
           // ),
+          mapContext: {
+            ...mapaContext,
+            bounds: elementoGeoJSON.getBounds(),
+            center: elementoGeoJSON.getBounds().getCenter(),
+            zoom: elementConteudo.zoom,
+          },
         });
       }
     },
-    [dispatch, tempoAtualRef]
+    [dispatch, mapaContext, tempoAtualRef]
   );
   const handleOnMoving = useCallback(
     (item: TimelineItem, cb: any) => {
@@ -351,9 +407,7 @@ export default function VisTimeline(props: {
         }
       : { items: elementosAlteracoesTimeline() };
     if (
-      !elementosTimelineRef.current ||
-      atual.items.length !== elementosTimelineRef.current?.items.length ||
-      atual.groups?.length !== elementosTimelineRef.current?.groups?.length ||
+      JSON.stringify(atual) !== JSON.stringify(elementosTimelineRef.current) ||
       alturaRef.current !== altura ||
       mapaContext.simpleTimeline !== simpleTimelineRef.current
     ) {
@@ -362,6 +416,14 @@ export default function VisTimeline(props: {
       elementosTimelineRef.current = atual;
       alturaRef.current = altura;
       simpleTimelineRef.current = mapaContext.simpleTimeline;
+
+      setElementosSelecionados();
+      elementosFocadosRef.current = elementosFocados();
+      if (fitElementoSelecionadotRef.current)
+        setTimeout(() => {
+          if (elementosFocados()) visTimeline?.focus([...elementosFocados()]);
+          fitElementoSelecionadotRef.current = false;
+        }, 100);
     }
     if (elementosFocadosRef.current !== elementosFocados()) {
       setElementosSelecionados();
