@@ -129,7 +129,8 @@ const Legenda = (props: {
       mapaContext,
       mapaContext.tempo
     );
-    if (!cenaAtual || cenaAtual.id !== els[0].id) moverMapaParaCena(els[0]);
+    if (!cenaAtual || (els?.length > 0 && cenaAtual.id !== els[0].id))
+      moverMapaParaCena(els[0]);
     setElementosVisiveis(els);
   }, [cenaAtual, mapaContext, mapaContext.tempo, moverMapaParaCena]);
 
