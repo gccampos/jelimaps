@@ -227,6 +227,7 @@ const ConteudoMapa = (propsConteudoMapa: {
               key={`ImageOverlay#${index}`}
               x={image}
               cliqueElementoNoMapa={cliqueElementoNoMapa}
+              isApresentacao={propsConteudoMapa.isApresentacao}
             />
           );
         })}

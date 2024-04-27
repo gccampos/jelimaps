@@ -21,7 +21,6 @@ As tecnologias utilizadas foram:
 - [Material-UI](https://mui.com/material-ui/) - Componentes de Material Design prontos para uso.
 - [Leaflet](https://leafletjs.com/) - Biblioteca para interação com mapas.
   - [OpenStreetMap](https://www.openstreetmap.org/) - Fornecedor de mapas colaborativo.
-  - [Leaflet.timeline](https://skeate.dev/Leaflet.timeline/) - Biblioteca de integração _geo_ e _time_.
   - [Leaflet.ImageOverlay.Rotated](https://ivansanchez.github.io/Leaflet.ImageOverlay.Rotated/) - Biblioteca para girar e torcer imagens em mapas.
 - [Terra Draw](https://terradraw.io/) - Adaptador de geojson para bibliotecas de interação com mapas.
 - [vis-timeline](https://visjs.github.io/vis-timeline/docs/timeline/) - Biblioteca de visualização e interação de dados no tempo.

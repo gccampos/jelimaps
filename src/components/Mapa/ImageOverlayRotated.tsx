@@ -10,10 +10,11 @@ import "leaflet-imageoverlay-rotated";
 type Props = {
   x: elementoComBounds;
   cliqueElementoNoMapa?: (elemento: any, evento: any) => void;
+  isApresentacao?: boolean;
 };
 
 const ImageOverlayRotated = (props: Props) => {
-  const { x, cliqueElementoNoMapa } = props;
+  const { x, cliqueElementoNoMapa, isApresentacao } = props;
   const map = useMap();
   const dispatch = useMapaDispatch();
   const mapaContext = useMapaContext();
@@ -74,11 +75,11 @@ const ImageOverlayRotated = (props: Props) => {
       );
       map.addLayer(im);
       // else map.addLayer(im);
-      if (cliqueElementoNoMapa)
+      if (cliqueElementoNoMapa && !isApresentacao)
         im.on("click", (e) => cliqueElementoNoMapa(x, e));
       return () => {
         map.removeLayer(im);
-        if (cliqueElementoNoMapa)
+        if (cliqueElementoNoMapa && !isApresentacao)
           im.off("click", (e) => cliqueElementoNoMapa(x, e));
       };
     }

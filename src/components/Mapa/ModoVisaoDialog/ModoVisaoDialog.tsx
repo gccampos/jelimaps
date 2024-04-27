@@ -98,7 +98,7 @@ export default function ModoVisaoDialog() {
         </div>
       ),
     });
-  }, [openModalConfirm, onConfirm, handleMapaProprioComImagem]);
+  }, [openModalConfirm, onConfirm, width, height, handleMapaProprioComImagem]);
 
   useEffect(() => {
     if (!mapaContext.modoVisao)
