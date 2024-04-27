@@ -35,6 +35,7 @@ import Leaflet, { Map } from "leaflet";
 import ImageResolver from "@/components/ImageUrlResolver";
 import Button from "@/components/Atomic/Button";
 import contextChangers from "@/components/Mapa/ContextChangers";
+import useWindowDimensions from "../useWindowDimensions";
 
 const WrapperStyled = styled("div")``;
 
@@ -42,6 +43,7 @@ export default function Elemento(props: { map: Map }) {
   const { map } = props;
   const mapaContext = useMapaContext();
   const dispatch = useMapaDispatch();
+  const { height, width } = useWindowDimensions();
   const elementoRef = React.useRef(null);
   const carregaElementosFoco = React.useCallback(() => {
     return (
@@ -87,7 +89,8 @@ export default function Elemento(props: { map: Map }) {
     closeModalConfirm(null, null);
   }, [dispatch, closeModalConfirm]);
 
-  const handleInserirImagem = React.useCallback(() => {
+  const handleInserirImagem = React.useCallback(async () => {
+    const isImagemValida = await ImageResolver.isValidUrl(urlImageRef.current);
     openModalConfirm({
       title: "",
       message: "",
@@ -100,20 +103,22 @@ export default function Elemento(props: { map: Map }) {
           <DialogContent dividers>
             <TextField
               id="outlined-controlled"
-              label="Controlled"
+              label="Link da Imagem"
               onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                 urlImageRef.current = event.target.value;
               }}
             />
             {urlImageRef.current &&
             urlImageRef.current !== "" &&
-            ImageResolver.isValidUrl(urlImageRef.current) ? (
+            isImagemValida ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
-                alt="MapaProprio"
+                alt={`Imagem carregada pelo link: ${ImageResolver.UrlResolver(
+                  urlImageRef.current
+                )}`}
                 src={ImageResolver.UrlResolver(urlImageRef.current)}
-                width={1250}
-                height={1250}
+                width={width * 0.21}
+                height={height * 0.21}
               />
             ) : (
               <div> Copie um link válido</div>
@@ -123,7 +128,7 @@ export default function Elemento(props: { map: Map }) {
             <Button onClick={handleInserirImagem}>Atualizar</Button>
             {urlImageRef.current &&
               urlImageRef.current !== "" &&
-              ImageResolver.isValidUrl(urlImageRef.current) && (
+              isImagemValida && (
                 <Button onClick={handleDispatchInserirImageOverlay}>
                   Salvar
                 </Button>
@@ -132,7 +137,13 @@ export default function Elemento(props: { map: Map }) {
         </div>
       ),
     });
-  }, [openModalConfirm, onConfirm, handleDispatchInserirImageOverlay]);
+  }, [
+    openModalConfirm,
+    onConfirm,
+    width,
+    height,
+    handleDispatchInserirImageOverlay,
+  ]);
   return (
     <List sx={{ height: "100%", pt: 0 }} key={"lista"}>
       {carregaElementosFoco() &&

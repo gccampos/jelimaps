@@ -14,9 +14,10 @@ import { MODO_VISAO } from "../mapaContextTypes";
 import { getImageDimensions } from "../MapaUtils";
 import useWindowDimensions from "../../Studio/useWindowDimensions";
 import Legenda from "./legenda";
-import LinhaTempo from "./linhaTempo";
-import Leaflet, { Map } from "leaflet";
+import { Map } from "leaflet";
 import PlanoFundoMapaComum from "@/components/Mapa/PlanoFundoMapaComum/PlanoFundoMapaComum";
+import ConteudoMapa from "../ConteudoMapa";
+import SliderLinhaTempo from "../SliderLinhaTempo";
 
 export const isMobile = (height: number, width: number) => {
   return (
@@ -33,8 +34,6 @@ const Apresentacao = () => {
   const [map, setMap] = useState<Map>(null);
   const [larguraLegenda, setLarguraLegenda] = useState(250);
   const [alturaLegenda, setAlturaLegenda] = useState(height * 0.5);
-  const [timelineSliderControl, setTimelineSliderControl] =
-    useState<Leaflet.TimelineSliderControl>();
 
   const [bounds, setBounds] = useState<LatLngBounds>(
     new LatLngBounds([0, 0], [1, 1.5])
@@ -62,12 +61,15 @@ const Apresentacao = () => {
     [position]
   );
   const zoom = mapaContext.modoVisao === MODO_VISAO.openstreetmap ? 15 : 9;
+  const _isMobile = React.useMemo(
+    () => isMobile(height, width),
+    [height, width]
+  );
   return (
     <>
       <Grid item container xs={12}>
-        {!isMobile(height, width) && (
+        {!_isMobile && (
           <Legenda
-            timelineSliderControl={timelineSliderControl}
             map={map}
             larguraLegenda={larguraLegenda}
             setLarguraLegenda={setLarguraLegenda}
@@ -78,7 +80,7 @@ const Apresentacao = () => {
         <Grid item xs>
           <div
             style={{
-              height: isMobile(height, width) ? height - alturaLegenda : height,
+              height: _isMobile ? height - alturaLegenda : height,
               display: "grid",
             }}
           >
@@ -98,6 +100,7 @@ const Apresentacao = () => {
                   url={mapaContext.urlMapaProprio}
                 />
               )}
+              <ConteudoMapa isApresentacao={true} />
               <CustomControlLeaflet
                 position={POSITION_CLASSES_CUSTOM_CONTROL.topright}
               >
@@ -115,16 +118,23 @@ const Apresentacao = () => {
                   <Close />
                 </Fab>
               </CustomControlLeaflet>
-              <LinhaTempo
+              {/* <LinhaTempo
                 timelineSliderControl={timelineSliderControl}
                 setTimelineSliderControl={setTimelineSliderControl}
-              />
+              /> */}
+              <CustomControlLeaflet
+                position={POSITION_CLASSES_CUSTOM_CONTROL.bottomleft}
+                classCustom={
+                  "leaflet-control leaflet-bar leaflet-speeddial leaflet-speeddial-full-width"
+                }
+              >
+                <SliderLinhaTempo isMobile={_isMobile} />
+              </CustomControlLeaflet>
             </MapContainer>
           </div>
         </Grid>
-        {isMobile(height, width) && (
+        {_isMobile && (
           <Legenda
-            timelineSliderControl={timelineSliderControl}
             map={map}
             larguraLegenda={larguraLegenda}
             setLarguraLegenda={setLarguraLegenda}

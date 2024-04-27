@@ -77,7 +77,6 @@ export const ConteudoLegenda = ({
 };
 
 const Legenda = (props: {
-  timelineSliderControl: Leaflet.TimelineSliderControl;
   map: Map;
   larguraLegenda: number;
   setLarguraLegenda: React.Dispatch<React.SetStateAction<number>>;
@@ -85,7 +84,6 @@ const Legenda = (props: {
   setAlturaLegenda: React.Dispatch<React.SetStateAction<number>>;
 }) => {
   const {
-    timelineSliderControl,
     map,
     setLarguraLegenda,
     larguraLegenda,
@@ -94,9 +92,6 @@ const Legenda = (props: {
   } = props;
   const mapaContext = useMapaContext();
   const { height, width } = useWindowDimensions();
-  const [mountado, setMontado] = useState(false);
-  const eventeTimeoutRef = React.useRef(null);
-  const eventAlterTimeoutRef = React.useRef(null);
   const [elementosVisiveis, setElementosVisiveis] = React.useState(
     contextChangers.retornaListaElementosConteudoCenaAtual(mapaContext)
   );
@@ -107,17 +102,10 @@ const Legenda = (props: {
     if (el) el.parentElement.id = "parentSeletorResize";
   }, []);
 
-  const eventify = function (arr, callback) {
-    arr.push = function (e) {
-      Array.prototype.push.call(arr, e);
-      callback(arr);
-    };
-  };
-
   const moverMapaParaCena = React.useCallback(
     (cena: tipoElemento) => {
       try {
-        if (cena.center) {
+        if (cena.center && map) {
           setCenaAtual((c) => {
             if (c?.center !== cena.center) {
               map.flyTo(cena.center, cena.zoom, {
@@ -137,44 +125,14 @@ const Legenda = (props: {
   );
 
   React.useEffect(() => {
-    if (timelineSliderControl?.container && !mountado) {
-      eventify(timelineSliderControl.timelines, function () {
-        clearTimeout(eventeTimeoutRef.current);
-        eventeTimeoutRef.current = setTimeout(() => {
-          timelineSliderControl.timelines.forEach((x) =>
-            x.on("change", () => {
-              clearTimeout(eventAlterTimeoutRef.current);
-              eventAlterTimeoutRef.current = setTimeout(() => {
-                const els =
-                  contextChangers.retornaListaElementosConteudoCenaAtual(
-                    mapaContext,
-                    new Date(
-                      parseInt(
-                        timelineSliderControl.container.getElementsByTagName(
-                          "input"
-                        )[0].value
-                      )
-                    )
-                  );
-                if (!cenaAtual || cenaAtual.id !== els[0].id)
-                  moverMapaParaCena(els[0]);
-                setElementosVisiveis(els);
-                eventAlterTimeoutRef.current = null;
-              }, 10);
-            })
-          );
-          eventeTimeoutRef.current = null;
-        }, 10);
-      });
-      setMontado(true);
-    }
-  }, [
-    cenaAtual,
-    mapaContext,
-    mountado,
-    moverMapaParaCena,
-    timelineSliderControl,
-  ]);
+    const els = contextChangers.retornaListaElementosConteudoCenaAtual(
+      mapaContext,
+      mapaContext.tempo
+    );
+    if (!cenaAtual || cenaAtual.id !== els[0].id) moverMapaParaCena(els[0]);
+    setElementosVisiveis(els);
+  }, [cenaAtual, mapaContext, mapaContext.tempo, moverMapaParaCena]);
+
   return isMobile(height, width) ? (
     <LegendaMobile
       ConteudoLegenda={ConteudoLegenda}

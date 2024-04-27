@@ -5,6 +5,7 @@ import useWindowDimensions from "@/components/Studio/useWindowDimensions";
 import { Map } from "leaflet";
 import DraggerResize from "@/components/DraggerResize";
 import { tipoElemento } from "@/components/Mapa/mapaContextTypes";
+import ReprodutorLinhaTempo from "../../ReprodutorLinhaTempo";
 const displaYNoneStyle = { display: "none" };
 
 const LegendaLateral = (props: {
@@ -84,6 +85,7 @@ const LegendaLateral = (props: {
           larguraLegenda={alturaLegenda}
           map={map}
         />
+        <ReprodutorLinhaTempo isApresentacao={true} />
       </Grid>
     </Rnd>
   );

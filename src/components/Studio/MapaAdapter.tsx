@@ -1,17 +1,5 @@
-import {
-  MapContainer,
-  Marker,
-  ImageOverlay,
-  Rectangle,
-  Popup,
-} from "react-leaflet";
-import Leaflet, {
-  LatLngBounds,
-  LatLng,
-  divIcon,
-  Map,
-  LatLngBoundsExpression,
-} from "leaflet";
+import { MapContainer, ImageOverlay } from "react-leaflet";
+import Leaflet, { LatLngBounds, LatLng, Map } from "leaflet";
 import { useEffect, useMemo, useRef, useState } from "react";
 import React from "react";
 import CustomControlLeaflet, {
@@ -20,36 +8,27 @@ import CustomControlLeaflet, {
 import { useMapaContext, useMapaDispatch } from "@/components/Mapa/MapaContext";
 import {
   Button,
-  ButtonGroup,
   DialogActions,
   DialogContent,
   DialogTitle,
   Fab,
   Grid,
-  Paper,
-  Slider,
   TextField,
 } from "@mui/material";
 // import Elementos from "./Elementos";
-import {
-  PlaylistPlay,
-  LocationOn,
-  KeyboardDoubleArrowUp,
-} from "@mui/icons-material";
-import ReactDOMServer from "react-dom/server";
+import { PlaylistPlay, KeyboardDoubleArrowUp } from "@mui/icons-material";
 import useCaixaDialogo from "../CaixaDialogo/useCaixaDialogo";
 import ImageResolver from "@/components/ImageUrlResolver";
-import ImageOverlayRotated from "../Mapa/ImageOverlayRotated";
 import { MODO_VISAO, tipoElemento } from "../Mapa/mapaContextTypes";
 import { TerraDraw } from "terra-draw";
 import MapaContextChanger from "../Mapa/ContextChangers";
 import UndoControl from "./UndoControl";
 import { getImageDimensions } from "../Mapa/MapaUtils";
-import contextChangers from "../Mapa/ContextChangers";
-import moment from "moment";
 import PlanoFundoMapaComum from "../Mapa/PlanoFundoMapaComum/PlanoFundoMapaComum";
-import ConteudoMapa from "./ConteudoMapa";
 import { elementos } from "@/main/constants/elementos";
+import ConteudoMapa from "../Mapa/ConteudoMapa";
+import useWindowDimensions from "./useWindowDimensions";
+import SliderLinhaTempo from "../Mapa/SliderLinhaTempo";
 
 export default function Mapa(propsMapa: {
   altura: number;
@@ -59,6 +38,7 @@ export default function Mapa(propsMapa: {
 }) {
   const { setMapa, conteudoElementosRef } = propsMapa;
   const [isMounted, setIsMounted] = React.useState(false);
+  const { width, height } = useWindowDimensions();
   const [map, setMap] = useState<Map>(null);
   const caixaDialogoRef = useRef<String>(null);
   const mapaContext = useMapaContext();
@@ -104,36 +84,6 @@ export default function Mapa(propsMapa: {
     }
   }, [mapaContext.modoVisao, map, center, zoom]);
 
-  const cliqueElementoNoMapa = (elemento, evento) => {
-    if (evento.originalEvent.shiftKey || evento.originalEvent.ctrlKey)
-      dispatch({ type: "adicionarElementoFoco", elemento: elemento });
-    else
-      dispatch({
-        type: "selecionarElementoFoco",
-        elemento: elemento,
-        mapContext:
-          elemento.dataRef === "Marker"
-            ? {
-                ...mapaContext,
-                bounds: elemento.geometry.coordinates as LatLngBoundsExpression,
-                center: new Leaflet.LatLng(
-                  elemento.geometry.coordinates[0] as number,
-                  elemento.geometry.coordinates[1] as number
-                ),
-                zoom: elemento.zoom,
-              }
-            : {
-                ...mapaContext,
-                bounds: elemento.bounds,
-                center: Leaflet.latLngBounds(
-                  elemento.bounds._northEast,
-                  elemento.bounds._southWest
-                ).getCenter(),
-                zoom: elemento.zoom,
-              },
-      });
-  };
-
   const urlImageRef = useRef<string>();
   const { openModalConfirm, closeModalConfirm, onConfirm } = useCaixaDialogo();
 
@@ -149,7 +99,8 @@ export default function Mapa(propsMapa: {
     caixaDialogoRef.current = urlImageRef.current = null;
   }, [dispatch, closeModalConfirm, propsMapa.draw]);
 
-  const handleInserirImagem = React.useCallback(() => {
+  const handleInserirImagem = React.useCallback(async () => {
+    const isImagemValida = await ImageResolver.isValidUrl(urlImageRef.current);
     openModalConfirm({
       title: "",
       onClosed: () => {
@@ -167,20 +118,22 @@ export default function Mapa(propsMapa: {
           <DialogContent dividers>
             <TextField
               id="outlined-controlled"
-              label="Controlled"
+              label="Link da Imagem"
               onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                 urlImageRef.current = event.target.value;
               }}
             />
             {urlImageRef.current &&
             urlImageRef.current !== "" &&
-            ImageResolver.isValidUrl(urlImageRef.current) ? (
+            isImagemValida ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
-                alt="MapaProprio"
+                alt={`Imagem carregada pelo link: ${ImageResolver.UrlResolver(
+                  urlImageRef.current
+                )}`}
                 src={ImageResolver.UrlResolver(urlImageRef.current)}
-                width={1250}
-                height={1250}
+                width={width * 0.21}
+                height={height * 0.21}
               />
             ) : (
               <div> Copie um link válido</div>
@@ -190,7 +143,7 @@ export default function Mapa(propsMapa: {
             <Button onClick={handleInserirImagem}>Atualizar</Button>
             {urlImageRef.current &&
               urlImageRef.current !== "" &&
-              ImageResolver.isValidUrl(urlImageRef.current) && (
+              isImagemValida && (
                 <Button onClick={handleDispatchInserirImageOverlay}>
                   Salvar
                 </Button>
@@ -199,7 +152,13 @@ export default function Mapa(propsMapa: {
         </div>
       ),
     });
-  }, [openModalConfirm, onConfirm, handleDispatchInserirImageOverlay]);
+  }, [
+    openModalConfirm,
+    onConfirm,
+    width,
+    height,
+    handleDispatchInserirImageOverlay,
+  ]);
 
   useEffect(() => {
     if (
@@ -231,12 +190,6 @@ export default function Mapa(propsMapa: {
     propsMapa.draw.clear();
   }
 
-  const corItemSelecionadoFoco = (elemento) => {
-    return MapaContextChanger.isElementoSelecionado(mapaContext, elemento.id)
-      ? "#000000"
-      : elemento.color ?? "#0d6efd";
-  };
-
   const [bounds, setBounds] = useState<LatLngBounds>(
     new LatLngBounds([0, 0], [1, 1.5])
   );
@@ -267,210 +220,7 @@ export default function Mapa(propsMapa: {
           {mapaContext.modoVisao === MODO_VISAO.mapaProprio && (
             <ImageOverlay bounds={bounds} url={mapaContext.urlMapaProprio} />
           )}
-          {mapaContext.conteudo &&
-            mapaContext.conteudo.Marker &&
-            mapaContext.conteudo.Marker.length > 0 &&
-            mapaContext.conteudo.Marker.filter(
-              (marker) =>
-                new Date(marker.cenaInicio) <= new Date(mapaContext.tempo) &&
-                new Date(marker.cenaFim) >= new Date(mapaContext.tempo)
-            ).map((marker, index, origin) => {
-              return (
-                marker.geometry?.coordinates && (
-                  <Marker
-                    {...marker}
-                    position={marker.geometry.coordinates as [number, number]}
-                    draggable={
-                      marker.draggable &&
-                      MapaContextChanger.isElementoSelecionado(
-                        mapaContext,
-                        marker.id
-                      )
-                    }
-                    icon={divIcon({
-                      className: "",
-                      html: ReactDOMServer.renderToString(
-                        <LocationOn
-                          id={marker.id}
-                          style={{
-                            color: corItemSelecionadoFoco(marker),
-                            position: "absolute",
-                            top: "-150%",
-                            left: "-67%",
-                          }}
-                        />
-                      ),
-                    })}
-                    key={`marker#${index}`}
-                    eventHandlers={{
-                      click: (e) => cliqueElementoNoMapa(origin[index], e),
-                      // MapaContextChanger.isElementoSelecionado(
-                      //   mapaContext,
-                      //   marker.id
-                      // )
-                      //   ? null
-                      //   : cliqueElementoNoMapa(origin[index], e),
-                      moveend: (e) => {
-                        dispatch({
-                          type: "editarPropriedade",
-                          tipo: marker.dataRef,
-                          id: marker.id,
-                          nomePropriedade: "geometry",
-                          valorPropriedade: {
-                            ...marker.geometry,
-                            coordinates: [
-                              e.sourceTarget._latlng.lat,
-                              e.sourceTarget._latlng.lng,
-                            ],
-                          },
-                        });
-                      },
-                    }}
-                  >
-                    {MapaContextChanger.isElementoSelecionado(
-                      mapaContext,
-                      marker.id
-                    ) && (
-                      <Popup>
-                        <ButtonGroup
-                          variant="text"
-                          aria-label="text button group"
-                        >
-                          <Button
-                            onClick={() => {
-                              openModalConfirm({
-                                title: "Deletar item",
-                                message: "Você tem certeza disso?",
-                                onConfirm: () => {
-                                  dispatch({
-                                    type: "removeElements",
-                                  });
-                                },
-                              });
-                            }}
-                          >
-                            Excluir
-                          </Button>
-                        </ButtonGroup>
-                      </Popup>
-                    )}
-                  </Marker>
-                )
-              );
-            })}
-          {mapaContext.conteudo &&
-            mapaContext.conteudo.Point &&
-            mapaContext.conteudo.Point.length > 0 &&
-            mapaContext.conteudo.Point.filter(
-              (point) =>
-                new Date(point.cenaInicio) <= new Date(mapaContext.tempo) &&
-                new Date(point.cenaFim) >= new Date(mapaContext.tempo)
-            ).map((point, index) => {
-              return (
-                <ConteudoMapa
-                  draw={propsMapa.draw}
-                  elemento={point}
-                  key={`Pointer#${index}`}
-                />
-              );
-            })}
-          {mapaContext.conteudo &&
-            mapaContext.conteudo.Circle &&
-            mapaContext.conteudo.Circle.length > 0 &&
-            mapaContext.conteudo.Circle.filter(
-              (circle) =>
-                new Date(circle.cenaInicio) <= new Date(mapaContext.tempo) &&
-                new Date(circle.cenaFim) >= new Date(mapaContext.tempo)
-            ).map((circle, index) => {
-              return (
-                <ConteudoMapa
-                  draw={propsMapa.draw}
-                  elemento={circle}
-                  key={`Circle#${index}`}
-                />
-              );
-            })}
-          {mapaContext.conteudo &&
-            mapaContext.conteudo.LineString &&
-            mapaContext.conteudo.LineString.length > 0 &&
-            mapaContext.conteudo.LineString.filter(
-              (lineString) =>
-                new Date(lineString.cenaInicio) <=
-                  new Date(mapaContext.tempo) &&
-                new Date(lineString.cenaFim) >= new Date(mapaContext.tempo)
-            ).map((lineString, index) => {
-              return (
-                <ConteudoMapa
-                  draw={propsMapa.draw}
-                  elemento={lineString}
-                  key={`LineString#${index}`}
-                />
-              );
-            })}
-
-          {mapaContext.conteudo &&
-            mapaContext.conteudo.Polygon &&
-            mapaContext.conteudo.Polygon.length > 0 &&
-            mapaContext.conteudo.Polygon.filter(
-              (polygon) =>
-                new Date(polygon.cenaInicio) <= new Date(mapaContext.tempo) &&
-                new Date(polygon.cenaFim) >= new Date(mapaContext.tempo)
-            ).map((polygon, index) => {
-              return (
-                <ConteudoMapa
-                  draw={propsMapa.draw}
-                  elemento={polygon}
-                  key={`polygon#${index}`}
-                />
-              );
-            })}
-
-          {mapaContext.exibirLimiteCenas &&
-            mapaContext.conteudo &&
-            mapaContext.conteudo.cenas &&
-            mapaContext.conteudo.cenas.length > 0 &&
-            mapaContext.conteudo.cenas
-              // .filter(
-              //   (cena) =>
-              //     new Date(cena.cenaInicio) <= new Date(mapaContext.tempo) &&
-              //     new Date(cena.cenaFim) >= new Date(mapaContext.tempo)
-              // )
-              .map((cena, index) => {
-                return cena?.bounds ? (
-                  <Rectangle
-                    {...cena}
-                    fill={false}
-                    bounds={
-                      new LatLngBounds(
-                        (cena.bounds as any)._southWest,
-                        (cena.bounds as any)._northEast
-                      )
-                    }
-                    className="background-scene"
-                    key={`cena#${index}`}
-                  >
-                    {/* <Popup>
-                          A pretty CSS3 popup. <br /> Easily customizable.
-                        </Popup> */}
-                  </Rectangle>
-                ) : null;
-              })}
-          {mapaContext.conteudo &&
-            mapaContext.conteudo.ImageOverlay &&
-            mapaContext.conteudo.ImageOverlay.length > 0 &&
-            mapaContext.conteudo.ImageOverlay.filter(
-              (image) =>
-                new Date(image.cenaInicio) <= new Date(mapaContext.tempo) &&
-                new Date(image.cenaFim) >= new Date(mapaContext.tempo)
-            ).map((image, index) => {
-              return (
-                <ImageOverlayRotated
-                  key={`ImageOverlay#${index}`}
-                  x={image}
-                  cliqueElementoNoMapa={cliqueElementoNoMapa}
-                />
-              );
-            })}
+          <ConteudoMapa draw={propsMapa.draw} />
           {/* <CustomControlLeaflet
             position={POSITION_CLASSES_CUSTOM_CONTROL.bottomright}
           >
@@ -525,37 +275,7 @@ export default function Mapa(propsMapa: {
                 "leaflet-control leaflet-bar leaflet-speeddial leaflet-speeddial-full-width"
               }
             >
-              <Paper sx={{ p: "2vw", mr: "100px", mb: "1vw" }} elevation={23}>
-                <Slider
-                  value={new Date(mapaContext.tempo).getTime()}
-                  name=""
-                  min={new Date(
-                    mapaContext.conteudo.cenas[0].cenaInicio
-                  ).getTime()}
-                  step={1}
-                  marks={contextChangers
-                    .retornaListaTemposConteudo(mapaContext)
-                    .map((x) => {
-                      return {
-                        value: new Date(x).getTime(),
-                        label: "",
-                      };
-                    })}
-                  max={new Date(
-                    mapaContext.conteudo.cenas[
-                      mapaContext.conteudo.cenas.length - 1
-                    ].cenaFim
-                  ).getTime()}
-                  onChangeCommitted={(e, checked) => {
-                    dispatch({
-                      type: "atualizaTempo",
-                      time: moment(checked).format("yyyy-MM-DDTHH:mm:ss"),
-                    });
-                  }}
-                  valueLabelDisplay="auto"
-                  aria-labelledby="non-linear-slider"
-                />
-              </Paper>
+              <SliderLinhaTempo />
             </CustomControlLeaflet>
           )}
         </MapContainer>

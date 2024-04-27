@@ -10,9 +10,10 @@ function UrlResolver(url: string): string {
   }
   return url;
 }
-const isValidUrl = (url: string) => {
+const isValidUrl = async (url: string) => {
   try {
-    new URL(url);
+    const link = new URL(url);
+    await fetch(link).then((x) => x);
     return true;
   } catch (error) {
     return false;

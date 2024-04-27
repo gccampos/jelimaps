@@ -1,34 +1,15 @@
 import React, { useEffect, useState, useRef } from "react";
-import {
-  Grid,
-  Chip,
-  Tab,
-  AppBar,
-  Tabs,
-  Box,
-  BottomNavigation,
-  Paper,
-  BottomNavigationAction,
-} from "@mui/material";
+import { Grid, Chip, Tab, AppBar, Tabs, Box } from "@mui/material";
 import { useMapaContext, useMapaDispatch } from "@/components/Mapa/MapaContext";
 import { Rnd } from "react-rnd";
 import AlignVerticalCenterIcon from "@mui/icons-material/AlignVerticalCenter";
 import useWindowDimensions from "../useWindowDimensions";
 import Cenas from "./cenas";
-import {
-  Pause,
-  PlayArrow,
-  Stop,
-  DesktopWindows,
-  SkipNext,
-  SkipPrevious,
-} from "@mui/icons-material";
 import Geral from "./geral";
 import Elemento from "./elemento";
-import moment from "moment";
-import { setInterval, clearInterval } from "timers";
 import { Map } from "leaflet";
 import DraggerResize from "@/components/DraggerResize";
+import ReprodutorLinhaTempo from "@/components/Mapa/ReprodutorLinhaTempo";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -57,7 +38,6 @@ export default function Propriedades(props: {
   const [value, setValue] = React.useState(0);
   const tocadorRef = useRef(null);
   const headerTabRef = useRef(null);
-  const [intervalId, setIntervalId] = React.useState(null);
   const timeOutIdRef = useRef(null);
   const tempoAtual = React.useRef(mapaContext.tempo);
 
@@ -66,27 +46,6 @@ export default function Propriedades(props: {
   };
 
   tempoAtual.current = mapaContext.tempo;
-
-  const handleIntervaloAtualizaTempo = React.useCallback(() => {
-    const time = mapaContext.playStatus
-      ? moment(tempoAtual.current)
-          .add(
-            moment(mapaContext.cenaFim).diff(
-              mapaContext.cenaInicio,
-              "milliseconds"
-            ) /
-              (mapaContext.duracaoApresentacao ?? 10000) /
-              12.3,
-            "seconds"
-          )
-          .format("yyyy-MM-DDTHH:mm:ss")
-      : mapaContext.cenaInicio;
-    dispatch({
-      type: "atualizaTempo",
-      time,
-    });
-    tempoAtualRef.current = time;
-  }, [mapaContext, tempoAtualRef, dispatch, tempoAtual]);
 
   function TabPanel(props: TabPanelProps) {
     const formRef = React.useRef(null);
@@ -269,104 +228,8 @@ export default function Propriedades(props: {
             <TabPanel index={1}>
               <Cenas />
             </TabPanel>
-            {/* {(mapaContext.elementoFoco || mapaContext.elementosFoco) && (
-              <Typography>Existe um ou mais elementos selecionados</Typography>
-            )} */}
-            <Paper
-              sx={{
-                position: "fixed",
-                bottom: 0,
-                left: 0,
-                right: 0,
-                overflow: "scroll",
-              }}
-              elevation={3}
-              ref={tocadorRef}
-            >
-              <BottomNavigation
-                sx={{ minWidth: 230 }}
-                onChange={(e, i) => {
-                  if (i == 2) {
-                    clearInterval(intervalId);
-                    setIntervalId(null);
-                    dispatch({
-                      type: "alteraPropriedadeGeral",
-                      nomePropriedade: "playStatus",
-                      valorPropriedade: i,
-                    });
-                  } else {
-                    dispatch({
-                      type: "pulaTempo",
-                      valorPropriedade: i,
-                    });
-                  }
-                }}
-              >
-                <BottomNavigationAction
-                  label="Anterior"
-                  icon={<SkipPrevious />}
-                  value={-1}
-                />
-                <BottomNavigationAction
-                  label="Apresentação"
-                  icon={<DesktopWindows />}
-                  value={2}
-                />
-                <BottomNavigationAction
-                  label="Proximo"
-                  icon={<SkipNext />}
-                  value={1}
-                />
-              </BottomNavigation>
-              <BottomNavigation
-                sx={{ minWidth: 230 }}
-                value={mapaContext.playStatus}
-                onChange={(e, i) => {
-                  dispatch({
-                    type: "alteraPropriedadeGeral",
-                    nomePropriedade: "playStatus",
-                    valorPropriedade: i,
-                  });
 
-                  if (!intervalId && i > 0) {
-                    const idInterval = setInterval(
-                      handleIntervaloAtualizaTempo,
-                      1000 / 5
-                    );
-                    setIntervalId(idInterval);
-                  } else {
-                    clearInterval(intervalId);
-                    setIntervalId(null);
-                    tempoAtualRef.current = i
-                      ? tempoAtual.current
-                      : mapaContext.conteudo.cenas[0].cenaInicio;
-                    dispatch({
-                      type: "atualizaTempo",
-                      time: tempoAtualRef.current,
-                    });
-                  }
-                }}
-              >
-                <BottomNavigationAction
-                  label="Play"
-                  icon={<PlayArrow />}
-                  disabled={mapaContext.playStatus > 0}
-                  value={1}
-                />
-                <BottomNavigationAction
-                  label="Pause"
-                  icon={<Pause />}
-                  disabled={mapaContext.playStatus < 1}
-                  value={-1}
-                />
-                <BottomNavigationAction
-                  label="Stop"
-                  icon={<Stop />}
-                  disabled={mapaContext.playStatus === 0}
-                  value={0}
-                />
-              </BottomNavigation>
-            </Paper>
+            <ReprodutorLinhaTempo tempoAtualRef={tempoAtualRef} />
           </Rnd>
         </div>
         {/* Lateral direita */}

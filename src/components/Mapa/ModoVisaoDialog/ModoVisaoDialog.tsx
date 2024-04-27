@@ -16,6 +16,7 @@ import {
 import useCaixaDialogo from "@/components/CaixaDialogo/useCaixaDialogo";
 import ImageResolver from "@/components/ImageUrlResolver";
 import Button from "@/components/Atomic/Button";
+import useWindowDimensions from "@/components/Studio/useWindowDimensions";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -35,6 +36,7 @@ export default function ModoVisaoDialog() {
   const dispatch = useMapaDispatch();
   const nameRef = React.useRef("");
   const { reset } = useMapaUndo();
+  const { width, height } = useWindowDimensions();
 
   const handleOpenStreetMap = useCallback(() => {
     dispatch({
@@ -53,7 +55,8 @@ export default function ModoVisaoDialog() {
     closeModalConfirm(null, null);
   }, [closeModalConfirm, dispatch]);
 
-  const handleMapaProprio = useCallback(() => {
+  const handleMapaProprio = useCallback(async () => {
+    const isImagemValida = await ImageResolver.isValidUrl(nameRef.current);
     openModalConfirm({
       title: "",
       message: "",
@@ -69,20 +72,18 @@ export default function ModoVisaoDialog() {
           <DialogContent dividers>
             <TextField
               id="outlined-controlled"
-              label="Controlled"
+              label="Link da Imagem"
               onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                 nameRef.current = event.target.value;
               }}
             />
-            {nameRef.current &&
-            nameRef.current !== "" &&
-            ImageResolver.isValidUrl(nameRef.current) ? (
+            {nameRef.current && nameRef.current !== "" && isImagemValida ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
                 alt="MapaProprio"
                 src={ImageResolver.UrlResolver(nameRef.current)}
-                width={1250}
-                height={1250}
+                width={width * 0.21}
+                height={height * 0.21}
               />
             ) : (
               <div> Copie um link válido</div>
@@ -90,11 +91,9 @@ export default function ModoVisaoDialog() {
           </DialogContent>
           <DialogActions>
             <Button onClick={handleMapaProprio}>Atualizar</Button>
-            {nameRef.current &&
-              nameRef.current !== "" &&
-              ImageResolver.isValidUrl(nameRef.current) && (
-                <Button onClick={handleMapaProprioComImagem}>Salvar</Button>
-              )}
+            {nameRef.current && nameRef.current !== "" && isImagemValida && (
+              <Button onClick={handleMapaProprioComImagem}>Salvar</Button>
+            )}
           </DialogActions>
         </div>
       ),

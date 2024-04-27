@@ -160,13 +160,15 @@ const Studio = () => {
               draw={draw}
               conteudoElementosRef={conteudoElementosRef}
             />
-            <Propriedades
-              altura={mapaContext.slideLinhaTempo ? height - altura : height}
-              tempoAtualRef={tempoAtualRef}
-              larguraPropriedades={larguraPropriedades}
-              setLargurasPropriedades={setLargurasPropriedades}
-              map={map}
-            />
+            {map && (
+              <Propriedades
+                altura={mapaContext.slideLinhaTempo ? height - altura : height}
+                tempoAtualRef={tempoAtualRef}
+                larguraPropriedades={larguraPropriedades}
+                setLargurasPropriedades={setLargurasPropriedades}
+                map={map}
+              />
+            )}
           </Grid>
           {mapaContext.slideLinhaTempo && (
             <Rnd

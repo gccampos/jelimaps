@@ -28,7 +28,6 @@
     "leaflet": "^1.9.3",
     "leaflet-imageoverlay-rotated": "^0.2.1",
     "leaflet.path.drag": "^0.0.6",
-    "leaflet.timeline": "^1.4.3",
     "moment": "^2.29.4",
     "next": "13.3.2",
     "next-sitemap": "^4.2.3",
