@@ -79,7 +79,8 @@ const ConteudoMapa = (propsConteudoMapa: {
                   MapaContextChanger.isElementoSelecionado(
                     mapaContext,
                     marker.id
-                  )
+                  ) &&
+                  !propsConteudoMapa.isApresentacao
                 }
                 icon={divIcon({
                   className: "",
@@ -97,13 +98,9 @@ const ConteudoMapa = (propsConteudoMapa: {
                 })}
                 key={`marker#${index}`}
                 eventHandlers={{
-                  click: (e) => cliqueElementoNoMapa(origin[index], e),
-                  // MapaContextChanger.isElementoSelecionado(
-                  //   mapaContext,
-                  //   marker.id
-                  // )
-                  //   ? null
-                  //   : cliqueElementoNoMapa(origin[index], e),
+                  click: (e) =>
+                    !propsConteudoMapa.isApresentacao &&
+                    cliqueElementoNoMapa(origin[index], e),
                   moveend: (e) => {
                     dispatch({
                       type: "editarPropriedade",
@@ -124,27 +121,31 @@ const ConteudoMapa = (propsConteudoMapa: {
                 {MapaContextChanger.isElementoSelecionado(
                   mapaContext,
                   marker.id
-                ) && (
-                  <Popup>
-                    <ButtonGroup variant="text" aria-label="text button group">
-                      <Button
-                        onClick={() => {
-                          openModalConfirm({
-                            title: "Deletar item",
-                            message: "Você tem certeza disso?",
-                            onConfirm: () => {
-                              dispatch({
-                                type: "removeElements",
-                              });
-                            },
-                          });
-                        }}
+                ) &&
+                  !propsConteudoMapa.isApresentacao && (
+                    <Popup>
+                      <ButtonGroup
+                        variant="text"
+                        aria-label="text button group"
                       >
-                        Excluir
-                      </Button>
-                    </ButtonGroup>
-                  </Popup>
-                )}
+                        <Button
+                          onClick={() => {
+                            openModalConfirm({
+                              title: "Deletar item",
+                              message: "Você tem certeza disso?",
+                              onConfirm: () => {
+                                dispatch({
+                                  type: "removeElements",
+                                });
+                              },
+                            });
+                          }}
+                        >
+                          Excluir
+                        </Button>
+                      </ButtonGroup>
+                    </Popup>
+                  )}
               </Marker>
             )
           );
