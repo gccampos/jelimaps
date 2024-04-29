@@ -149,14 +149,15 @@ const terraDrawSetup = (
     oldEventOnClick.apply(terraDrawSelectMode, [e]);
     if (e.button === "right") {
       const element = draw.getSnapshot()[0];
-      dispatch({
-        type: "alteraCoordinatesElemento",
-        posicao: element.geometry.coordinates as
-          | [number, number]
-          | [number, number][]
-          | [number, number][][],
-        id: element.id,
-      });
+      if (element)
+        dispatch({
+          type: "alteraCoordinatesElemento",
+          posicao: element.geometry.coordinates as
+            | [number, number]
+            | [number, number][]
+            | [number, number][][],
+          id: element.id,
+        });
     } else if (featuresInClick.length === 0 && e.button === "left")
       dispatch({
         type: "selecionarElementoFoco",

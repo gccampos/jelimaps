@@ -40,7 +40,15 @@ export const ConteudoLegenda = ({
             <Card sx={{}} key={x.id}>
               <CardActionArea
                 onClick={() => {
-                  if (!x.center) {
+                  if (
+                    x.dataRef === "Marker" &&
+                    (x.geometry.coordinates as [number, number])
+                  ) {
+                    map.flyTo(
+                      x.geometry.coordinates as [number, number],
+                      x.zoom
+                    );
+                  } else if (!x.center) {
                     const bordas = contextChangers.bordasDoElemento(
                       x,
                       map,

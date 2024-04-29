@@ -64,6 +64,7 @@ const ReprodutorLinhaTempo = (propsReprodutor: {
           onChange={(e, i) => {
             if (!intervalId && i > 0) {
               setReproduzindo(true);
+              handleIntervaloAtualizaTempo();
               const idInterval = setInterval(
                 handleIntervaloAtualizaTempo,
                 1000
@@ -153,6 +154,7 @@ const ReprodutorLinhaTempo = (propsReprodutor: {
               });
 
               if (!intervalId && i > 0) {
+                handleIntervaloAtualizaTempo();
                 const idInterval = setInterval(
                   handleIntervaloAtualizaTempo,
                   1000
