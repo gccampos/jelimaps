@@ -18,6 +18,7 @@ import { Map } from "leaflet";
 import PlanoFundoMapaComum from "@/components/Mapa/PlanoFundoMapaComum/PlanoFundoMapaComum";
 import ConteudoMapa from "../ConteudoMapa";
 import SliderLinhaTempo from "../SliderLinhaTempo";
+import useCaixaDialogo from "@/components/CaixaDialogo/useCaixaDialogo";
 
 export const isMobile = (height: number, width: number) => {
   return (
@@ -34,6 +35,7 @@ const Apresentacao = () => {
   const [map, setMap] = useState<Map>(null);
   const [larguraLegenda, setLarguraLegenda] = useState(250);
   const [alturaLegenda, setAlturaLegenda] = useState(height * 0.5);
+  const { openModalConfirm } = useCaixaDialogo();
 
   const [bounds, setBounds] = useState<LatLngBounds>(
     new LatLngBounds([0, 0], [1, 1.5])
@@ -108,11 +110,21 @@ const Apresentacao = () => {
                 <Fab
                   color="primary"
                   onClick={() =>
-                    dispatch({
-                      type: "alteraPropriedadeGeral",
-                      nomePropriedade: "playStatus",
-                      valorPropriedade: -1,
-                    })
+                    !mapaContext.apenasApresentacao
+                      ? openModalConfirm({
+                          message: "Você quer editar esse projeto ou sair?",
+                          onConfirm: () =>
+                            dispatch({
+                              type: "alteraPropriedadeGeral",
+                              nomePropriedade: "playStatus",
+                              valorPropriedade: -1,
+                            }),
+                          title: "Continuar editando?",
+                          cancelarTitle: "Sair",
+                          confirmarTitle: "Sim, continuar editando!",
+                          onCancel: () => (window.location.href = "/"),
+                        })
+                      : (window.location.href = "/")
                   }
                   sx={{ zIndex: 100000 }}
                 >

@@ -98,6 +98,7 @@ export type mapaContextSchema = periodoInicioFim &
     // 2  := apresentando
     duracaoApresentacao?: number;
     simpleTimeline?: boolean;
+    apenasApresentacao?: boolean;
     caixaDialogo?: string;
     larguraPropriedades?: number;
   };
