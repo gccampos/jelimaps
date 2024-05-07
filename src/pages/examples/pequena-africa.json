@@ -18,7 +18,7 @@
   "slideLinhaTempo": true,
   "cenaInicio": "2023-12-04T14:49:58",
   "cenaFim": "2023-12-04T14:56:57",
-  "tempo": "2023-12-04T14:49:57",
+  "tempo": "2023-12-04T14:49:58",
   "mapOptions": {
     "center": [0, 0]
   },
@@ -428,21 +428,30 @@
   "modoVisao": "OpenStreetMap",
   "urlMapaProprio": "",
   "center": {
-    "lat": -22.899767610395802,
-    "lng": -43.18394064903259
+    "lat": -22.898276214311984,
+    "lng": -43.18395674228668
   },
-  "zoom": 16,
+  "zoom": 17,
   "bounds": {
     "_southWest": {
-      "lat": -22.907110676852657,
-      "lng": -43.192148208618164
+      "lat": -22.90316839561983,
+      "lng": -43.192062377929695
     },
     "_northEast": {
-      "lat": -22.8924241463889,
-      "lng": -43.17573308944702
+      "lat": -22.893383856561893,
+      "lng": -43.175851106643684
     }
   },
   "elementosFoco": null,
   "elementoFoco": null,
-  "exibirLimiteCenas": true
+  "exibirLimiteCenas": true,
+  "tipoMapaComum": {
+    "nome": "Google Maps - Hybrid (Satellite & Streets)",
+    "attribution": "Map data ©2023",
+    "url": "http://{s}.google.com/vt?lyrs=s,h&x={x}&y={y}&z={z}",
+    "maxNativeZoom": 20,
+    "maxZoom": 23,
+    "subdomains": ["mt0", "mt1", "mt2", "mt3"]
+  },
+  "duracaoApresentacao": 33000
 }
