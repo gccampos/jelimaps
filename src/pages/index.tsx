@@ -214,43 +214,55 @@ export default function Home() {
             </Grid>
           </Container>
         </Box>
-        <Container sx={{ py: 8 }} maxWidth="md" id="exemplos">
-          {/* End hero unit */}
-          <Grid container spacing={4}>
-            {cards.map((card, index) => (
-              <Grid item key={index} xs={12} sm={6} md={4}>
-                <Card
-                  sx={{
-                    height: "100%",
-                    display: "flex",
-                    flexDirection: "column",
-                  }}
-                >
-                  <CardMedia
-                    component="div"
+        <Box
+          sx={{
+            bgcolor: "#1976d257",
+            pt: 8,
+            pb: 6,
+          }}
+          id="exemplos"
+        >
+          <Container sx={{ py: 8 }} maxWidth="md">
+            {/* End hero unit */}
+            <Grid container spacing={4}>
+              {cards.map((card, index) => (
+                <Grid item key={index} xs={12} sm={6} md={4}>
+                  <Card
                     sx={{
-                      // 16:9
-                      pt: "56.25%",
+                      height: "100%",
+                      display: "flex",
+                      flexDirection: "column",
                     }}
-                    image={card.imageUrl}
-                  />
-                  <CardContent sx={{ flexGrow: 1 }}>
-                    <Typography gutterBottom variant="h5" component="h2">
-                      {card.nome}
-                    </Typography>
-                    <Typography>{card.descricao}</Typography>
-                  </CardContent>
-                  <CardActions>
-                    <Button size="small" onClick={() => router.push(card.url)}>
-                      Ver
-                    </Button>
-                    {/* <Button size="small">Edi</Button> */}
-                  </CardActions>
-                </Card>
-              </Grid>
-            ))}
-          </Grid>
-        </Container>
+                  >
+                    <CardMedia
+                      component="div"
+                      sx={{
+                        // 16:9
+                        pt: "56.25%",
+                      }}
+                      image={card.imageUrl}
+                    />
+                    <CardContent sx={{ flexGrow: 1 }}>
+                      <Typography gutterBottom variant="h5" component="h2">
+                        {card.nome}
+                      </Typography>
+                      <Typography>{card.descricao}</Typography>
+                    </CardContent>
+                    <CardActions>
+                      <Button
+                        size="small"
+                        onClick={() => router.push(card.url)}
+                      >
+                        Ver
+                      </Button>
+                      {/* <Button size="small">Edi</Button> */}
+                    </CardActions>
+                  </Card>
+                </Grid>
+              ))}
+            </Grid>
+          </Container>
+        </Box>
       </main>
     </DefaultTemplate>
   );
