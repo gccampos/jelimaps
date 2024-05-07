@@ -39,15 +39,16 @@ const Apresentacao = () => {
     new LatLngBounds([0, 0], [1, 1.5])
   );
   useEffect(() => {
-    getImageDimensions(mapaContext.urlMapaProprio).then((dimensions) =>
-      setBounds(
-        new LatLngBounds(
-          [0, 0],
-          [(dimensions as any).height, (dimensions as any).width]
+    if (mapaContext.modoVisao === MODO_VISAO.mapaProprio)
+      getImageDimensions(mapaContext.urlMapaProprio).then((dimensions) =>
+        setBounds(
+          new LatLngBounds(
+            [0, 0],
+            [(dimensions as any).height, (dimensions as any).width]
+          )
         )
-      )
-    );
-  }, [mapaContext.urlMapaProprio]);
+      );
+  }, [mapaContext.modoVisao, mapaContext.urlMapaProprio]);
 
   const position = React.useMemo(
     () =>
