@@ -124,9 +124,8 @@ export default function Home() {
                       }}
                       src="https://embed.app.guidde.com/playbooks/jRGUaXDj6KvBG8x1Sn1nQp"
                       title="Criação intuitiva de mapas"
-                      // frameborder={0}
-                      // referrerpolicy="unsafe-url"
-                      // allowfullscreen="true"
+                      referrerPolicy="unsafe-url"
+                      allowFullScreen={true}
                       allow="clipboard-write"
                       sandbox="allow-popups allow-popups-to-escape-sandbox allow-scripts allow-forms allow-same-origin allow-presentation"
                     ></iframe>
@@ -150,7 +149,9 @@ export default function Home() {
                       }}
                       src="https://embed.app.guidde.com/playbooks/wujX3bgVH8wAeFrcdfcbtt"
                       title="Integração de imagens próprias"
+                      referrerPolicy="unsafe-url"
                       allow="clipboard-write"
+                      allowFullScreen={true}
                       sandbox="allow-popups allow-popups-to-escape-sandbox allow-scripts allow-forms allow-same-origin allow-presentation"
                     ></iframe>
                   </div>
@@ -176,7 +177,9 @@ export default function Home() {
                       }}
                       src="https://embed.app.guidde.com/playbooks/x7UruBwgYCZnwhhDqZ8Yvi"
                       title="Base OpenStreetMaps"
+                      referrerPolicy="unsafe-url"
                       allow="clipboard-write"
+                      allowFullScreen={true}
                       sandbox="allow-popups allow-popups-to-escape-sandbox allow-scripts allow-forms allow-same-origin allow-presentation"
                     ></iframe>
                   </div>
@@ -200,7 +203,9 @@ export default function Home() {
                       }}
                       src="https://embed.app.guidde.com/playbooks/v1AfJB3y8KTiUGpVwcGXzw"
                       title="Linha do tempo interativa"
+                      referrerPolicy="unsafe-url"
                       allow="clipboard-write"
+                      allowFullScreen={true}
                       sandbox="allow-popups allow-popups-to-escape-sandbox allow-scripts allow-forms allow-same-origin allow-presentation"
                     ></iframe>
                   </div>
