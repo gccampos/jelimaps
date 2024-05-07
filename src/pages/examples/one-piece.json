@@ -3,20 +3,29 @@
     "nome": "select",
     "label": "Interagir com elementos",
     "icon": {
-      "type": { "type": {}, "compare": null },
+      "type": {
+        "type": {},
+        "compare": null
+      },
       "key": null,
       "ref": null,
       "props": {},
-      "_owner": null
+      "_owner": null,
+      "_store": {}
     },
-    "iconComponent": null
+    "iconComponent": {
+      "type": {},
+      "compare": null
+    }
   },
   "slidePropriedade": true,
   "cenaInicio": "2023-12-01T13:32:51",
   "cenaFim": "2023-12-01T13:47:04",
-  "tempo": "2023-12-01T13:36:49",
-  "mapOptions": { "center": [0, 0] },
-  "playStatus": 2,
+  "tempo": "2023-12-01T13:35:53",
+  "mapOptions": {
+    "center": [0, 0]
+  },
+  "playStatus": -1,
   "simpleTimeline": true,
   "conteudo": {
     "cenas": [
@@ -26,20 +35,30 @@
         "id": "096b6282-52fd-4e17-8054-72790fbdc656",
         "nome": "Reverse Mountain",
         "dataRef": "cenas",
-        "visTimelineObject": { "type": "background" },
+        "visTimelineObject": {
+          "type": "background"
+        },
         "type": "FeatureCollection",
         "color": "#df000024",
         "texto": "Reverse Mountain é uma montanha em um dos pontos onde os quatro oceanos se encontram e é uma das duas entradas conhecidas para o Grand Line. Muitos piratas que  tentam entrar na Grand Line morrem antes mesmo de chegar até o topo da montanha, porque as correntes de águas hostis e tempestades os força a bater contra as paredes da montanha.\n\nEste lugar é único em que os rios dos 4 mares fluem até a montanha, encontram-se no topo, e depois descem para a Grand Line.",
-        "center": { "lat": 0.40691987320453815, "lng": 0.529317855834961 },
+        "center": {
+          "lat": 0.36409133010687866,
+          "lng": 0.5427932739257814
+        },
         "zoom": 13,
         "bounds": {
           "_southWest": {
-            "lat": 0.345380598720786,
-            "lng": 0.44631958007812506
+            "lat": 0.28203850331406405,
+            "lng": 0.4452896118164063
           },
-          "_northEast": { "lat": 0.46845867825667575, "lng": 0.612316131591797 }
+          "_northEast": {
+            "lat": 0.446143410186202,
+            "lng": 0.6402969360351564
+          }
         },
-        "properties": { "selected": null }
+        "properties": {
+          "selected": true
+        }
       },
       {
         "id": "83abdeb1-3e8c-433b-a198-887ef8b5744e",
@@ -48,9 +67,14 @@
         "nome": "Whisky Peak",
         "dataRef": "cenas",
         "color": "rgba(46, 86, 4, 0.8)",
-        "visTimelineObject": { "type": "background" },
+        "visTimelineObject": {
+          "type": "background"
+        },
         "texto": "Conduzido pelo misterioso Mr. 9 e Ms. Wednesday, os Chapéus de Palha vão para Whisky Peak, onde as pessoas da cidade iniciam imediatamente uma festa para celebrar a sua chegada. Mas há mais nesta cidade do que parece.",
-        "center": { "lat": 0.33284953771735826, "lng": 0.5810737609863282 },
+        "center": {
+          "lat": 0.33284953771735826,
+          "lng": 0.5810737609863282
+        },
         "zoom": 12,
         "bounds": {
           "_southWest": {
@@ -62,7 +86,9 @@
             "lng": 0.7470703125000001
           }
         },
-        "properties": { "selected": true }
+        "properties": {
+          "selected": null
+        }
       },
       {
         "id": "a044b9b7-eedd-444f-9898-882386d21a3d",
@@ -71,18 +97,28 @@
         "nome": "Little Garden",
         "dataRef": "cenas",
         "color": "rgba(97, 167, 78, 0.8)",
-        "visTimelineObject": { "type": "background" },
+        "visTimelineObject": {
+          "type": "background"
+        },
         "texto": "Little Garden é a segunda ilha que os Piratas do Chapéu de Palha encontram na Grand Line. É uma ilha de verão, que é populada apenas por dinossauros, Dorry e Brogy.",
-        "center": { "lat": 0.3310363948525228, "lng": 0.6323254108428956 },
+        "center": {
+          "lat": 0.3310363948525228,
+          "lng": 0.6323254108428956
+        },
         "zoom": 16,
         "bounds": {
           "_southWest": {
             "lat": 0.32334394483196527,
             "lng": 0.621950626373291
           },
-          "_northEast": { "lat": 0.3387288389059526, "lng": 0.6427001953125001 }
+          "_northEast": {
+            "lat": 0.3387288389059526,
+            "lng": 0.6427001953125001
+          }
         },
-        "properties": { "selected": null }
+        "properties": {
+          "selected": null
+        }
       },
       {
         "id": "f1c4a58b-98be-473d-bb36-0e39c5feabd1",
@@ -91,18 +127,28 @@
         "nome": "Ilha Drum",
         "dataRef": "cenas",
         "color": "rgba(210, 82, 234, 0.8)",
-        "visTimelineObject": { "type": "background" },
+        "visTimelineObject": {
+          "type": "background"
+        },
         "texto": "lha de Drum é a terceira ilha que os Chapéus de Palha encontraram na Grand Line. É uma ilha de inverno que neva durante todo o ano.",
-        "center": { "lat": 0.29605018487410323, "lng": 0.65993070602417 },
+        "center": {
+          "lat": 0.29605018487410323,
+          "lng": 0.65993070602417
+        },
         "zoom": 15,
         "bounds": {
           "_southWest": {
             "lat": 0.2806652288556329,
             "lng": 0.6391811370849609
           },
-          "_northEast": { "lat": 0.31143511954658615, "lng": 0.680680274963379 }
+          "_northEast": {
+            "lat": 0.31143511954658615,
+            "lng": 0.680680274963379
+          }
         },
-        "properties": { "selected": null }
+        "properties": {
+          "selected": null
+        }
       },
       {
         "id": "9a320406-f20e-406f-8775-d3ec9fb79a27",
@@ -111,8 +157,12 @@
         "nome": "cena #5",
         "dataRef": "cenas",
         "color": "rgba(224, 183, 69, 0.8)",
-        "visTimelineObject": { "type": "background" },
-        "properties": { "selected": null }
+        "visTimelineObject": {
+          "type": "background"
+        },
+        "properties": {
+          "selected": null
+        }
       },
       {
         "id": "3aecfc06-c121-4aa9-827b-fc085d09f1ec",
@@ -121,8 +171,12 @@
         "nome": "cena #6",
         "dataRef": "cenas",
         "color": "rgba(19, 24, 126, 0.8)",
-        "visTimelineObject": { "type": "background" },
-        "properties": { "selected": null }
+        "visTimelineObject": {
+          "type": "background"
+        },
+        "properties": {
+          "selected": null
+        }
       },
       {
         "id": "61648c12-acfb-4ce3-ba08-1397e6640663",
@@ -131,8 +185,12 @@
         "nome": "cena #7",
         "dataRef": "cenas",
         "color": "rgba(187, 231, 240, 0.8)",
-        "visTimelineObject": { "type": "background" },
-        "properties": { "selected": null }
+        "visTimelineObject": {
+          "type": "background"
+        },
+        "properties": {
+          "selected": null
+        }
       }
     ],
     "Marker": [
@@ -447,7 +505,10 @@
             "lat": 0.3350757333823321,
             "lng": 0.5680596828460694
           },
-          "_northEast": { "lat": 0.3389219545782607, "lng": 0.5761653184890748 }
+          "_northEast": {
+            "lat": 0.3389219545782607,
+            "lng": 0.5761653184890748
+          }
         },
         "positionTL": [0.35705335338450117, 0.5607318878173829],
         "positionBL": [0.3221638015865476, 0.5679416656494142],
@@ -466,8 +527,14 @@
       },
       {
         "bounds": {
-          "_southWest": { "lat": 0.327377922147381, "lng": 0.6263065338134767 },
-          "_northEast": { "lat": 0.3350703690560329, "lng": 0.6425178050994874 }
+          "_southWest": {
+            "lat": 0.327377922147381,
+            "lng": 0.6263065338134767
+          },
+          "_northEast": {
+            "lat": 0.3350703690560329,
+            "lng": 0.6425178050994874
+          }
         },
         "positionTL": [0.33778471778597263, 0.6245470046997071],
         "positionBL": [0.3242236953412983, 0.6247615814208984],
@@ -489,7 +556,10 @@
             "lat": 0.28845426776503486,
             "lng": 0.649244785308838
           },
-          "_northEast": { "lat": 0.3038392131151615, "lng": 0.6816673278808595 }
+          "_northEast": {
+            "lat": 0.3038392131151615,
+            "lng": 0.6816673278808595
+          }
         },
         "positionTL": [0.311590686493561, 0.6429308652877809],
         "positionBL": [0.2799785915659168, 0.6427001953125001],
@@ -592,33 +662,58 @@
     ]
   },
   "timelineOptions": {
-    "editable": { "remove": true, "updateTime": true },
+    "editable": {
+      "remove": true,
+      "updateTime": true
+    },
+    "zoomKey": "ctrlKey",
     "preferZoom": true,
     "start": "2023-12-01T13:35:20",
     "end": "2023-12-01T13:45:20",
     "autoResize": false,
     "selectable": true,
     "multiselect": false,
-    "orientation": { "axis": "top" },
+    "orientation": {
+      "axis": "top"
+    },
     "longSelectPressTime": 777,
-    "rollingMode": { "offset": 0, "follow": false },
+    "rollingMode": {
+      "offset": 0,
+      "follow": false
+    },
     "showCurrentTime": false,
     "groupHeightMode": "fitItems",
     "verticalScroll": true,
-    "margin": { "item": { "vertical": 20 } },
+    "margin": {
+      "item": {
+        "vertical": 20
+      }
+    },
     "zoomable": true,
     "moveable": true,
     "locale": "pt_BR"
   },
   "modoVisao": "Mapa Próprio",
   "urlMapaProprio": "https://onedrive.live.com/embed?resid=9337381634E30E6%211133508&authkey=%21AEGlax_ukejjssE&width=3080",
-  "center": { "lat": 0.33284953771735826, "lng": 0.5810737609863282 },
+  "center": {
+    "lat": 0.36597956693034134,
+    "lng": 0.5431365966796876
+  },
   "zoom": 12,
   "bounds": {
-    "_southWest": { "lat": 0.20976973400311924, "lng": 0.4150772094726563 },
-    "_northEast": { "lat": 0.45592780548689615, "lng": 0.7470703125000001 }
+    "_southWest": {
+      "lat": 0.2018733616186114,
+      "lng": 0.34812927246093756
+    },
+    "_northEast": {
+      "lat": 0.5300827699064254,
+      "lng": 0.7381439208984376
+    }
   },
   "elementosFoco": null,
   "elementoFoco": null,
-  "caixaDialogo": ""
+  "caixaDialogo": "",
+  "exibirLimiteCenas": true,
+  "duracaoApresentacao": 162000,
+  "slideLinhaTempo": true
 }
