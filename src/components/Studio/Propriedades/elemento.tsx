@@ -36,6 +36,7 @@ import ImageResolver from "@/components/ImageUrlResolver";
 import Button from "@/components/Atomic/Button";
 import contextChangers from "@/components/Mapa/ContextChangers";
 import useWindowDimensions from "../useWindowDimensions";
+import Image from "next/image";
 
 const WrapperStyled = styled("div")``;
 
@@ -111,8 +112,7 @@ export default function Elemento(props: { map: Map }) {
             {urlImageRef.current &&
             urlImageRef.current !== "" &&
             isImagemValida ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
+              <Image
                 alt={`Imagem carregada pelo link: ${ImageResolver.UrlResolver(
                   urlImageRef.current
                 )}`}
@@ -303,11 +303,13 @@ export default function Elemento(props: { map: Map }) {
                                 <ImageList>
                                   <ImageListItem cols={2}>
                                     {
-                                      // eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text
-                                      <img
+                                      <Image
                                         src={(formik.values as any).imagemURL}
-                                        width={"auto"}
-                                        height={"auto"}
+                                        width={width * 0.21}
+                                        height={height * 0.21}
+                                        alt={`Imagem carregada pelo link: ${ImageResolver.UrlResolver(
+                                          urlImageRef.current
+                                        )}`}
                                       />
                                     }
                                   </ImageListItem>

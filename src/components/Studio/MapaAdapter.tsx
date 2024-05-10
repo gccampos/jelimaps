@@ -29,6 +29,7 @@ import { elementos } from "@/main/constants/elementos";
 import ConteudoMapa from "../Mapa/ConteudoMapa";
 import useWindowDimensions from "./useWindowDimensions";
 import SliderLinhaTempo from "../Mapa/SliderLinhaTempo";
+import Image from "next/image";
 
 export default function Mapa(propsMapa: {
   altura: number;
@@ -126,8 +127,7 @@ export default function Mapa(propsMapa: {
             {urlImageRef.current &&
             urlImageRef.current !== "" &&
             isImagemValida ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
+              <Image
                 alt={`Imagem carregada pelo link: ${ImageResolver.UrlResolver(
                   urlImageRef.current
                 )}`}
@@ -239,6 +239,7 @@ export default function Mapa(propsMapa: {
               color="primary"
               onClick={() => dispatch({ type: "slideToogle" })}
               sx={{ zIndex: 100000 }}
+              id="botaoTR"
             >
               <PlaylistPlay
                 sx={{

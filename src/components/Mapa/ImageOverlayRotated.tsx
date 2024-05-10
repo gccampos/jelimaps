@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import "leaflet-imageoverlay-rotated";
 import L, { Bounds, LatLng } from "leaflet";
 import { Marker, useMap } from "react-leaflet";
@@ -18,6 +18,8 @@ const ImageOverlayRotated = (props: Props) => {
   const map = useMap();
   const dispatch = useMapaDispatch();
   const mapaContext = useMapaContext();
+  const imageCurrentRef = useRef(null);
+  const eventMoveRef = useRef(null);
   const centerUpdated = new LatLng(
     new Bounds(
       [x.positionTR[1], x.positionTR[0]],
@@ -29,35 +31,88 @@ const ImageOverlayRotated = (props: Props) => {
     ).getCenter().x
   );
 
-  const reposition = (
-    nomePropriedade: "positionTL" | "positionTR" | "positionBL",
-    valorPropriedade: any
+  const dispatchReposition = (
+    nomePropriedade: "positionTL" | "positionTR" | "positionBL"
   ) => {
     dispatch({
       type: "editarPropriedade",
       id: x.id,
       tipo: "ImageOverlay",
       nomePropriedade,
-      valorPropriedade: [valorPropriedade.lat, valorPropriedade.lng],
+      valorPropriedade: [
+        eventMoveRef.current.latlng.lat,
+        eventMoveRef.current.latlng.lng,
+      ],
     });
   };
-  const repositionCenter = (valorPropriedade: any) => {
+
+  const reposition = (
+    nomePropriedade: "positionTL" | "positionTR" | "positionBL",
+    valorPropriedade: any
+  ) => {
+    eventMoveRef.current = valorPropriedade;
+    if (imageCurrentRef.current)
+      switch (nomePropriedade) {
+        case "positionTL":
+          imageCurrentRef.current.reposition(
+            valorPropriedade.latlng,
+            x.positionTR,
+            x.positionBL
+          );
+          break;
+        case "positionTR":
+          imageCurrentRef.current.reposition(
+            x.positionTL,
+            valorPropriedade.latlng,
+            x.positionBL
+          );
+          break;
+        case "positionBL":
+          imageCurrentRef.current.reposition(
+            x.positionTL,
+            x.positionTR,
+            valorPropriedade.latlng
+          );
+          break;
+
+        default:
+          break;
+      }
+  };
+
+  const getDiffPositionsByCenter = (valorPropriedade: any) => {
     const diffLat =
       (centerUpdated ?? valorPropriedade.oldLatLng).lat -
       valorPropriedade.latlng.lat;
     const diffLng =
       (centerUpdated ?? valorPropriedade.oldLatLng).lng -
       valorPropriedade.latlng.lng;
-    const diffPositions = {
+    return {
       positionTL: [x.positionTL[0] - diffLat, x.positionTL[1] - diffLng],
       positionTR: [x.positionTR[0] - diffLat, x.positionTR[1] - diffLng],
       positionBL: [x.positionBL[0] - diffLat, x.positionBL[1] - diffLng],
     };
+  };
+
+  const dispatchRepositionCenter = () => {
+    const diffPositions = getDiffPositionsByCenter(eventMoveRef.current);
     dispatch({
       type: "movendoImagem",
       id: x.id,
       valor: diffPositions,
     });
+  };
+
+  const repositionCenter = (valorPropriedade: any) => {
+    eventMoveRef.current = valorPropriedade;
+    const diffPositions = getDiffPositionsByCenter(valorPropriedade);
+
+    if (imageCurrentRef.current)
+      imageCurrentRef.current.reposition(
+        diffPositions.positionTL,
+        diffPositions.positionTR,
+        diffPositions.positionBL
+      );
   };
 
   useEffect(() => {
@@ -77,6 +132,7 @@ const ImageOverlayRotated = (props: Props) => {
       // else map.addLayer(im);
       if (cliqueElementoNoMapa && !isApresentacao)
         im.on("click", (e) => cliqueElementoNoMapa(x, e));
+      imageCurrentRef.current = im;
       return () => {
         map.removeLayer(im);
         if (cliqueElementoNoMapa && !isApresentacao)
@@ -95,21 +151,24 @@ const ImageOverlayRotated = (props: Props) => {
         position={x.positionTL}
         draggable={x.draggable}
         eventHandlers={{
-          move: (e: any) => reposition("positionTL", e.latlng),
+          move: (e: any) => reposition("positionTL", e),
+          moveend: () => dispatchReposition("positionTL"),
         }}
       />
       <Marker
         position={x.positionTR}
         draggable={x.draggable}
         eventHandlers={{
-          move: (e: any) => reposition("positionTR", e.latlng),
+          move: (e: any) => reposition("positionTR", e),
+          moveend: () => dispatchReposition("positionTR"),
         }}
       />
       <Marker
         position={x.positionBL}
         draggable={x.draggable}
         eventHandlers={{
-          move: (e: any) => reposition("positionBL", e.latlng),
+          move: (e: any) => reposition("positionBL", e),
+          moveend: () => dispatchReposition("positionBL"),
         }}
       />
       <Marker
@@ -117,6 +176,7 @@ const ImageOverlayRotated = (props: Props) => {
         draggable={x.draggable}
         eventHandlers={{
           move: (e: any) => repositionCenter(e),
+          moveend: () => dispatchRepositionCenter(),
         }}
       />
     </>

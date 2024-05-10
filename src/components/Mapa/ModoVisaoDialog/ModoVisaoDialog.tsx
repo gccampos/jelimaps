@@ -17,6 +17,7 @@ import useCaixaDialogo from "@/components/CaixaDialogo/useCaixaDialogo";
 import ImageResolver from "@/components/ImageUrlResolver";
 import Button from "@/components/Atomic/Button";
 import useWindowDimensions from "@/components/Studio/useWindowDimensions";
+import Image from "next/image";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -78,8 +79,7 @@ export default function ModoVisaoDialog() {
               }}
             />
             {nameRef.current && nameRef.current !== "" && isImagemValida ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
+              <Image
                 alt="MapaProprio"
                 src={ImageResolver.UrlResolver(nameRef.current)}
                 width={width * 0.21}
