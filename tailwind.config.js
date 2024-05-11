@@ -6,7 +6,6 @@ module.exports = {
     "./src/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   corePlugins: { preflight: false },
-  important: "#root",
   theme: {
     extend: {
       backgroundImage: {
