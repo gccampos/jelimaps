@@ -47,7 +47,7 @@ export default function CaixaDialogoProvider() {
             </Button>
           )}
           {!confirmarNotVisible && (
-            <Button onClick={onConfirm} variant="contained">
+            <Button onClick={onConfirm} variant="contained" color="primary">
               {confirmarTitle ?? "Confirmar"}
             </Button>
           )}
