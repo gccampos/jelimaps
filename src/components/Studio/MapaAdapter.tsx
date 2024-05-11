@@ -186,7 +186,7 @@ export default function Mapa(propsMapa: {
     conteudoElementosRef.current =
       MapaContextChanger.retornaListaElementosConteudoCenaAtual(mapaContext);
   });
-  if (propsMapa.draw) {
+  if (propsMapa.draw && (propsMapa.draw as any)._mode == "selecting") {
     propsMapa.draw.clear();
   }
 

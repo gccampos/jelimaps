@@ -54,6 +54,12 @@ const useCaixaDialogo = create<ModalConfirmProps>((set, value) => ({
       open: false,
       title: "",
       message: "",
+      cancelarTitle: null,
+      confirmarTitle: null,
+      cancelarNotVisible: null,
+      componentMessage: null,
+      confirmarNotVisible: null,
+      fecharApenasComEvento: null,
     }));
   },
 }));
