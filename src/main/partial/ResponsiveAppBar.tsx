@@ -37,7 +37,7 @@ function ResponsiveAppBar() {
           title: "Você tem um projeto em andamento",
           message: "Deseja continuar ou começar do zero?",
           onConfirm: () => {
-            router.push("/mapa?novo");
+            router.push("/mapa/novo");
           },
           onCancel: () => {
             router.push("/mapa");

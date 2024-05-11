@@ -14,6 +14,7 @@ import MapaContextChanger from "../Mapa/ContextChangers";
 import terraDrawSetup from "./terraDrawSetup";
 import DraggerResize from "../DraggerResize";
 import useBarraAlerta from "../BarraAlerta/useBarraAlerta";
+import Tutoriais from "./Tutoriais";
 // import moment from "moment";
 
 // Define a função para inserir um texto no clipboard
@@ -112,7 +113,6 @@ const Studio = () => {
     if (map && !draw) {
       const _draw = terraDrawSetup(dispatch, map, pegarConteudoElementos);
       setDraw(_draw);
-
       map.on("click", () => {
         const modeDraw = (_draw as any)._mode;
         if (modeDraw?._state == "selecting")
@@ -226,6 +226,7 @@ const Studio = () => {
           )}
         </>
       }
+      {map && <Tutoriais />}
     </Grid>
   );
 };

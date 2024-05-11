@@ -7,6 +7,8 @@ import {
   Typography,
   styled,
   Button as ButtonMUI,
+  ListItem,
+  List,
 } from "@mui/material";
 import {
   useMapaContext,
@@ -112,22 +114,62 @@ export default function ModoVisaoDialog() {
         componentMessage: (
           <div>
             <DialogTitle>
-              Por favor, selecione o modo de visualização
+              Olá, aventureiro do mapa! 🗺️ Está pronto para começar sua jornada
+              de conhecimento ou continuar um projeto já iniciado? Aqui estão
+              suas opções:
             </DialogTitle>
-            <DialogContent dividers>
+            <List>
+              <ListItem>
+                <Typography gutterBottom>
+                  Explorar Terras Conhecidas (<b>Mapas Comuns</b>): Escolha esta
+                  opção se você quer utilizar mapas incríveis do Openstreetmap e
+                  outros estilos de mapas públicos. É como ter um mapa do mundo
+                  inteiro na ponta dos seus dedos!
+                </Typography>
+              </ListItem>
+              <ListItem>
+                <Typography gutterBottom>
+                  Criar Meu Próprio Mundo (<b>Mapa Próprio</b>): Se você tem uma
+                  imagem especial que quer usar como mapa, esta é a sua escolha!
+                  Envie sua imagem e transforme-a no cenário da sua próxima
+                  grande história.
+                </Typography>
+              </ListItem>
+              <ListItem>
+                <Typography gutterBottom>
+                  Seguir o Caminho (<b>Continuar Projeto</b>): Já começou uma
+                  narrativa e quer seguir em frente? Selecione esta opção para
+                  carregar seu arquivo de projeto e retomar sua missão de onde
+                  parou.
+                </Typography>
+              </ListItem>
+            </List>
+            {/* <DialogContent dividers>
               <Typography gutterBottom>
-                OpenStreetMaps: Nesse modo, você utilizará os mapas da base do
-                OpenStreetMaps.
+                Explorar Terras Conhecidas (Openstreetmap): Escolha esta opção
+                se você quer utilizar mapas incríveis do Openstreetmap e outros
+                estilos de mapas públicos. É como ter um mapa do mundo inteiro
+                na ponta dos seus dedos!
               </Typography>
               <Typography gutterBottom>
-                Mapa Próprio: Nesse modo, você terá que subir uma imagem para
-                utilizar como mapa.
+                Criar Meu Próprio Mundo (Mapa Próprio): Se você tem uma imagem
+                especial que quer usar como mapa, esta é a sua escolha! Envie
+                sua imagem e transforme-a no cenário da sua próxima grande
+                história.
               </Typography>
-              <div id="resultado"></div>
-            </DialogContent>
+              <Typography gutterBottom>
+                Seguir o Caminho (Continuar Projeto): Já começou uma narrativa e
+                quer seguir em frente? Selecione esta opção para carregar seu
+                arquivo de projeto e retomar sua missão de onde parou.
+              </Typography>
+
+              <div id="resultado">
+                Escolha com sabedoria e boa sorte em sua jornada!
+              </div>
+            </DialogContent> */}
             <DialogActions>
               <ButtonMUI variant="contained" onClick={handleOpenStreetMap}>
-                OpenStreetMap
+                Mapas Comuns
               </ButtonMUI>
               <ButtonMUI variant="contained" onClick={handleMapaProprio}>
                 Mapa Próprio

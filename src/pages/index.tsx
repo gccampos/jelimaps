@@ -21,20 +21,20 @@ const cards = [
       "/assets/tour-pequena-africa-no-rio-de-janeiro-morro-conceicao-rua.jpg",
     nome: "Pequena África",
     descricao: "Processo de diáspora africana num passeio pelo Rio de Janeiro",
-    url: "/mapa?pequena-africa",
+    url: "/mapa/pequena-africa",
   },
   {
     imageUrl: "/assets/one-piece.jpeg",
     nome: "One Piece - Saga Alabasta",
     descricao: "Resumo da primeira saga da grand line (não finalizado)",
-    url: "/mapa?one-piece",
+    url: "/mapa/one-piece",
   },
   {
     imageUrl: "/assets/OIP.jpeg",
     nome: "Golpe de 64",
     descricao:
       "Baseado em informações do documentário o dia que durou 21 anos e dados da Wikipedia",
-    url: "/mapa?golpe-64",
+    url: "/mapa/golpe-64",
   },
 ];
 export default function Home() {
@@ -90,7 +90,7 @@ export default function Home() {
                       title: "Você tem um projeto em andamento",
                       message: "Deseja continuar ou começar do zero?",
                       onConfirm: () => {
-                        router.push("/mapa?novo");
+                        router.push("/mapa/novo");
                       },
                       onCancel: () => {
                         router.push("/mapa");
@@ -107,6 +107,11 @@ export default function Home() {
                 variant="contained"
                 href="https://icltank.com.br/jelimaps/"
                 color="warning"
+                sx={{
+                  bgcolor: "#d5de22",
+                  color: "#1976d2",
+                  ":hover": { color: "white" },
+                }}
                 target="_blank"
               >
                 Vote JeliMaps no ICL Tank

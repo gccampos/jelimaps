@@ -83,7 +83,7 @@ const ConteudoMapa = (propsConteudoMapa: {
                   !propsConteudoMapa.isApresentacao
                 }
                 icon={divIcon({
-                  className: "",
+                  className: "icon-marker",
                   html: ReactDOMServer.renderToString(
                     <LocationOn
                       id={marker.id}

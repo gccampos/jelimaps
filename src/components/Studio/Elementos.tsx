@@ -59,6 +59,7 @@ export function ElementosLateral(props: { altura: number; draw: TerraDraw }) {
             return (
               <Tooltip key={i} title={x.label}>
                 <ListItem
+                  className={`item-list-interacao-${x.nome}`}
                   sx={{
                     width: "100%",
                     mb: 1,

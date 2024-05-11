@@ -206,7 +206,7 @@ export default function Mapa(propsMapa: {
   }, [mapaContext.modoVisao, mapaContext.urlMapaProprio]);
 
   return (
-    <Grid item xs>
+    <Grid item xs id={"idMapa"}>
       <div style={{ height: propsMapa.altura, display: "grid" }}>
         <MapContainer
           center={mapaContext.mapOptions?.center ?? center}
