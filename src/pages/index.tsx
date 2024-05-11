@@ -134,50 +134,28 @@ export default function Home() {
                   uma linha do tempo. É possível adicionar pontos de interesse,
                   rotas, áreas e outros elementos geográficos de forma rápida e
                   simples.
-                  <div
-                    style={{ position: "relative", paddingBottom: "56.25%" }}
-                  >
-                    <iframe
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                        position: "absolute",
-                        left: 0,
-                        top: 0,
-                      }}
-                      src="https://embed.app.guidde.com/playbooks/jRGUaXDj6KvBG8x1Sn1nQp"
-                      title="Criação intuitiva de mapas"
-                      referrerPolicy="unsafe-url"
-                      allowFullScreen={true}
-                      allow="clipboard-write"
-                      sandbox="allow-popups allow-popups-to-escape-sandbox allow-scripts allow-forms allow-same-origin allow-presentation"
-                    ></iframe>
-                  </div>
+                  <Image
+                    src={"/assets/criacao-intuitiva-mapa.gif"}
+                    layout={"responsive"}
+                    height={175}
+                    width={175}
+                    alt={`A cute animal!`}
+                    unoptimized={true}
+                  />
                 </Grid>
                 <Grid item xs={12}>
                   Integração de imagens próprias: Os usuários têm a opção de
                   utilizar suas próprias imagens georreferenciadas para
                   enriquecer seus mapas. Isso permite a visualização de dados
                   específicos e a criação de narrativas visuais impactantes.
-                  <div
-                    style={{ position: "relative", paddingBottom: "56.25%" }}
-                  >
-                    <iframe
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                        position: "absolute",
-                        left: 0,
-                        top: 0,
-                      }}
-                      src="https://embed.app.guidde.com/playbooks/wujX3bgVH8wAeFrcdfcbtt"
-                      title="Integração de imagens próprias"
-                      referrerPolicy="unsafe-url"
-                      allow="clipboard-write"
-                      allowFullScreen={true}
-                      sandbox="allow-popups allow-popups-to-escape-sandbox allow-scripts allow-forms allow-same-origin allow-presentation"
-                    ></iframe>
-                  </div>
+                  <Image
+                    src={"/assets/integracao-imagens-proprias.gif"}
+                    layout={"responsive"}
+                    height={175}
+                    width={175}
+                    alt={`A cute animal!`}
+                    unoptimized={true}
+                  />
                 </Grid>
               </Grid>
               <Grid container item xs={12} md={6} spacing={2}>
@@ -187,25 +165,14 @@ export default function Home() {
                   aproveitar os recursos detalhados dessa fonte de informações
                   aberta, permitindo uma representação precisa e atualizada do
                   mundo.
-                  <div
-                    style={{ position: "relative", paddingBottom: "56.25%" }}
-                  >
-                    <iframe
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                        position: "absolute",
-                        left: 0,
-                        top: 0,
-                      }}
-                      src="https://embed.app.guidde.com/playbooks/x7UruBwgYCZnwhhDqZ8Yvi"
-                      title="Base OpenStreetMaps"
-                      referrerPolicy="unsafe-url"
-                      allow="clipboard-write"
-                      allowFullScreen={true}
-                      sandbox="allow-popups allow-popups-to-escape-sandbox allow-scripts allow-forms allow-same-origin allow-presentation"
-                    ></iframe>
-                  </div>
+                  <Image
+                    src={"/assets/openstreetmaps-tiles.gif"}
+                    layout={"responsive"}
+                    height={175}
+                    width={175}
+                    alt={`A cute animal!`}
+                    unoptimized={true}
+                  />
                 </Grid>
                 <Grid item xs={12}>
                   Linha do tempo interativa: A aplicação permite que os usuários
@@ -213,25 +180,14 @@ export default function Home() {
                   e dados específicos em seus mapas. Com a funcionalidade da
                   linha do tempo, é possível observar a evolução geográfica ao
                   longo do tempo, analisar mudanças e descobrir padrões.
-                  <div
-                    style={{ position: "relative", paddingBottom: "56.25%" }}
-                  >
-                    <iframe
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                        position: "absolute",
-                        left: 0,
-                        top: 0,
-                      }}
-                      src="https://embed.app.guidde.com/playbooks/v1AfJB3y8KTiUGpVwcGXzw"
-                      title="Linha do tempo interativa"
-                      referrerPolicy="unsafe-url"
-                      allow="clipboard-write"
-                      allowFullScreen={true}
-                      sandbox="allow-popups allow-popups-to-escape-sandbox allow-scripts allow-forms allow-same-origin allow-presentation"
-                    ></iframe>
-                  </div>
+                  <Image
+                    src={"/assets/linha-tempo-interativa.gif"}
+                    layout={"responsive"}
+                    height={175}
+                    width={175}
+                    alt={`A cute animal!`}
+                    unoptimized={true}
+                  />
                 </Grid>
               </Grid>
             </Grid>
