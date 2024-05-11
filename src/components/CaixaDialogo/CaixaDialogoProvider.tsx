@@ -41,12 +41,15 @@ export default function CaixaDialogoProvider() {
                 closeModalConfirm(null, null);
                 onCancel();
               }}
+              variant="outlined"
             >
               {cancelarTitle ?? "Cancelar"}
             </Button>
           )}
           {!confirmarNotVisible && (
-            <Button onClick={onConfirm}>{confirmarTitle ?? "Confirmar"}</Button>
+            <Button onClick={onConfirm} variant="contained">
+              {confirmarTitle ?? "Confirmar"}
+            </Button>
           )}
         </DialogActions>
       </Dialog>
