@@ -29,14 +29,6 @@ const equipe = [
     git: "http://github.com/siqueirad",
     email: "mailto:danilo_siqueira@id.uff.br",
   },
-  {
-    nome: "Troy Kohwalter",
-    foto: "/assets/troy.jpeg",
-    descricao:
-      "Doutor em Computação pela UFF e professor adjunto da mesma. Seus interesses são Engenharia de Software e Entretenimento Digital",
-    git: "",
-    email: "mailto:troy@ic.uff.br",
-  },
 ];
 
 const About = () => {
@@ -84,7 +76,7 @@ const About = () => {
             <Typography variant="h3" align="center" color="text.primary">
               Quem Somos?
             </Typography>
-            <Grid container spacing={4}>
+            <Grid container spacing={4} justifyContent={"center"}>
               {equipe.map((membro) => (
                 <Grid item key={membro.nome} xs={12} sm={6} md={4}>
                   <Card

@@ -12,13 +12,16 @@
       "props": {},
       "_owner": null
     },
-    "iconComponent": null
+    "iconComponent": {
+      "type": {},
+      "compare": null
+    }
   },
-  "slidePropriedade": true,
+  "slidePropriedade": false,
   "slideLinhaTempo": true,
   "cenaInicio": "2023-12-04T14:49:58",
   "cenaFim": "2023-12-04T14:56:57",
-  "tempo": "2023-12-04T14:49:58",
+  "tempo": "2023-12-04T14:56:20",
   "mapOptions": {
     "center": [0, 0]
   },
@@ -54,7 +57,7 @@
           }
         },
         "properties": {
-          "selected": true
+          "selected": null
         }
       },
       {
@@ -72,18 +75,18 @@
         },
         "texto": "Localizado no centro histórico do Rio De Janeiro, é um\nsítio arqueológico que ganhou notoriedade como um dos vestígios mais significativos do\nperíodo de tráfico transatlântico de escravizados. O Cais do Valongo foi construído no final\ndo século XVIII para receber e desembarcar africanos trazidos como escravizados para o\nBrasil. Durante o auge do tráfico transatlântico, entre os séculos XVIII e XIX, o Rio de\nJaneiro foi um dos principais portos receptores de africanos escravizados nas Américas.\nCom a proibição do comércio, o cais foi remodelado em 1843 para receber a futura esposa\nde D. Pedro II, a princesa Teresa Cristina, e por essa razão passou a se chamar Cais da\nImperatriz.",
         "center": {
-          "lat": -22.89695559064172,
-          "lng": -43.187777549028404
+          "lat": -22.89712109019837,
+          "lng": -43.18747848272324
         },
         "zoom": 19,
         "bounds": {
           "_southWest": {
-            "lat": -22.89782162684959,
-            "lng": -43.1899380683899
+            "lat": -22.89800689213595,
+            "lng": -43.1891280412674
           },
           "_northEast": {
-            "lat": -22.89608954890508,
-            "lng": -43.1856170296669
+            "lat": -22.896235282476713,
+            "lng": -43.185828924179084
           }
         }
       },
@@ -132,18 +135,18 @@
         },
         "texto": "Era o caminho que os recém-chegados utilizavam para ir\ndo porto às Casas de Engorda, onde permaneciam até que se recuperasse para serem\nvendidos como escravos no mercado. De tal modo, muitas casas na região serviram a este\npropósito. O centro desta atividade era o Largo do Depósito, hoje Praça dos Estivadores.",
         "center": {
-          "lat": -22.89867963017505,
-          "lng": -43.18748518824578
+          "lat": -22.898975461135002,
+          "lng": -43.18720757961274
         },
-        "zoom": 19,
+        "zoom": 18,
         "bounds": {
           "_southWest": {
-            "lat": -22.899545655376137,
-            "lng": -43.18964570760727
+            "lat": -22.90074703500717,
+            "lng": -43.19050669670106
           },
           "_northEast": {
-            "lat": -22.89781359944487,
-            "lng": -43.18532466888428
+            "lat": -22.897203864125114,
+            "lng": -43.18390846252442
           }
         }
       },
@@ -162,18 +165,18 @@
         },
         "texto": "O local, que aparecia em mapas antigos da cidade, datados\ndo século XVIII, foi outro que caiu no esquecimento proposital, similar ao ocorrido com o\ncais. Após seu fechamento, muitas construções foram erguidas sobre a área onde\nenterravam quem não conseguia completar com vida a travessia do oceano.\nEm 1996, ao conduzir uma reforma em um destes sobrados, um casal encontrou vestígios\ndo antigo cemitério sob o piso de sua casa. Com a descoberta, a casa foi transformada em\nsitio arqueológico. Posteriormente, no mesmo local, foi fundado pelo casal o Instituto de\nPesquisa e Memória dos Pretos Novos (IPN) como forma de estimular a reflexão e divulgar\na história do que ali ocorria",
         "center": {
-          "lat": -22.895970167544515,
-          "lng": -43.19303400814534
+          "lat": -22.89601413850311,
+          "lng": -43.19266855716705
         },
-        "zoom": 20,
+        "zoom": 19,
         "bounds": {
           "_southWest": {
-            "lat": -22.89640318948498,
-            "lng": -43.19411426782609
+            "lat": -22.89689994766874,
+            "lng": -43.19431811571121
           },
           "_northEast": {
-            "lat": -22.895537144221908,
-            "lng": -43.19195374846459
+            "lat": -22.89512832355364,
+            "lng": -43.191018998622894
           }
         }
       },
@@ -188,22 +191,22 @@
           "type": "background"
         },
         "properties": {
-          "selected": null
+          "selected": true
         },
         "texto": "A Casa da Tia Ciata foi um importante centro de preservação da cultura negra, onde a música, a dança e a religião se encontravam. Tia Ciata, também conhecida como a Matriarca do Samba, era uma baiana de Santo Amaro da Purificação, no Recôncavo Baiano, que se mudou para o Rio de Janeiro e aqui fez história. Sendo uma das mais famosas quituteiras da época, promoveu grandes encontros de sambistas em sua casa e mudou o cenário até então estabelecido. Tia Ciata é considerada uma figura importante da cultura negra no Brasil e deixou um legado político-cultural eterno.",
         "center": {
-          "lat": -22.898014980089208,
-          "lng": -43.18718545138836
+          "lat": -22.898144024136432,
+          "lng": -43.18748384714127
         },
-        "zoom": 20,
+        "zoom": 19,
         "bounds": {
           "_southWest": {
-            "lat": -22.898447995502604,
-            "lng": -43.188265711069114
+            "lat": -22.899029819394283,
+            "lng": -43.18913340568543
           },
           "_northEast": {
-            "lat": -22.897581963293593,
-            "lng": -43.18610519170761
+            "lat": -22.89725822309431,
+            "lng": -43.185834288597114
           }
         }
       },
@@ -428,18 +431,18 @@
   "modoVisao": "OpenStreetMap",
   "urlMapaProprio": "",
   "center": {
-    "lat": -22.898276214311984,
-    "lng": -43.18395674228668
+    "lat": -22.89782096068866,
+    "lng": -43.185241520404816
   },
-  "zoom": 17,
+  "zoom": 20,
   "bounds": {
     "_southWest": {
-      "lat": -22.90316839561983,
-      "lng": -43.192062377929695
+      "lat": -22.898263860095422,
+      "lng": -43.1860662996769
     },
     "_northEast": {
-      "lat": -22.893383856561893,
-      "lng": -43.175851106643684
+      "lat": -22.897378059835816,
+      "lng": -43.18441674113274
     }
   },
   "elementosFoco": null,
