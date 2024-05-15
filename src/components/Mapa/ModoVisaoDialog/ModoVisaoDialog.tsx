@@ -49,17 +49,18 @@ export default function ModoVisaoDialog() {
     closeModalConfirm(null, null);
   }, [closeModalConfirm, dispatch]);
 
-  const handleMapaProprioComImagem = useCallback(() => {
+  const handleMapaProprioComImagem = useCallback(async () => {
     dispatch({
       type: "modoVisao",
       modoVisao: "Mapa Próprio",
-      valor: ImageResolver.UrlResolver(nameRef.current),
+      valor: await ImageResolver.UrlResolver(nameRef.current),
     });
     closeModalConfirm(null, null);
   }, [closeModalConfirm, dispatch]);
 
   const handleMapaProprio = useCallback(async () => {
     const isImagemValida = await ImageResolver.isValidUrl(nameRef.current);
+    const urlImagem = await ImageResolver.UrlResolver(nameRef.current);
     openModalConfirm({
       title: "",
       message: "",
@@ -83,9 +84,11 @@ export default function ModoVisaoDialog() {
             {nameRef.current && nameRef.current !== "" && isImagemValida ? (
               <Image
                 alt="MapaProprio"
-                src={ImageResolver.UrlResolver(nameRef.current)}
+                src={urlImagem}
                 width={width * 0.21}
                 height={height * 0.21}
+                placeholder="blur"
+                blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg=="
               />
             ) : (
               <div> Copie um link válido</div>

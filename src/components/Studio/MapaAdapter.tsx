@@ -89,11 +89,11 @@ export default function Mapa(propsMapa: {
   const { openModalConfirm, closeModalConfirm, onConfirm } = useCaixaDialogo();
 
   //TODO: Função undo não pode reabrir popup de inserção de elemento????
-  const handleDispatchInserirImageOverlay = React.useCallback(() => {
+  const handleDispatchInserirImageOverlay = React.useCallback(async () => {
     dispatch({
       type: "adicionarImageOverlay",
       tipo: "ImageOverlay",
-      valor: ImageResolver.UrlResolver(urlImageRef.current),
+      valor: await ImageResolver.UrlResolver(urlImageRef.current),
     });
     propsMapa.draw.setMode(elementos.Hand.nome);
     closeModalConfirm(null, null);
@@ -102,6 +102,7 @@ export default function Mapa(propsMapa: {
 
   const handleInserirImagem = React.useCallback(async () => {
     const isImagemValida = await ImageResolver.isValidUrl(urlImageRef.current);
+    const urlImagem = await ImageResolver.UrlResolver(urlImageRef.current);
     openModalConfirm({
       title: "",
       onClosed: () => {
@@ -128,12 +129,12 @@ export default function Mapa(propsMapa: {
             urlImageRef.current !== "" &&
             isImagemValida ? (
               <Image
-                alt={`Imagem carregada pelo link: ${ImageResolver.UrlResolver(
-                  urlImageRef.current
-                )}`}
-                src={ImageResolver.UrlResolver(urlImageRef.current)}
+                alt={`Imagem carregada pelo link: ${urlImagem}`}
+                src={urlImagem}
                 width={width * 0.21}
                 height={height * 0.21}
+                placeholder="blur"
+                blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg=="
               />
             ) : (
               <div> Copie um link válido</div>

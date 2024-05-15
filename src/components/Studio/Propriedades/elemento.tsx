@@ -78,13 +78,13 @@ export default function Elemento(props: { map: Map }) {
   const urlImageRef = React.useRef<string>();
   const { openModalConfirm, closeModalConfirm, onConfirm } = useCaixaDialogo();
 
-  const handleDispatchInserirImageOverlay = React.useCallback(() => {
+  const handleDispatchInserirImageOverlay = React.useCallback(async () => {
     dispatch({
       type: "editarPropriedade",
       tipo: elementoRef.current.dataRef,
       id: elementoRef.current.id,
       nomePropriedade: "imagemURL",
-      valorPropriedade: urlImageRef.current,
+      valorPropriedade: await ImageResolver.UrlResolver(urlImageRef.current),
     });
     elementoRef.current = urlImageRef.current = null;
     closeModalConfirm(null, null);
@@ -92,6 +92,7 @@ export default function Elemento(props: { map: Map }) {
 
   const handleInserirImagem = React.useCallback(async () => {
     const isImagemValida = await ImageResolver.isValidUrl(urlImageRef.current);
+    const urlImagem = await ImageResolver.UrlResolver(urlImageRef.current);
     openModalConfirm({
       title: "",
       message: "",
@@ -113,12 +114,12 @@ export default function Elemento(props: { map: Map }) {
             urlImageRef.current !== "" &&
             isImagemValida ? (
               <Image
-                alt={`Imagem carregada pelo link: ${ImageResolver.UrlResolver(
-                  urlImageRef.current
-                )}`}
-                src={ImageResolver.UrlResolver(urlImageRef.current)}
+                alt={`Imagem carregada pelo link: ${urlImagem}`}
+                src={urlImagem}
                 width={width * 0.21}
                 height={height * 0.21}
+                placeholder="blur"
+                blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg=="
               />
             ) : (
               <div> Copie um link válido</div>
@@ -307,9 +308,11 @@ export default function Elemento(props: { map: Map }) {
                                         src={(formik.values as any).imagemURL}
                                         width={width * 0.21}
                                         height={height * 0.21}
-                                        alt={`Imagem carregada pelo link: ${ImageResolver.UrlResolver(
-                                          urlImageRef.current
-                                        )}`}
+                                        alt={`Imagem carregada pelo link: ${
+                                          (formik.values as any).imagemURL
+                                        }`}
+                                        placeholder="blur"
+                                        blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg=="
                                       />
                                     }
                                   </ImageListItem>
