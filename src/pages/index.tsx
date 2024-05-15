@@ -144,7 +144,7 @@ export default function Home() {
                     layout={"responsive"}
                     height={175}
                     width={175}
-                    alt={`A cute animal!`}
+                    alt={`Gravação acelerada da tela da criação intuitiva de mapas!`}
                     unoptimized={true}
                   />
                 </Grid>
@@ -158,7 +158,7 @@ export default function Home() {
                     layout={"responsive"}
                     height={175}
                     width={175}
-                    alt={`A cute animal!`}
+                    alt={`Gravação acelerada da integração de imagens proprias!`}
                     unoptimized={true}
                   />
                 </Grid>
@@ -175,7 +175,7 @@ export default function Home() {
                     layout={"responsive"}
                     height={175}
                     width={175}
-                    alt={`A cute animal!`}
+                    alt={`Gravação acelerada alterando o plano de fundo de mapas comuns!`}
                     unoptimized={true}
                   />
                 </Grid>
@@ -190,7 +190,7 @@ export default function Home() {
                     layout={"responsive"}
                     height={175}
                     width={175}
-                    alt={`A cute animal!`}
+                    alt={`Gravação acelerada da linha do tempo interativa!`}
                     unoptimized={true}
                   />
                 </Grid>

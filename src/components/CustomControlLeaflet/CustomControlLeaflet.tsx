@@ -19,12 +19,11 @@ export default function CustomControlLeaflet({
   children,
   classCustom,
 }: {
-  position: any;
+  position?: any;
   children: any;
   classCustom?: any;
 }) {
-  const positionClass =
-    (position && POSITION_CLASSES[position]) || POSITION_CLASSES.topright;
+  const positionClass = position && POSITION_CLASSES[position];
   return (
     <div className={positionClass}>
       <div

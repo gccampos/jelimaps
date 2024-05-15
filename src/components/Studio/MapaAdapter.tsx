@@ -229,7 +229,7 @@ export default function Mapa(propsMapa: {
             <Elementos altura={props.altura} />
           </CustomControlLeaflet> */}
           <CustomControlLeaflet
-            position={POSITION_CLASSES_CUSTOM_CONTROL.topleft}
+            classCustom={"leaflet-control custom-control-undo"}
           >
             <UndoControl />
           </CustomControlLeaflet>
