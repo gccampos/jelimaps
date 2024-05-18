@@ -6,24 +6,27 @@ import CustomControlLeaflet, {
 import Image from "next/image";
 import useWindowDimensions from "../../Studio/useWindowDimensions";
 
+const GoogleCustomControl = () => {
+  const { height, width } = useWindowDimensions();
+  return (
+    <CustomControlLeaflet position={POSITION_CLASSES_CUSTOM_CONTROL.bottomleft}>
+      <Image
+        src={"/assets/google_on_white.png"}
+        alt="logo google"
+        width={width * 0.07 > 60 ? 60 : width * 0.07}
+        height={height * 0.05 > 20 ? 20 : height * 0.05}
+      />
+    </CustomControlLeaflet>
+  );
+};
 const PlanoFundoMapaComum = () => {
   const mapaContext = useMapaContext();
-  const { height, width } = useWindowDimensions();
   if (mapaContext.tipoMapaComum)
     return (
       <>
         <TileLayer {...mapaContext.tipoMapaComum} />
         {mapaContext.tipoMapaComum.url.includes("google.com/vt") && (
-          <CustomControlLeaflet
-            position={POSITION_CLASSES_CUSTOM_CONTROL.bottomleft}
-          >
-            <Image
-              src={"/assets/google_on_white.png"}
-              alt="logo google"
-              width={width * 0.07 > 60 ? 60 : width * 0.07}
-              height={height * 0.05 > 20 ? 20 : height * 0.05}
-            />
-          </CustomControlLeaflet>
+          <GoogleCustomControl />
         )}
       </>
     );
@@ -36,16 +39,7 @@ const PlanoFundoMapaComum = () => {
         subdomains={["mt0", "mt1", "mt2", "mt3"]}
         maxZoom={23}
       />
-      <CustomControlLeaflet
-        position={POSITION_CLASSES_CUSTOM_CONTROL.bottomleft}
-      >
-        <Image
-          src={"/assets/google_on_white.png"}
-          alt="logo google"
-          width={width * 0.07 > 60 ? 60 : width * 0.07}
-          height={height * 0.05 > 20 ? 20 : height * 0.05}
-        />
-      </CustomControlLeaflet>
+      <GoogleCustomControl />
     </>
   );
 };

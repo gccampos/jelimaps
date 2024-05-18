@@ -183,6 +183,7 @@ export default function Mapa(propsMapa: {
       handleInserirImagem();
     }
 
+    if (map) map.setMaxZoom(mapaContext.tipoMapaComum?.maxZoom ?? 23);
     console.log("mapaContext", mapaContext);
     conteudoElementosRef.current =
       MapaContextChanger.retornaListaElementosConteudoCenaAtual(mapaContext);
@@ -213,7 +214,7 @@ export default function Mapa(propsMapa: {
           center={mapaContext.mapOptions?.center ?? center}
           zoom={mapaContext.mapOptions?.zoom ?? zoom}
           ref={setMap}
-          maxZoom={23}
+          maxZoom={mapaContext.tipoMapaComum?.maxZoom ?? 23}
           minZoom={mapaContext.modoVisao === MODO_VISAO.mapaProprio ? 9 : 3}
         >
           {mapaContext.modoVisao === MODO_VISAO.openstreetmap && (
