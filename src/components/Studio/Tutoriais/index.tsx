@@ -17,7 +17,7 @@ const Tutoriais = () => {
   const mapaContext = useMapaContext();
   const tour = useShepherdTour({ tourOptions, steps: stepsShepherdTour });
   useEffect(() => {
-    if (!localStorage.getItem("tourFinalizado"))
+    if (localStorage.getItem("tourFinalizado"))
       if (mapaContext.modoVisao === "OpenStreetMap") tour.start();
   }, [tour, mapaContext.modoVisao]);
 
