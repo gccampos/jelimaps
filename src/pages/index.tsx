@@ -13,7 +13,6 @@ import Container from "@mui/material/Container";
 import { useRouter } from "next/router";
 import useCaixaDialogo from "@/components/CaixaDialogo/useCaixaDialogo";
 import Image from "next/image";
-import { Chip } from "@mui/material";
 
 const cards = [
   {
@@ -102,19 +101,6 @@ export default function Home() {
                 }}
               >
                 Começe agora
-              </Button>
-              <Button
-                variant="contained"
-                href="https://icltank.com.br/jelimaps/"
-                color="warning"
-                sx={{
-                  bgcolor: "#d5de22",
-                  color: "#1976d2",
-                  ":hover": { color: "white" },
-                }}
-                target="_blank"
-              >
-                Vote JeliMaps no ICL Tank
               </Button>
               <Button variant="outlined" href="#exemplos">
                 Veja exemplos
@@ -248,57 +234,6 @@ export default function Home() {
               ))}
             </Grid>
           </Container>
-        </Box>
-        <Box
-          sx={{
-            pt: 4,
-            pb: 4,
-            backgroundImage: "linear-gradient(#1976d257, #1976d2)",
-            // bgcolor: "#1976d2",
-            ":hover": {
-              bgcolor: "#2020ff",
-              ".chip-voto": { bgcolor: "#d5de22" },
-              cursor: "pointer",
-            },
-            alignContent: "center",
-            ".chip-voto": { bgcolor: "#eff5fb" },
-          }}
-          onClick={() => {
-            window.open("https://icltank.com.br/jelimaps/");
-          }}
-        >
-          <Stack direction="column" spacing={2} justifyContent="center">
-            <Typography
-              component="h6"
-              variant="h5"
-              align="center"
-              color="text.primary"
-              gutterBottom
-              marginX={10}
-            >
-              Este projeto está participando do
-            </Typography>
-            <Image
-              src="https://icltank.b-cdn.net/wp-content/themes/landing/images/tank/logo-icl-tank-branco.png"
-              width="600"
-              height="200"
-              className="width-350px xs-width-70 m-40px-b"
-              alt="Logo ICL Tank"
-              sizes="100vw"
-              style={{
-                width: "70%",
-                height: "auto",
-                margin: "auto",
-              }}
-            />
-            <Stack>
-              <Chip
-                label="Vote aqui"
-                className="chip-voto"
-                sx={{ width: "50%", margin: "auto" }}
-              />
-            </Stack>
-          </Stack>
         </Box>
       </main>
     </DefaultTemplate>
