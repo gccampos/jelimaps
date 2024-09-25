@@ -19,7 +19,6 @@ const terraDrawSetup = (
   pegarConteudoElementos: () => tipoElemento[]
 ) => {
   const terraDrawPolygonMode = new TerraDrawPolygonMode({
-    allowSelfIntersections: false,
     pointerDistance: 30,
   });
   const terraDrawPointMode = new TerraDrawPointMode({});
@@ -158,10 +157,12 @@ const terraDrawSetup = (
             | [number, number][][],
           id: element.id,
         });
-    } else if (featuresInClick.length === 0 && e.button === "left")
+    } else if (featuresInClick.length === 0 && e.button === "left") {
+      draw.clear();
       dispatch({
         type: "selecionarElementoFoco",
       });
+    }
   };
 
   terraDrawImageOverlayMode.onClick = () => {
@@ -179,7 +180,8 @@ const terraDrawSetup = (
       const element = draw.getSnapshot().find((x) => x.id === e);
       const listaEl = pegarConteudoElementos();
       if (element)
-        if (listaEl.some((x) => x.id === element.id))
+        if (listaEl.some((x) => x.id === element.id)) {
+          draw.clear();
           dispatch({
             type: "alteraCoordinatesElemento",
             posicao: element.geometry.coordinates as
@@ -188,7 +190,7 @@ const terraDrawSetup = (
               | [number, number][][],
             id: element.id,
           });
-        else {
+        } else {
           dispatch({
             type: "addElemento",
             posicao: element.geometry.coordinates as

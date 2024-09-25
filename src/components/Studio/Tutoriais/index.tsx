@@ -1,6 +1,6 @@
 import { useShepherdTour } from "react-shepherd";
 import stepsShepherdTour from "./stepsShepherdTour";
-import "react-shepherd/node_modules/shepherd.js/dist/css/shepherd.css";
+// import "react-shepherd/node_modules/shepherd.js/dist/css/shepherd.css";
 import { useEffect } from "react";
 import { useMapaContext } from "@/components/Mapa/MapaContext";
 

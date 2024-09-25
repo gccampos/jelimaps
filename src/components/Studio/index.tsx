@@ -119,7 +119,16 @@ const Studio = () => {
           setTimeout(() => {
             const features = _draw.getSnapshot();
             _draw.clear();
-            _draw.addFeatures(features);
+            if (
+              features.some((x) =>
+                elementosSelecionadosRef.current.includes(x.id)
+              )
+            )
+              _draw.addFeatures(
+                features.filter((x) =>
+                  elementosSelecionadosRef.current.includes(x.id)
+                )
+              );
             if (features?.length > 0 && features[0].id)
               setTimeout(() => {
                 _draw.selectFeature(features[0].id);
