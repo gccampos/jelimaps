@@ -6,7 +6,7 @@ import {
 import { v4 } from "uuid";
 import moment from "moment";
 import auxiliadorRetornoContext from "./auxiliadorRetornoContext";
-import { DateType } from "vis-timeline/standalone";
+import { DateType } from "vis-timeline";
 import contextChangers from ".";
 
 function getRandomColor(oldMapaContext: mapaContextSchema) {

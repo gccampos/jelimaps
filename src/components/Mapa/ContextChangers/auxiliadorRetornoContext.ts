@@ -1,7 +1,7 @@
 import { mapaContextSchema, tipoElemento } from "../mapaContextTypes";
 import { NIL } from "uuid";
 import moment from "moment";
-import { DateType } from "vis-timeline/standalone";
+import { DateType } from "vis-timeline";
 
 const retornaListaElementosConteudoCenaAtual = (
   oldMapaContext: mapaContextSchema,

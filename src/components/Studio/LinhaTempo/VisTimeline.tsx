@@ -4,7 +4,8 @@ import {
   TimelineEventPropertiesResult,
   TimelineItem,
   TimelineOptions,
-} from "vis-timeline/standalone";
+} from "vis-timeline";
+import "node_modules/vis-timeline/dist/vis-timeline-graph2d.min.css";
 import Leaflet, { LatLngBoundsExpression } from "leaflet";
 import { useMapaContext, useMapaDispatch } from "@/components/Mapa/MapaContext";
 import {
