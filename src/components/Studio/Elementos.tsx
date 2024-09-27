@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import {
-  Grid,
+  Grid2,
   List,
   ListItem,
   SpeedDial,
@@ -24,9 +24,7 @@ export function ElementosLateral(props: { altura: number; draw: TerraDraw }) {
       : dispatch({ type: "selecionarElementoInteracao", arg: elemento });
   };
   return (
-    <Grid
-      item
-      xs={0}
+    <Grid2
       sx={{
         borderRight: 2,
         borderRightStyle: "outset",
@@ -81,7 +79,7 @@ export function ElementosLateral(props: { altura: number; draw: TerraDraw }) {
             );
           })}
       </List>
-    </Grid>
+    </Grid2>
   );
 }
 

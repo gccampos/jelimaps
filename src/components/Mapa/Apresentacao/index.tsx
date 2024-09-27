@@ -7,7 +7,7 @@ import CustomControlLeaflet, {
   POSITION_CLASSES_CUSTOM_CONTROL,
 } from "@/components/CustomControlLeaflet/CustomControlLeaflet";
 import { useMapaContext, useMapaDispatch } from "@/components/Mapa/MapaContext";
-import { Fab, Grid } from "@mui/material";
+import { Fab, Grid2 } from "@mui/material";
 // import Elementos from "./Elementos";
 import { Close } from "@mui/icons-material";
 import { MODO_VISAO } from "../mapaContextTypes";
@@ -70,17 +70,19 @@ const Apresentacao = () => {
   );
   return (
     <>
-      <Grid item container xs={12}>
+      <Grid2 container size={12}>
         {!_isMobile && (
-          <Legenda
-            map={map}
-            larguraLegenda={larguraLegenda}
-            setLarguraLegenda={setLarguraLegenda}
-            alturaLegenda={alturaLegenda}
-            setAlturaLegenda={setAlturaLegenda}
-          />
+          <Grid2>
+            <Legenda
+              map={map}
+              larguraLegenda={larguraLegenda}
+              setLarguraLegenda={setLarguraLegenda}
+              alturaLegenda={alturaLegenda}
+              setAlturaLegenda={setAlturaLegenda}
+            />
+          </Grid2>
         )}
-        <Grid item xs>
+        <Grid2 size={"grow"}>
           <div
             style={{
               height: _isMobile ? height - alturaLegenda : height,
@@ -145,7 +147,7 @@ const Apresentacao = () => {
               </CustomControlLeaflet>
             </MapContainer>
           </div>
-        </Grid>
+        </Grid2>
         {_isMobile && (
           <Legenda
             map={map}
@@ -155,7 +157,7 @@ const Apresentacao = () => {
             setAlturaLegenda={setAlturaLegenda}
           />
         )}
-      </Grid>
+      </Grid2>
     </>
   );
 };

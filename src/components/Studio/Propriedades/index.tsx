@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { Grid, Chip, Tab, AppBar, Tabs, Box } from "@mui/material";
+import { Grid2, Chip, Tab, AppBar, Tabs, Box } from "@mui/material";
 import { useMapaContext, useMapaDispatch } from "@/components/Mapa/MapaContext";
 import { Rnd } from "react-rnd";
 import AlignVerticalCenterIcon from "@mui/icons-material/AlignVerticalCenter";
@@ -113,9 +113,7 @@ export default function Propriedades(props: {
 
   return (
     mapaContext?.slidePropriedade && (
-      <Grid
-        item
-        xs={0}
+      <Grid2
         sx={{
           borderLeft: 2,
           borderLeftStyle: "outset",
@@ -233,7 +231,7 @@ export default function Propriedades(props: {
           </Rnd>
         </div>
         {/* Lateral direita */}
-      </Grid>
+      </Grid2>
     )
   );
 }

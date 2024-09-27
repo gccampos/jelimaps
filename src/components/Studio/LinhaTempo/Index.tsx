@@ -1,5 +1,5 @@
 import React from "react";
-import { Grid } from "@mui/material";
+import { Grid2 } from "@mui/material";
 import VisTimeline from "./VisTimeline";
 
 export default function LinhaTempo(props: {
@@ -7,10 +7,9 @@ export default function LinhaTempo(props: {
   altura: number;
 }) {
   return (
-    <Grid
+    <Grid2
       id={"oi"}
-      item
-      xs={12}
+      size={12}
       sx={{
         height: "100%",
         ".personalized-scrollbar": {
@@ -34,6 +33,6 @@ export default function LinhaTempo(props: {
       }}
     >
       <VisTimeline tempoAtualRef={props.tempoAtualRef} altura={props.altura} />
-    </Grid>
+    </Grid2>
   );
 }
