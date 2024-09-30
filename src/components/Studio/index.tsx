@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import Propriedades from "./Propriedades";
 import LinhaTempo from "./LinhaTempo/Index";
-import { Grid } from "@mui/material";
+import { Grid2 } from "@mui/material";
 import Mapa from "./MapaAdapter";
 import { Rnd } from "react-rnd";
 import useWindowDimensions from "./useWindowDimensions";
@@ -27,7 +27,7 @@ async function copyToClipboard(text) {
 }
 
 const Studio = () => {
-  const { height } = useWindowDimensions();
+  const { height, width } = useWindowDimensions();
   const [rndRef, setRndRef] = useState<Rnd>();
   const [map, setMap] = useState<L.Map>();
   const conteudoElementosRef = useRef<tipoElemento[]>(null);
@@ -155,16 +155,21 @@ const Studio = () => {
   ]);
 
   return (
-    <Grid container sx={{ height: "100%" }} id="studioMapa">
+    <Grid2 container sx={{ height: "100%" }} id="studioMapa">
       {
         <>
-          <Grid item container xs={12}>
+          <Grid2 container size={12}>
             <ElementosLateral
               altura={mapaContext.slideLinhaTempo ? height - altura : height}
               draw={draw}
             />
             <Mapa
               altura={mapaContext.slideLinhaTempo ? height - altura : height}
+              largura={
+                (mapaContext?.slidePropriedade
+                  ? width - larguraPropriedades
+                  : width) - 65
+              }
               setMapa={setMap}
               draw={draw}
               conteudoElementosRef={conteudoElementosRef}
@@ -178,7 +183,7 @@ const Studio = () => {
                 map={map}
               />
             )}
-          </Grid>
+          </Grid2>
           {mapaContext.slideLinhaTempo && (
             <Rnd
               ref={(c) => {
@@ -222,21 +227,20 @@ const Studio = () => {
                 setAltura(ref.offsetHeight);
               }}
             >
-              <Grid
-                item
+              <Grid2
                 container
-                xs={12}
+                size={12}
                 mt={2.2}
                 sx={{ height: "95%", maxHeight: altura }}
               >
                 <LinhaTempo tempoAtualRef={tempoAtualRef} altura={altura} />
-              </Grid>
+              </Grid2>
             </Rnd>
           )}
         </>
       }
       {map && <Tutoriais />}
-    </Grid>
+    </Grid2>
   );
 };
 

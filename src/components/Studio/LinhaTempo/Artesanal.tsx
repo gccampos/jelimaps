@@ -1,7 +1,7 @@
 import React from "react";
 import {
   Divider,
-  Grid,
+  Grid2,
   IconButton,
   ListItem,
   ListItemButton,
@@ -92,9 +92,8 @@ export default function LinhaTempoArtesanal(props: {
               <Delete />
             </IconButton>
           </ListItemIcon>
-          <Grid
-            item
-            xs={12}
+          <Grid2
+            size={{ xs: 12 }}
             sx={{
               height: "100%",
               display: "contents",
@@ -108,7 +107,7 @@ export default function LinhaTempoArtesanal(props: {
                 bgcolor: "#6e7073bf",
               },
             }}
-          ></Grid>
+          ></Grid2>
         </ListItem>
 
         <Divider />

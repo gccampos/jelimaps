@@ -12,7 +12,7 @@ import {
   DialogContent,
   DialogTitle,
   Fab,
-  Grid,
+  Grid2,
   TextField,
 } from "@mui/material";
 // import Elementos from "./Elementos";
@@ -33,6 +33,7 @@ import Image from "next/image";
 
 export default function Mapa(propsMapa: {
   altura: number;
+  largura: number;
   draw: TerraDraw;
   setMapa: React.Dispatch<React.SetStateAction<Leaflet.Map>>;
   conteudoElementosRef: React.MutableRefObject<tipoElemento[]>;
@@ -52,7 +53,6 @@ export default function Mapa(propsMapa: {
     [mapaContext.modoVisao]
   );
   const moveStartedRef = useRef<boolean>(false);
-
   useEffect(() => {
     if (map && !isMounted) {
       map.on("moveend", () => {
@@ -208,8 +208,14 @@ export default function Mapa(propsMapa: {
   }, [mapaContext.modoVisao, mapaContext.urlMapaProprio]);
 
   return (
-    <Grid item xs id={"idMapa"}>
-      <div style={{ height: propsMapa.altura, display: "grid" }}>
+    <Grid2 size={"grow"} id={"idMapa"}>
+      <div
+        style={{
+          height: propsMapa.altura,
+          width: propsMapa.largura,
+          display: "grid",
+        }}
+      >
         <MapContainer
           center={mapaContext.mapOptions?.center ?? center}
           zoom={mapaContext.mapOptions?.zoom ?? zoom}
@@ -284,6 +290,6 @@ export default function Mapa(propsMapa: {
           )}
         </MapContainer>
       </div>
-    </Grid>
+    </Grid2>
   );
 }

@@ -1,15 +1,7 @@
 import React from "react";
 import { Html, Head, Main, NextScript } from "next/document";
-import {
-  experimental_extendTheme as extendTheme,
-  Experimental_CssVarsProvider as CssVarsProvider,
-} from "@mui/material/styles";
 import { Analytics } from "@vercel/analytics/react";
 import Script from "next/script";
-
-const theme = extendTheme({
-  cssVarPrefix: "md-demo",
-});
 
 export default function Document() {
   return (
@@ -26,9 +18,7 @@ export default function Document() {
         </Script>
       </Head>
       <body>
-        <CssVarsProvider theme={theme}>
-          <Main />
-        </CssVarsProvider>
+        <Main />
         <Analytics />
         <NextScript />
       </body>

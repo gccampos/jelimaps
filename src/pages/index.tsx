@@ -5,7 +5,7 @@ import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
-import Grid from "@mui/material/Grid";
+import Grid2 from "@mui/material/Grid2";
 import Stack from "@mui/material/Stack";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
@@ -117,9 +117,9 @@ export default function Home() {
               suas principais funcionalidades, destacam-se:
             </Typography>
 
-            <Grid container spacing={2}>
-              <Grid container item xs={12} md={6} spacing={2}>
-                <Grid item xs={12}>
+            <Grid2 container spacing={2}>
+              <Grid2 container size={{ xs: 12, md: 6 }} spacing={2}>
+                <Grid2 size={12}>
                   Criação intuitiva de mapas: A interface amigável da JeliMaps
                   permite aos usuários criar facilmente mapas personalizados em
                   uma linha do tempo. É possível adicionar pontos de interesse,
@@ -133,8 +133,8 @@ export default function Home() {
                     alt={`Gravação acelerada da tela da criação intuitiva de mapas!`}
                     unoptimized={true}
                   />
-                </Grid>
-                <Grid item xs={12}>
+                </Grid2>
+                <Grid2 size={12}>
                   Integração de imagens próprias: Os usuários têm a opção de
                   utilizar suas próprias imagens georreferenciadas para
                   enriquecer seus mapas. Isso permite a visualização de dados
@@ -147,10 +147,10 @@ export default function Home() {
                     alt={`Gravação acelerada da integração de imagens proprias!`}
                     unoptimized={true}
                   />
-                </Grid>
-              </Grid>
-              <Grid container item xs={12} md={6} spacing={2}>
-                <Grid item xs={12}>
+                </Grid2>
+              </Grid2>
+              <Grid2 container size={{ xs: 12, md: 6 }} spacing={2}>
+                <Grid2 size={12}>
                   Base OpenStreetMaps: A JeliMaps oferece suporte à integração
                   de mapas da base de dados OpenStreetMaps. Os usuários podem
                   aproveitar os recursos detalhados dessa fonte de informações
@@ -164,8 +164,8 @@ export default function Home() {
                     alt={`Gravação acelerada alterando o plano de fundo de mapas comuns!`}
                     unoptimized={true}
                   />
-                </Grid>
-                <Grid item xs={12}>
+                </Grid2>
+                <Grid2 size={12}>
                   Linha do tempo interativa: A aplicação permite que os usuários
                   definam datas e intervalos de tempo para a exibição de eventos
                   e dados específicos em seus mapas. Com a funcionalidade da
@@ -179,9 +179,9 @@ export default function Home() {
                     alt={`Gravação acelerada da linha do tempo interativa!`}
                     unoptimized={true}
                   />
-                </Grid>
-              </Grid>
-            </Grid>
+                </Grid2>
+              </Grid2>
+            </Grid2>
           </Container>
         </Box>
         <Box
@@ -195,9 +195,9 @@ export default function Home() {
         >
           <Container sx={{ py: 8 }} maxWidth="md">
             {/* End hero unit */}
-            <Grid container spacing={4}>
+            <Grid2 container spacing={4}>
               {cards.map((card, index) => (
-                <Grid item key={index} xs={12} sm={6} md={4}>
+                <Grid2 key={index} size={{ xs: 12, sm: 6, md: 4 }}>
                   <Card
                     sx={{
                       height: "100%",
@@ -230,9 +230,9 @@ export default function Home() {
                       {/* <Button size="small">Edi</Button> */}
                     </CardActions>
                   </Card>
-                </Grid>
+                </Grid2>
               ))}
-            </Grid>
+            </Grid2>
           </Container>
         </Box>
       </main>

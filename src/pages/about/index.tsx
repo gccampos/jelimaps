@@ -7,7 +7,7 @@ import {
   CardContent,
   CardMedia,
   Container,
-  Grid,
+  Grid2,
   Typography,
 } from "@mui/material";
 import DefaultTemplate from "@/main/template/DefaultTemplate";
@@ -76,9 +76,9 @@ const About = () => {
             <Typography variant="h3" align="center" color="text.primary">
               Quem Somos?
             </Typography>
-            <Grid container spacing={4} justifyContent={"center"}>
+            <Grid2 container spacing={4} justifyContent={"center"}>
               {equipe.map((membro) => (
-                <Grid item key={membro.nome} xs={12} sm={6} md={4}>
+                <Grid2 key={membro.nome} size={{ xs: 12, sm: 6, md: 4 }}>
                   <Card
                     sx={{
                       height: "100%",
@@ -109,9 +109,9 @@ const About = () => {
                       </Button>
                     </CardActions>
                   </Card>
-                </Grid>
+                </Grid2>
               ))}
-            </Grid>
+            </Grid2>
           </Container>
         </Box>
       </main>

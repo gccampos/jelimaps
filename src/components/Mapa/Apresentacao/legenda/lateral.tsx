@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Grid, Chip } from "@mui/material";
+import { Grid2, Chip } from "@mui/material";
 import { Rnd } from "react-rnd";
 import AlignVerticalCenterIcon from "@mui/icons-material/AlignVerticalCenter";
 import useWindowDimensions from "@/components/Studio/useWindowDimensions";
@@ -35,9 +35,8 @@ const LegendaLateral = (props: {
   const [rndRef, setRndRef] = useState<Rnd>();
 
   return (
-    <Grid
-      item
-      xs={0}
+    <Grid2
+      size={{ xs: 0 }}
       sx={{
         borderLeft: 2,
         borderLeftStyle: "outset",
@@ -99,7 +98,7 @@ const LegendaLateral = (props: {
         </Rnd>
       </div>
       {/* Lateral direita */}
-    </Grid>
+    </Grid2>
   );
 };
 

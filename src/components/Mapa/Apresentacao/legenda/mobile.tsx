@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Grid } from "@mui/material";
+import { Grid2 } from "@mui/material";
 import { Rnd } from "react-rnd";
 import useWindowDimensions from "@/components/Studio/useWindowDimensions";
 import { Map } from "leaflet";
@@ -73,10 +73,9 @@ const LegendaLateral = (props: {
           setAlturaLegenda(ref.offsetHeight);
       }}
     >
-      <Grid
-        item
+      <Grid2
         container
-        xs={12}
+        size={12}
         mt={2.2}
         sx={{ height: "95%", maxHeight: alturaLegenda }}
       >
@@ -86,7 +85,7 @@ const LegendaLateral = (props: {
           map={map}
         />
         <ReprodutorLinhaTempo isApresentacao={true} />
-      </Grid>
+      </Grid2>
     </Rnd>
   );
 };
