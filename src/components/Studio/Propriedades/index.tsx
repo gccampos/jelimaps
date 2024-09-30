@@ -10,6 +10,7 @@ import Elemento from "./elemento";
 import { Map } from "leaflet";
 import DraggerResize from "@/components/DraggerResize";
 import ReprodutorLinhaTempo from "@/components/Mapa/ReprodutorLinhaTempo";
+import Router from "next/router";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -173,6 +174,9 @@ export default function Propriedades(props: {
                   nomePropriedade: "larguraPropriedades",
                   valorPropriedade: ref.offsetWidth,
                 });
+                setTimeout(() => {
+                  Router.reload();
+                }, 100);
               }, 250);
             }}
           >
