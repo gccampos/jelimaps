@@ -1,7 +1,7 @@
 import React from "react";
+import { TerraDrawLeafletAdapter } from 'terra-draw-leaflet-adapter';
 import {
   TerraDraw,
-  TerraDrawLeafletAdapter,
   TerraDrawSelectMode,
   TerraDrawPolygonMode,
   TerraDrawPointMode,
