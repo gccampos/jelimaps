@@ -131,7 +131,11 @@ const Studio = () => {
               );
             if (features?.length > 0 && features[0].id)
               setTimeout(() => {
+            try {
                 _draw.selectFeature(features[0].id);
+            } catch (error) {
+                console.log('deueurro',{error});
+            }
               }, 250);
           }, 100);
       });
